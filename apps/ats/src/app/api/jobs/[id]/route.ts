@@ -94,7 +94,8 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
 
     // Apply any overrides (edits made in the review modal)
     const title        = overrides.title               ?? job.title;
-    const description  = overrides.description         ?? job.description ?? '';
+    // Prefer AI-polished description for Ceipal; fall back to raw email if not yet generated
+    const description  = overrides.description         ?? job.aiDescription ?? job.description ?? '';
     const boolStr      = overrides.booleanSearchString ?? job.booleanSearchString;
     const requirements = overrides.requirements        ?? job.requirements;
     const location     = overrides.location            ?? job.location;

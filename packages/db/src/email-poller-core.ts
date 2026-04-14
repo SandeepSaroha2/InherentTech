@@ -17,7 +17,7 @@ const prisma = new PrismaClient();
 const OLLAMA_URL = process.env.OLLAMA_URL || 'http://localhost:11434';
 const OLLAMA_MODEL = process.env.OLLAMA_MODEL || 'llama3.2';
 
-async function callOllama(prompt: string, maxTokens = 800): Promise<string> {
+async function callOllama(prompt: string, maxTokens = 800, mode: 'json' | 'text' = 'json'): Promise<string> {
   const controller = new AbortController();
   const timeoutMs = maxTokens > 1000 ? 180_000 : 90_000;
   const timeout = setTimeout(() => controller.abort(), timeoutMs);
@@ -30,8 +30,8 @@ async function callOllama(prompt: string, maxTokens = 800): Promise<string> {
         model: OLLAMA_MODEL,
         messages: [{ role: 'user', content: prompt }],
         stream: false,
-        format: 'json',
-        options: { temperature: 0, num_predict: maxTokens },
+        ...(mode === 'json' && { format: 'json' }),
+        options: { temperature: mode === 'json' ? 0 : 0.3, num_predict: maxTokens },
       }),
     });
     if (!res.ok) throw new Error(`Ollama error: ${res.status} ${await res.text()}`);
@@ -40,6 +40,26 @@ async function callOllama(prompt: string, maxTokens = 800): Promise<string> {
   } finally {
     clearTimeout(timeout);
   }
+}
+
+/** Prompt to turn a raw recruiter email into a clean, professional job description */
+function buildPolishPrompt(rawEmail: string, jobTitle: string): string {
+  return `You are a professional technical recruiter copywriter. Transform the raw email below into a clean, professional job description suitable for a staffing ATS (Ceipal).
+
+RULES:
+- Preserve ALL technical requirements, skills, years of experience, and qualifications verbatim.
+- Keep the pay rate, contract type, duration, location, and visa requirements exactly as stated.
+- Restructure into clearly labeled sections: Overview, Responsibilities, Required Skills, Nice to Have, Compensation & Terms.
+- Write in a professional, direct tone. No fluff, no buzzwords.
+- Do NOT invent or add any requirements not mentioned in the email.
+- Output plain text only — no markdown, no HTML.
+
+Job Title: ${jobTitle}
+
+Raw Email:
+${rawEmail.slice(0, 10000)}
+
+Write the professional job description now:`;
 }
 
 export const RECRUITER_ACCOUNTS: Array<{ email: string; imapUser: string; pass: string; name: string }> = [
@@ -592,13 +612,27 @@ async function pollRecruiter(
           logAction('create_job_order', 'done', `"${job.title}" for ${clientName}`);
           console.log(`  ✅ Created JobOrder: "${job.title}"`);
 
+          // Generate AI-polished description (always — needed for Ceipal posting quality)
+          let ceipalDescription = fullDescription;
+          try {
+            console.log(`  🤖 Generating AI description for "${job.title}"...`);
+            const aiDesc = (await callOllama(buildPolishPrompt(fullDescription, job.title), 1500, 'text')).trim();
+            if (aiDesc.length > 100) {
+              await prisma.jobOrder.update({ where: { id: job.id }, data: { aiDescription: aiDesc } });
+              ceipalDescription = aiDesc;
+              console.log(`  ✅ AI description saved (${aiDesc.length} chars)`);
+            }
+          } catch (e: any) {
+            console.log(`  ⚠️  AI description failed (${e.message}) — will use raw email for Ceipal`);
+          }
+
           // Auto-post to Ceipal if enabled in org settings
           if (autoPostCeipal) {
             console.log(`  🚀 Auto-posting "${job.title}" to Ceipal...`);
             try {
               const ceipalResult = await postJobToCeipal({
                 title:               job.title,
-                description:         fullDescription,   // exact email body
+                description:         ceipalDescription,  // AI-polished if available, raw email fallback
                 booleanSearchString: d.booleanSearchString || null,
                 requirements:        Array.isArray(d.requirements) ? d.requirements : [],
                 location:            d.location || job.location,
