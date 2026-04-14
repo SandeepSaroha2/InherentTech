@@ -1,0 +1,1380 @@
+// InherentTech Unified Prisma Schema
+// Supports: AIOCRM, ATS, KudoDoc, JobPlatform, AI Agents
+// 8 Modules, 45+ tables, Multi-tenant architecture
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ============================================================================
+// ENUMS
+// ============================================================================
+
+enum UserRole {
+  OWNER
+  ADMIN
+  RECRUITER
+  TEAM_LEAD
+  EMPLOYEE
+  CANDIDATE
+  CLIENT
+}
+
+enum LeadStage {
+  NEW
+  CONTACTED
+  QUALIFIED
+  PROPOSAL
+  NEGOTIATION
+  WON
+  LOST
+}
+
+enum ActivityType {
+  CALL
+  EMAIL
+  MEETING
+  NOTE
+  TASK
+}
+
+enum VisaStatus {
+  US_CITIZEN
+  GREEN_CARD
+  H1B
+  H1B_TRANSFER
+  OPT
+  CPT
+  L1
+  TN
+  OTHER
+}
+
+enum CandidateStatus {
+  ACTIVE
+  INACTIVE
+  BLACKLISTED
+  PLACED
+}
+
+enum JobPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum JobStatus {
+  DRAFT
+  OPEN
+  ON_HOLD
+  FILLED
+  CANCELLED
+}
+
+enum SubmissionStatus {
+  SUBMITTED
+  CLIENT_REVIEW
+  INTERVIEW
+  OFFERED
+  ACCEPTED
+  REJECTED
+  WITHDRAWN
+}
+
+enum InterviewType {
+  PHONE
+  VIDEO
+  ONSITE
+  TECHNICAL
+}
+
+enum InterviewStatus {
+  SCHEDULED
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+}
+
+enum PlacementStatus {
+  ACTIVE
+  COMPLETED
+  TERMINATED
+  ON_HOLD
+}
+
+enum TimesheetStatus {
+  DRAFT
+  SUBMITTED
+  APPROVED
+  REJECTED
+  INVOICED
+}
+
+enum InvoiceStatus {
+  DRAFT
+  SENT
+  PAID
+  OVERDUE
+  CANCELLED
+}
+
+enum OutreachChannel {
+  EMAIL
+  LINKEDIN
+  SMS
+  PHONE
+}
+
+enum OutreachStatus {
+  DRAFT
+  ACTIVE
+  PAUSED
+  COMPLETED
+}
+
+enum OutreachMessageStatus {
+  QUEUED
+  SENT
+  DELIVERED
+  OPENED
+  REPLIED
+  BOUNCED
+  FAILED
+}
+
+enum DocumentStatus {
+  DRAFT
+  PENDING_SIGNATURE
+  PARTIALLY_SIGNED
+  COMPLETED
+  EXPIRED
+  CANCELLED
+}
+
+enum SignatureStatus {
+  PENDING
+  VIEWED
+  SIGNED
+  DECLINED
+  EXPIRED
+}
+
+enum AgentName {
+  SCREENER
+  SCHEDULER
+  OUTREACH
+  ONBOARDING
+  PLACEMENT
+}
+
+enum AgentExecutionStatus {
+  QUEUED
+  RUNNING
+  COMPLETED
+  FAILED
+}
+
+// ============================================================================
+// MODULE 1: CORE (Multi-tenancy + Auth)
+// ============================================================================
+
+model Organization {
+  id String @id @default(uuid())
+
+  name     String
+  slug     String @unique
+  plan     String @default("free") // free, pro, enterprise
+  logo     String?
+  settings Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  users              User[]
+  auditLogs          AuditLog[]
+  leads              Lead[]
+  activities         Activity[]
+  candidates         Candidate[]
+  jobOrders          JobOrder[]
+  submissions        Submission[]
+  interviews         Interview[]
+  placements         Placement[]
+  timesheets         Timesheet[]
+  invoices           Invoice[]
+  projects           Project[]
+  timeEntries        TimeEntry[]
+  outreachCampaigns  OutreachCampaign[]
+  outreachMessages   OutreachMessage[]
+  documentTemplates  DocumentTemplate[]
+  documents          Document[]
+  signatureRequests  SignatureRequest[]
+  documentAuditTrail DocumentAuditTrail[]
+  agents             Agent[]
+  agentExecutions    AgentExecution[]
+  knowledgeBases     KnowledgeBase[]
+  notifications      Notification[]
+  emailLogs          EmailLog[]
+  subscription       Subscription?
+  calls              Call[]
+  smsMessages        SMSMessage[]
+  screeningSessions  ScreeningSession[]
+  recruiterInboxItems RecruiterInboxItem[]
+
+  @@map("organizations")
+}
+
+model User {
+  id String @id @default(uuid())
+
+  orgId String
+  email String @unique
+  name  String?
+
+  avatarUrl    String?
+  role         UserRole
+  phone        String?
+  isActive     Boolean   @default(true)
+  lastLoginAt  DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  auditLogs              AuditLog[]
+  leadAssignments        Lead[]
+  activities             Activity[]
+  submissionCreators     Submission[]
+  interviewers           Interview[]
+  placementAssignments   Placement[]
+  timesheetApprovers     Timesheet[]
+  agentTriggers          AgentExecution[]
+  documentCreators       DocumentTemplate[]
+  documents              Document[]
+  signatureSigners       SignatureRequest[]
+  outreachCampaignCreators OutreachCampaign[]
+  notifications          Notification[]
+  timeEntries            TimeEntry[]
+  jobOrderAssignments    JobOrder[]
+  callsMade              Call[]
+  screeningSessions      ScreeningSession[]
+  reviewedInboxItems     RecruiterInboxItem[] @relation("InboxReviewer")
+
+  @@index([orgId])
+  @@index([email])
+  @@map("users")
+}
+
+model AuditLog {
+  id String @id @default(uuid())
+
+  orgId    String
+  userId   String?
+  action   String
+  entity   String
+  entityId String
+  metadata Json?
+  ipAddress String?
+
+  createdAt DateTime @default(now())
+
+  // Relations
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  user         User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([orgId])
+  @@index([userId])
+  @@index([createdAt])
+  @@map("audit_logs")
+}
+
+// ============================================================================
+// MODULE 2: CRM
+// ============================================================================
+
+model Lead {
+  id String @id @default(uuid())
+
+  orgId String
+
+  companyName   String
+  contactName   String?
+  contactEmail  String?
+  contactPhone  String?
+  stage         LeadStage   @default(NEW)
+  source        String?
+  notes         String?
+  value         Decimal     @default(0)
+
+  assignedToId String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  assignedTo   User?        @relation(fields: [assignedToId], references: [id], onDelete: SetNull)
+
+  activities       Activity[]
+  jobOrders        JobOrder[]
+  projects         Project[]
+  outreachMessages OutreachMessage[]
+
+  @@index([orgId])
+  @@index([assignedToId])
+  @@index([stage])
+  @@index([createdAt])
+  @@map("leads")
+}
+
+model Activity {
+  id String @id @default(uuid())
+
+  orgId       String
+  leadId      String?
+  contactId   String?
+  userId      String
+  type        ActivityType
+  subject     String
+  description String?
+  scheduledAt DateTime?
+  completedAt DateTime?
+
+  createdAt DateTime @default(now())
+
+  // Relations
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  lead         Lead?        @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([orgId])
+  @@index([leadId])
+  @@index([userId])
+  @@index([type])
+  @@index([createdAt])
+  @@map("activities")
+}
+
+// ============================================================================
+// MODULE 3: ATS (Applicant Tracking)
+// ============================================================================
+
+model Candidate {
+  id String @id @default(uuid())
+
+  orgId String
+  userId String?
+
+  firstName           String
+  lastName            String
+  email               String
+  phone               String?
+  visaStatus          VisaStatus    @default(OTHER)
+  currentTitle        String?
+  currentCompany      String?
+  skills              String[]
+  yearsOfExperience   Int?
+  expectedRate        Decimal?
+  resumeUrl           String?
+  linkedinUrl         String?
+  location            String?
+  source              String?
+  notes               String?
+  status              CandidateStatus @default(ACTIVE)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  submissions Submission[]
+  interviews  Interview[]
+  placements  Placement[]
+  outreachMessages OutreachMessage[]
+  calls            Call[]
+  smsMessages      SMSMessage[]
+  screeningSessions ScreeningSession[]
+  inboxItems       RecruiterInboxItem[] @relation("InboxCandidate")
+
+  @@unique([orgId, email])
+  @@index([orgId])
+  @@index([status])
+  @@index([createdAt])
+  @@map("candidates")
+}
+
+model JobOrder {
+  id String @id @default(uuid())
+
+  orgId String
+  clientId String
+
+  jobNumber            Int      @default(autoincrement()) // human-readable reference: INH-0001
+  title                String
+  description          String?  @db.Text   // raw email body — exact copy, zero AI modification
+  aiDescription        String?  @db.Text   // AI-polished version generated on demand by recruiter
+  booleanSearchString  String?  @db.Text  // AI-generated boolean search string for candidate sourcing
+  requirements         String[]
+  location             String?
+  rateRange            Json?    // {min: number, max: number, type: "hourly"|"annual"}
+  openings             Int      @default(1)
+  filled               Int      @default(0)
+  priority             JobPriority @default(MEDIUM)
+  status               JobStatus   @default(DRAFT)
+
+  // Ceipal integration
+  ceipalJobId    String?
+  ceipalPostedAt DateTime?
+
+  assignedToId String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  client       Lead         @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  assignedTo   User?        @relation(fields: [assignedToId], references: [id], onDelete: SetNull)
+
+  submissions Submission[]
+  placements  Placement[]
+  inboxItems  RecruiterInboxItem[]
+
+  @@index([orgId])
+  @@index([clientId])
+  @@index([status])
+  @@index([priority])
+  @@index([assignedToId])
+  @@map("job_orders")
+}
+
+model Submission {
+  id String @id @default(uuid())
+
+  orgId String
+  candidateId String
+  jobOrderId String
+  submittedById String
+
+  status          SubmissionStatus @default(SUBMITTED)
+  billRate        Decimal?
+  payRate         Decimal?
+  clientFeedback  String?
+  internalNotes   String?
+
+  submittedAt DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  candidate    Candidate    @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  jobOrder     JobOrder     @relation(fields: [jobOrderId], references: [id], onDelete: Cascade)
+  submittedBy  User         @relation(fields: [submittedById], references: [id], onDelete: Cascade)
+
+  interviews Interview[]
+  placements Placement[]
+
+  @@index([orgId])
+  @@index([candidateId])
+  @@index([jobOrderId])
+  @@index([status])
+  @@map("submissions")
+}
+
+model Interview {
+  id String @id @default(uuid())
+
+  orgId String
+  submissionId String
+  candidateId String
+  interviewerId String?
+
+  interviewerName  String?
+  interviewerEmail String?
+  scheduledAt      DateTime?
+  duration         Int? // minutes
+  type             InterviewType
+  status           InterviewStatus @default(SCHEDULED)
+  feedback         String?
+  rating           Int?
+
+  createdAt DateTime @default(now())
+
+  // Relations
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  submission   Submission   @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  candidate    Candidate    @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  interviewer  User?        @relation(fields: [interviewerId], references: [id], onDelete: SetNull)
+
+  @@index([orgId])
+  @@index([submissionId])
+  @@index([candidateId])
+  @@index([interviewerId])
+  @@index([status])
+  @@index([scheduledAt])
+  @@map("interviews")
+}
+
+model Placement {
+  id String @id @default(uuid())
+
+  orgId String
+  candidateId String
+  jobOrderId String
+  submissionId String @unique
+  assignedToId String?
+
+  startDate DateTime
+  endDate   DateTime?
+  billRate  Decimal
+  payRate   Decimal
+  status    PlacementStatus @default(ACTIVE)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  candidate    Candidate    @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  jobOrder     JobOrder     @relation(fields: [jobOrderId], references: [id], onDelete: Cascade)
+  submission   Submission   @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  assignedTo   User?        @relation(fields: [assignedToId], references: [id], onDelete: SetNull)
+
+  timesheets Timesheet[]
+  invoices   Invoice[]
+
+  @@index([orgId])
+  @@index([candidateId])
+  @@index([assignedToId])
+  @@index([status])
+  @@map("placements")
+}
+
+model Timesheet {
+  id String @id @default(uuid())
+
+  orgId String
+  placementId String
+
+  weekStarting DateTime
+  hours         Json // array of daily hours
+  totalHours    Decimal
+  status        TimesheetStatus @default(DRAFT)
+
+  approvedById String?
+  submittedAt  DateTime?
+  approvedAt   DateTime?
+
+  createdAt DateTime @default(now())
+
+  // Relations
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  placement    Placement    @relation(fields: [placementId], references: [id], onDelete: Cascade)
+  approvedBy   User?        @relation(fields: [approvedById], references: [id], onDelete: SetNull)
+
+  @@index([orgId])
+  @@index([placementId])
+  @@index([status])
+  @@map("timesheets")
+}
+
+model Invoice {
+  id String @id @default(uuid())
+
+  orgId String
+  placementId String
+
+  timesheetIds String[]
+  invoiceNumber String @unique
+  amount        Decimal
+  tax           Decimal   @default(0)
+  totalAmount   Decimal
+  status        InvoiceStatus @default(DRAFT)
+
+  dueDate        DateTime?
+  paidAt         DateTime?
+  stripePaymentId String?
+
+  createdAt DateTime @default(now())
+
+  // Relations
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  placement    Placement    @relation(fields: [placementId], references: [id], onDelete: Cascade)
+
+  @@index([orgId])
+  @@index([placementId])
+  @@index([status])
+  @@index([invoiceNumber])
+  @@map("invoices")
+}
+
+// ============================================================================
+// MODULE 4: OPERATIONS
+// ============================================================================
+
+model Project {
+  id String @id @default(uuid())
+
+  orgId String
+  clientId String?
+
+  name      String
+  billable  Boolean @default(true)
+  status    String  @default("active") // active, completed, on_hold
+  budget    Decimal?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  client       Lead?        @relation(fields: [clientId], references: [id], onDelete: SetNull)
+
+  timeEntries TimeEntry[]
+
+  @@index([orgId])
+  @@index([clientId])
+  @@index([status])
+  @@map("projects")
+}
+
+model TimeEntry {
+  id String @id @default(uuid())
+
+  orgId String
+  userId String
+  projectId String
+
+  date        DateTime
+  hours       Decimal
+  description String?
+  billable    Boolean @default(true)
+
+  createdAt DateTime @default(now())
+
+  // Relations
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project      Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([orgId])
+  @@index([userId])
+  @@index([projectId])
+  @@index([date])
+  @@map("time_entries")
+}
+
+// ============================================================================
+// MODULE 5: OUTREACH
+// ============================================================================
+
+model OutreachCampaign {
+  id String @id @default(uuid())
+
+  orgId String
+
+  name             String
+  channel          OutreachChannel
+  status           OutreachStatus @default(DRAFT)
+  templateSubject  String?
+  templateBody     String?
+  targetCriteria   Json?
+  sentCount        Int @default(0)
+  openCount        Int @default(0)
+  replyCount       Int @default(0)
+
+  createdById String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  createdBy    User         @relation(fields: [createdById], references: [id], onDelete: Cascade)
+
+  messages OutreachMessage[]
+  calls    Call[]
+  smsMessages SMSMessage[]
+
+  @@index([orgId])
+  @@index([status])
+  @@index([channel])
+  @@map("outreach_campaigns")
+}
+
+model OutreachMessage {
+  id String @id @default(uuid())
+
+  orgId String
+  campaignId String
+  candidateId String?
+  leadId String?
+
+  recipientEmail String
+  recipientName  String?
+  subject        String
+  body           String
+
+  status   OutreachMessageStatus @default(QUEUED)
+  sentAt   DateTime?
+  openedAt DateTime?
+  repliedAt DateTime?
+
+  createdAt DateTime @default(now())
+
+  // Relations
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  campaign     OutreachCampaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  candidate    Candidate?       @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  lead         Lead?            @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  @@index([orgId])
+  @@index([campaignId])
+  @@index([status])
+  @@index([sentAt])
+  @@map("outreach_messages")
+}
+
+// ============================================================================
+// MODULE 6: DOCUMENTS (KudoDoc)
+// ============================================================================
+
+model DocumentTemplate {
+  id String @id @default(uuid())
+
+  orgId String
+
+  name        String
+  description String?
+  content     String // HTML/JSON template
+  fields      Json? // array of field definitions
+  category    String?
+  isActive    Boolean @default(true)
+
+  createdById String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  createdBy    User         @relation(fields: [createdById], references: [id], onDelete: Cascade)
+
+  documents Document[]
+
+  @@index([orgId])
+  @@index([category])
+  @@index([isActive])
+  @@map("document_templates")
+}
+
+model Document {
+  id String @id @default(uuid())
+
+  orgId String
+  templateId String?
+
+  title     String
+  content   String
+  status    DocumentStatus @default(DRAFT)
+  fileUrl   String?
+  expiresAt DateTime?
+
+  createdById String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  template     DocumentTemplate? @relation(fields: [templateId], references: [id], onDelete: SetNull)
+  createdBy    User              @relation(fields: [createdById], references: [id], onDelete: Cascade)
+
+  signatureRequests   SignatureRequest[]
+  documentAuditTrail  DocumentAuditTrail[]
+
+  @@index([orgId])
+  @@index([status])
+  @@index([templateId])
+  @@map("documents")
+}
+
+model SignatureRequest {
+  id String @id @default(uuid())
+
+  orgId String
+  documentId String
+
+  signerEmail String
+  signerName  String?
+  signerId    String?
+
+  order          Int @default(0)
+  status         SignatureStatus @default(PENDING)
+  signedAt       DateTime?
+  ipAddress      String?
+  signatureImageUrl String?
+
+  createdAt DateTime @default(now())
+
+  // Relations
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  document     Document     @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  signer       User?        @relation(fields: [signerId], references: [id], onDelete: SetNull)
+
+  @@index([orgId])
+  @@index([documentId])
+  @@index([status])
+  @@index([signerEmail])
+  @@map("signature_requests")
+}
+
+model DocumentAuditTrail {
+  id String @id @default(uuid())
+
+  orgId      String
+  documentId String
+
+  action     String
+  actorEmail String
+  actorName  String?
+  ipAddress  String?
+  metadata   Json?
+
+  createdAt DateTime @default(now())
+
+  // Relations
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  document     Document     @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  @@index([orgId])
+  @@index([documentId])
+  @@index([createdAt])
+  @@map("document_audit_trails")
+}
+
+// ============================================================================
+// MODULE 7: AI BRAIN
+// ============================================================================
+
+model Agent {
+  id String @id @default(uuid())
+
+  orgId String
+
+  name        AgentName
+  description String?
+  config      Json?
+  isActive    Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  executions AgentExecution[]
+
+  @@index([orgId])
+  @@index([isActive])
+  @@map("agents")
+}
+
+model AgentExecution {
+  id String @id @default(uuid())
+
+  orgId String
+  agentId String
+
+  triggeredById String?
+  input         Json
+  output        Json?
+  status        AgentExecutionStatus @default(QUEUED)
+
+  startedAt     DateTime?
+  completedAt   DateTime?
+  errorMessage  String?
+  tokensUsed    Int @default(0)
+
+  createdAt DateTime @default(now())
+
+  // Relations
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  agent        Agent        @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  triggeredBy  User?        @relation(fields: [triggeredById], references: [id], onDelete: SetNull)
+
+  @@index([orgId])
+  @@index([agentId])
+  @@index([status])
+  @@index([createdAt])
+  @@map("agent_executions")
+}
+
+model KnowledgeBase {
+  id String @id @default(uuid())
+
+  orgId String
+
+  title         String
+  content       String
+  sourceType    String? // manual, scraped, generated
+  sourceUrl     String?
+  // embedding field requires pgvector extension - uncomment after migration setup
+  // embedding     Unsupported("vector")?
+  metadata      Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@index([orgId])
+  @@index([sourceType])
+  @@map("knowledge_bases")
+}
+
+// ============================================================================
+// MODULE 8: COMMUNICATION
+// ============================================================================
+
+model Notification {
+  id String @id @default(uuid())
+
+  orgId String
+  userId String
+
+  title    String
+  message  String
+  type     String
+  isRead   Boolean @default(false)
+  actionUrl String?
+
+  createdAt DateTime @default(now())
+
+  // Relations
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([orgId])
+  @@index([userId])
+  @@index([isRead])
+  @@map("notifications")
+}
+
+model EmailLog {
+  id String @id @default(uuid())
+
+  orgId String
+
+  fromEmail   String
+  toEmail     String
+  subject     String
+  body        String
+  status      String // queued, sent, delivered, bounced, failed
+
+  messageId   String?
+  resendId    String?
+
+  createdAt DateTime @default(now())
+
+  // Relations
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@index([orgId])
+  @@index([toEmail])
+  @@index([status])
+  @@index([createdAt])
+  @@map("email_logs")
+}
+
+// ============================================================================
+// MODULE 9: SAAS / MULTI-TENANCY
+// ============================================================================
+
+enum PlanTier {
+  FREE
+  STARTER
+  PROFESSIONAL
+  ENTERPRISE
+}
+
+enum SubscriptionStatus {
+  TRIALING
+  ACTIVE
+  PAST_DUE
+  CANCELLED
+  EXPIRED
+}
+
+enum FeatureFlag {
+  AI_AGENTS
+  ECAFY_OUTREACH
+  KUDODOC_ESIGN
+  JOB_BOARD
+  ADVANCED_ANALYTICS
+  CUSTOM_BRANDING
+  API_ACCESS
+  SSO
+  PRIORITY_SUPPORT
+  UNLIMITED_USERS
+}
+
+model Plan {
+  id String @id @default(uuid())
+
+  name        String       // "Free", "Starter", "Professional", "Enterprise"
+  tier        PlanTier     @unique
+  description String?
+  price       Float        // monthly price in USD (0 for free)
+  annualPrice Float?       // annual price (discounted)
+  currency    String       @default("USD")
+
+  maxUsers        Int      @default(1)
+  maxCandidates   Int      @default(100)
+  maxJobOrders    Int      @default(10)
+  maxDocuments    Int      @default(50)
+  maxEmailsMonth  Int      @default(500)
+  maxAgentRuns    Int      @default(0)
+  storageGb       Float    @default(1)
+
+  features    FeatureFlag[]
+
+  isActive    Boolean  @default(true)
+  stripePriceId    String?
+  stripeAnnualPriceId String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  subscriptions Subscription[]
+
+  @@map("plans")
+}
+
+model Subscription {
+  id String @id @default(uuid())
+
+  orgId  String @unique
+  planId String
+
+  status         SubscriptionStatus @default(TRIALING)
+  currentPeriodStart DateTime
+  currentPeriodEnd   DateTime
+  cancelAtPeriodEnd  Boolean @default(false)
+
+  stripeCustomerId     String?
+  stripeSubscriptionId String?
+
+  trialEndsAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  plan         Plan         @relation(fields: [planId], references: [id])
+
+  usageRecords UsageRecord[]
+
+  @@index([orgId])
+  @@index([status])
+  @@map("subscriptions")
+}
+
+model UsageRecord {
+  id String @id @default(uuid())
+
+  subscriptionId String
+  orgId          String
+
+  metric    String   // 'users', 'candidates', 'job_orders', 'documents', 'emails', 'agent_runs', 'storage_gb'
+  value     Float
+  period    String   // 'YYYY-MM' format
+
+  recordedAt DateTime @default(now())
+
+  // Relations
+  subscription Subscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+
+  @@unique([subscriptionId, metric, period])
+  @@index([orgId])
+  @@index([period])
+  @@map("usage_records")
+}
+
+model Waitlist {
+  id String @id @default(uuid())
+
+  email       String @unique
+  name        String?
+  company     String?
+  role        String?
+  source      String?
+  referralCode String?
+
+  status      String @default("pending") // pending, invited, converted
+
+  createdAt DateTime @default(now())
+
+  @@index([status])
+  @@map("waitlist")
+}
+
+// ─── CALLING & SMS ─────────────────────────────────────────
+
+enum CallDirection {
+  INBOUND
+  OUTBOUND
+}
+
+enum CallChannel {
+  VONAGE_VOICE
+  RETELL_AI
+  BROWSER_WEBRTC
+}
+
+enum CallStatus {
+  INITIATED
+  RINGING
+  IN_PROGRESS
+  SCREENING
+  TRANSFERRING
+  COMPLETED
+  FAILED
+  NO_ANSWER
+  BUSY
+  MACHINE_DETECTED
+}
+
+enum SMSStatus {
+  QUEUED
+  SENT
+  DELIVERED
+  FAILED
+  REPLIED
+}
+
+enum ScreeningTier {
+  TIER_1_SMS
+  TIER_2_AI_CALL
+  TIER_3_SMS_SEQUENCE
+}
+
+enum ScreeningSessionStatus {
+  PENDING
+  IN_PROGRESS
+  QUALIFIED
+  NOT_QUALIFIED
+  NO_RESPONSE
+  TRANSFERRED
+  COMPLETED
+  CANCELLED
+}
+
+model Call {
+  id String @id @default(uuid())
+
+  orgId String
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  // Call details
+  direction CallDirection @default(OUTBOUND)
+  channel   CallChannel   @default(VONAGE_VOICE)
+  status    CallStatus    @default(INITIATED)
+
+  // Participants
+  fromNumber  String
+  toNumber    String
+  candidateId String?
+  candidate   Candidate? @relation(fields: [candidateId], references: [id])
+  userId      String?
+  user        User?      @relation(fields: [userId], references: [id])
+
+  // Provider references
+  externalCallId String?
+  retellAgentId  String?
+
+  // Screening data (for AI calls)
+  screeningData  Json?
+  screeningScore Int?
+  transcript     String? @db.Text
+  recordingUrl   String?
+
+  // Transfer
+  transferredTo  String?
+  transferredAt  DateTime?
+  whisperMessage String? @db.Text
+
+  // Timing
+  startedAt  DateTime?
+  answeredAt DateTime?
+  endedAt    DateTime?
+  duration   Int?
+
+  // Metadata
+  notes      String? @db.Text
+  campaignId String?
+  campaign   OutreachCampaign? @relation(fields: [campaignId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  inboxItems RecruiterInboxItem[]
+
+  @@index([orgId])
+  @@index([candidateId])
+  @@index([status])
+  @@index([externalCallId])
+  @@map("calls")
+}
+
+model SMSMessage {
+  id String @id @default(uuid())
+
+  orgId String
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  direction CallDirection @default(OUTBOUND)
+  status    SMSStatus     @default(QUEUED)
+
+  fromNumber String
+  toNumber   String
+  body       String @db.Text
+
+  candidateId String?
+  candidate   Candidate? @relation(fields: [candidateId], references: [id])
+
+  // Provider reference
+  externalId String?
+
+  // Tracking
+  deliveredAt   DateTime?
+  failureReason String?
+
+  // Campaign
+  campaignId   String?
+  campaign     OutreachCampaign? @relation(fields: [campaignId], references: [id])
+  tier         Int?
+  sequenceStep Int?
+
+  createdAt DateTime @default(now())
+
+  @@index([orgId])
+  @@index([candidateId])
+  @@index([externalId])
+  @@map("sms_messages")
+}
+
+model ScreeningSession {
+  id String @id @default(uuid())
+
+  orgId String
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  candidateId String
+  candidate   Candidate @relation(fields: [candidateId], references: [id])
+
+  jobOrderId String?
+
+  // Screening state
+  currentTier ScreeningTier          @default(TIER_1_SMS)
+  status      ScreeningSessionStatus @default(PENDING)
+
+  // Results
+  screeningData  Json?
+  screeningScore Int?
+  qualifiedAt    DateTime?
+
+  // TR assignment
+  assignedToId String?
+  assignedTo   User?  @relation(fields: [assignedToId], references: [id])
+
+  // Timing
+  tier1SentAt      DateTime?
+  tier1RepliedAt   DateTime?
+  tier2StartedAt   DateTime?
+  tier2CompletedAt DateTime?
+  tier3SentAt      DateTime?
+  completedAt      DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([orgId])
+  @@index([candidateId])
+  @@index([status])
+  @@map("screening_sessions")
+}
+
+// Recruiter Inbox: every processed email becomes an inbox item with AI-suggested actions
+model RecruiterInboxItem {
+  id           String @id @default(uuid())
+  orgId        String
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  // Source email
+  recruiterEmail String
+  fromEmail      String
+  fromName       String
+  subject        String
+  bodySnippet    String  @db.Text
+  messageId      String?
+
+  // AI classification
+  classification  InboxClassification
+  confidence      Float   @default(0)
+  extractedData   Json    // job/candidate/general data extracted by AI
+  suggestedReply  String? @db.Text
+  suggestedAction String? // human-readable action summary
+
+  // Status
+  status          InboxItemStatus @default(PENDING)
+  reviewedAt      DateTime?
+  reviewedById    String?
+  reviewedBy      User? @relation("InboxReviewer", fields: [reviewedById], references: [id])
+
+  // Action outcomes
+  replySent      Boolean @default(false)
+  replySentAt    DateTime?
+  jobOrderId     String?
+  jobOrder       JobOrder?  @relation(fields: [jobOrderId], references: [id])
+  candidateId    String?
+  candidate      Candidate? @relation("InboxCandidate", fields: [candidateId], references: [id])
+  callId         String?
+  call           Call?      @relation(fields: [callId], references: [id])
+  resumeParsed   Boolean @default(false)
+  actionsLog     Json    @default("[]") // array of {action, status, timestamp, detail}
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([orgId])
+  @@index([recruiterEmail])
+  @@index([status])
+  @@index([classification])
+  @@map("recruiter_inbox_items")
+}
+
+enum InboxClassification {
+  JOB_ORDER
+  CANDIDATE_REPLY
+  GENERAL
+}
+
+enum InboxItemStatus {
+  PENDING    // awaiting Preeti's review
+  APPROVED   // Preeti approved — actions executed
+  REJECTED   // Preeti dismissed
+  AUTO_DONE  // auto-executed (high confidence)
+}
