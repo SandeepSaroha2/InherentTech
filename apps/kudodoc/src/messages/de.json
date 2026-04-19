@@ -1,0 +1,85 @@
+{
+  "common": {
+    "appName": "KudoDoc",
+    "dashboard": "Instrumententafel",
+    "templates": "Vorlagen",
+    "documents": "Dokumente",
+    "signatures": "Unterschriften",
+    "search": "Suche",
+    "create": "Erstellen",
+    "edit": "Bearbeiten",
+    "delete": "Löschen",
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "loading": "Wird geladen...",
+    "noResults": "Keine Ergebnisse gefunden",
+    "submit": "Einreichen",
+    "close": "Schließen",
+    "actions": "Maßnahmen",
+    "status": "Status",
+    "date": "Datum",
+    "logout": "Abmelden",
+    "language": "Sprache"
+  },
+  "dashboard": {
+    "title": "Dokument-Dashboard",
+    "totalDocuments": "Gesamtdokumente",
+    "pendingSignatures": "Ausstehende Unterschriften",
+    "completedToday": "Heute abgeschlossen",
+    "recentDocuments": "Letzte Dokumente"
+  },
+  "templates": {
+    "title": "Dokumentvorlagen",
+    "newTemplate": "Neue Vorlage",
+    "templateName": "Vorlagenname",
+    "description": "Beschreibung",
+    "category": "Kategorie",
+    "fields": "Vorlagenfelder",
+    "preview": "Vorschau",
+    "useTemplate": "Vorlage verwenden",
+    "categories": {
+      "legal": "Rechtlich",
+      "staffing": "Personalvermittlung",
+      "hr": "Personalwesen",
+      "finance": "Finanzen",
+      "custom": "Benutzerdefiniert"
+    }
+  },
+  "documents": {
+    "title": "Dokumente",
+    "newDocument": "Neues Dokument",
+    "fromTemplate": "Aus Vorlage",
+    "upload": "Dokument hochladen",
+    "documentName": "Dokumentname",
+    "createdBy": "Erstellt von",
+    "lastModified": "Zuletzt geändert",
+    "statusLabels": {
+      "draft": "Entwurf",
+      "pendingSignature": "Ausstehende Unterschrift",
+      "signed": "Unterzeichnet",
+      "expired": "Abgelaufen",
+      "voided": "Ungültig"
+    }
+  },
+  "signatures": {
+    "title": "Unterschriftsanforderungen",
+    "requestSignature": "Unterschrift anfordern",
+    "signerName": "Name des Unterzeichners",
+    "signerEmail": "E-Mail des Unterzeichners",
+    "signedAt": "Unterzeichnet am",
+    "expiresAt": "Läuft ab am",
+    "remind": "Erinnerung senden",
+    "statusLabels": {
+      "pending": "Ausstehend",
+      "signed": "Unterzeichnet",
+      "declined": "Abgelehnt",
+      "expired": "Abgelaufen"
+    }
+  },
+  "auth": {
+    "signIn": "Anmelden",
+    "signOut": "Abmelden",
+    "email": "E-Mail-Adresse",
+    "password": "Passwort"
+  }
+}

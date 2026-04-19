@@ -1,0 +1,100 @@
+{
+  "common": {
+    "appName": "Portal de Empleados",
+    "portal": "Portal",
+    "timesheets": "Hojas de Tiempo",
+    "placements": "Colocaciones",
+    "documents": "Documentos",
+    "profile": "Perfil",
+    "search": "Buscar",
+    "filter": "Filtrar",
+    "create": "Crear",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "loading": "Cargando...",
+    "noResults": "Sin resultados",
+    "confirm": "Confirmar",
+    "back": "Atrás",
+    "next": "Siguiente",
+    "submit": "Enviar",
+    "close": "Cerrar",
+    "actions": "Acciones",
+    "status": "Estado",
+    "date": "Fecha",
+    "name": "Nombre",
+    "email": "Correo Electrónico",
+    "phone": "Teléfono",
+    "viewAll": "Ver Todo",
+    "logout": "Cerrar Sesión",
+    "language": "Idioma"
+  },
+  "portal": {
+    "title": "Portal de Empleados",
+    "welcome": "Bienvenido",
+    "currentPlacement": "Colocación Actual",
+    "hoursThisWeek": "Horas Esta Semana",
+    "nextPayDate": "Próxima Fecha de Pago",
+    "quickActions": "Acciones Rápidas",
+    "submitTimesheet": "Presentar Hoja de Tiempo",
+    "viewDocuments": "Ver Documentos",
+    "updateProfile": "Actualizar Perfil"
+  },
+  "timesheets": {
+    "title": "Hojas de Tiempo",
+    "currentWeek": "Semana Actual",
+    "weekEnding": "Semana Terminada",
+    "dayNames": {
+      "mon": "Lunes",
+      "tue": "Martes",
+      "wed": "Miércoles",
+      "thu": "Jueves",
+      "fri": "Viernes",
+      "sat": "Sábado",
+      "sun": "Domingo"
+    },
+    "hours": "Horas",
+    "totalHours": "Horas Totales",
+    "submit": "Presentar",
+    "history": "Historial",
+    "statusLabels": {
+      "draft": "Borrador",
+      "submitted": "Presentada",
+      "approved": "Aprobada",
+      "rejected": "Rechazada",
+      "paid": "Pagada"
+    }
+  },
+  "placements": {
+    "title": "Colocaciones",
+    "active": "Activas",
+    "past": "Anteriores",
+    "client": "Cliente",
+    "jobTitle": "Título del Puesto",
+    "startDate": "Fecha de Inicio",
+    "endDate": "Fecha de Fin",
+    "rate": "Tarifa"
+  },
+  "documents": {
+    "title": "Documentos",
+    "sign": "Firmar",
+    "download": "Descargar",
+    "pending": "Pendientes",
+    "signed": "Firmados",
+    "all": "Todos"
+  },
+  "profile": {
+    "title": "Perfil",
+    "personalInfo": "Información Personal",
+    "firstName": "Nombre",
+    "lastName": "Apellido",
+    "email": "Correo Electrónico",
+    "phone": "Teléfono",
+    "address": "Dirección",
+    "emergencyContact": "Contacto de Emergencia",
+    "accountSettings": "Configuración de Cuenta",
+    "changePassword": "Cambiar Contraseña",
+    "notifications": "Notificaciones"
+  }
+}

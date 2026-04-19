@@ -1,0 +1,93 @@
+{
+  "common": {
+    "appName": "Portal do Funcionário",
+    "portal": "Portal",
+    "timesheets": "Folhas de Ponto",
+    "placements": "Colocações",
+    "documents": "Documentos",
+    "profile": "Perfil",
+    "search": "Pesquisar",
+    "save": "Salvar",
+    "cancel": "Cancelar",
+    "loading": "Carregando...",
+    "submit": "Enviar",
+    "close": "Fechar",
+    "actions": "Ações",
+    "status": "Status",
+    "date": "Data",
+    "logout": "Sair",
+    "language": "Idioma"
+  },
+  "portal": {
+    "title": "Painel do Funcionário",
+    "welcome": "Bem-vindo de volta",
+    "currentPlacement": "Colocação Atual",
+    "hoursThisWeek": "Horas Esta Semana",
+    "nextPayDate": "Próxima Data de Pagamento",
+    "quickActions": "Ações Rápidas",
+    "submitTimesheet": "Enviar Folha de Ponto",
+    "viewDocuments": "Ver Documentos",
+    "updateProfile": "Atualizar Perfil"
+  },
+  "timesheets": {
+    "title": "Folhas de Ponto",
+    "currentWeek": "Semana Atual",
+    "weekEnding": "Semana Terminando em",
+    "day": {
+      "monday": "Segunda-feira",
+      "tuesday": "Terça-feira",
+      "wednesday": "Quarta-feira",
+      "thursday": "Quinta-feira",
+      "friday": "Sexta-feira",
+      "saturday": "Sábado",
+      "sunday": "Domingo"
+    },
+    "hours": "Horas",
+    "totalHours": "Total de Horas",
+    "submit": "Enviar Folha de Ponto",
+    "history": "Histórico de Folhas de Ponto",
+    "statusLabels": {
+      "draft": "Rascunho",
+      "submitted": "Enviado",
+      "approved": "Aprovado",
+      "rejected": "Rejeitado"
+    }
+  },
+  "placements": {
+    "title": "Minhas Colocações",
+    "active": "Colocações Ativas",
+    "past": "Colocações Anteriores",
+    "client": "Cliente",
+    "jobTitle": "Cargo",
+    "startDate": "Data de Início",
+    "endDate": "Data de Término",
+    "rate": "Taxa"
+  },
+  "documents": {
+    "title": "Documentos",
+    "sign": "Assinar",
+    "download": "Baixar",
+    "pending": "Aguardando Assinatura",
+    "signed": "Assinado",
+    "all": "Todos os Documentos"
+  },
+  "profile": {
+    "title": "Meu Perfil",
+    "personalInfo": "Informações Pessoais",
+    "firstName": "Primeiro Nome",
+    "lastName": "Sobrenome",
+    "email": "Email",
+    "phone": "Telefone",
+    "address": "Endereço",
+    "emergencyContact": "Contato de Emergência",
+    "accountSettings": "Configurações da Conta",
+    "changePassword": "Alterar Senha",
+    "notifications": "Preferências de Notificação"
+  },
+  "auth": {
+    "signIn": "Entrar",
+    "signOut": "Sair",
+    "email": "Endereço de Email",
+    "password": "Senha"
+  }
+}

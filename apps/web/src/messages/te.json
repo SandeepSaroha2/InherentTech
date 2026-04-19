@@ -1,0 +1,46 @@
+{
+  "common": {
+    "appName": "InherentTech",
+    "home": "హోమ్",
+    "about": "గురించి",
+    "products": "ఉత్పత్తులు",
+    "pricing": "ధరలు",
+    "contact": "సంపర్కం",
+    "signIn": "సైన్ ఇన్",
+    "getStarted": "ప్రారంభించండి",
+    "learnMore": "మరింది తెలుసుకోండి",
+    "language": "భాష"
+  },
+  "hero": {
+    "title": "AI-ఆధారిత IT కర్మचారి సేవ వేదిక",
+    "subtitle": "తెలివైన ఆటోమేషన్‌తో మీ నియোগ కార్యప్రవాహాన్ని సరళీకృతం చేయండి",
+    "cta": "ఉచిత ట్రయల్ ప్రారంభించండి"
+  },
+  "products": {
+    "aiocrm": {
+      "name": "AIOCRM",
+      "description": "కర్మచారి సేవ ఏజెన్సీల కోసం AI-శక్తిచేసిన CRM"
+    },
+    "ats": {
+      "name": "ATS",
+      "description": "స్మార్ట్ మ్యాచింగ్‌తో దరఖాస్తు ట్రాకింగ్ సిస్టమ్"
+    },
+    "kudodoc": {
+      "name": "KudoDoc",
+      "description": "నথి నిర్వహణ మరియు ఎలక్ట్రానిక్ సంతకాలు"
+    },
+    "jobplatform": {
+      "name": "ఉద్యోగ వేదిక",
+      "description": "ఉద్యోగ కర్మचారి పోర్టల్ మరియు ఉద్యోగ బోర్డ్"
+    },
+    "ecafy": {
+      "name": "eCafy",
+      "description": "సమూహ ఇమెయిల్ ప్రచారం నిర్వహణ"
+    }
+  },
+  "footer": {
+    "copyright": "© {year} InherentTech. అన్ని హక్కులు సంరక్షితాలు.",
+    "privacy": "గోప్యతా విధానం",
+    "terms": "సేవా నిబంధనలు"
+  }
+}

@@ -1,0 +1,184 @@
+{
+  "common": {
+    "appName": "ATS",
+    "dashboard": "Instrumententafel",
+    "candidates": "Kandidaten",
+    "jobs": "Stellenausschreibungen",
+    "submissions": "Einsendungen",
+    "interviews": "Interviews",
+    "placements": "Platzierungen",
+    "timesheets": "Stundenzettel",
+    "invoices": "Rechnungen",
+    "search": "Suche",
+    "filter": "Filter",
+    "create": "Erstellen",
+    "edit": "Bearbeiten",
+    "delete": "Löschen",
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "loading": "Wird geladen...",
+    "noResults": "Keine Ergebnisse gefunden",
+    "confirm": "Bestätigen",
+    "back": "Zurück",
+    "next": "Weiter",
+    "submit": "Einreichen",
+    "close": "Schließen",
+    "actions": "Maßnahmen",
+    "status": "Status",
+    "date": "Datum",
+    "name": "Name",
+    "email": "E-Mail",
+    "phone": "Telefon",
+    "viewAll": "Alle anzeigen",
+    "logout": "Abmelden",
+    "profile": "Profil",
+    "language": "Sprache"
+  },
+  "dashboard": {
+    "title": "ATS-Dashboard",
+    "activeCandidates": "Aktive Kandidaten",
+    "openJobs": "Offene Stellen",
+    "pendingSubmissions": "Ausstehende Einsendungen",
+    "activePlacements": "Aktive Platzierungen",
+    "upcomingInterviews": "Bevorstehende Interviews",
+    "recentSubmissions": "Letzte Einsendungen"
+  },
+  "candidates": {
+    "title": "Kandidaten",
+    "addCandidate": "Kandidat hinzufügen",
+    "parseResume": "Lebenslauf analysieren",
+    "firstName": "Vorname",
+    "lastName": "Nachname",
+    "currentTitle": "Aktuelle Position",
+    "skills": "Fähigkeiten",
+    "experience": "Jahre Erfahrung",
+    "expectedRate": "Erwarteter Tarif",
+    "location": "Ort",
+    "visaStatus": "Visastatus",
+    "visa": {
+      "usCitizen": "US-Bürger",
+      "greenCard": "Grüne Karte",
+      "h1b": "H-1B",
+      "h4Ead": "H-4 EAD",
+      "l1": "L-1",
+      "opt": "OPT",
+      "cpt": "CPT",
+      "tn": "TN",
+      "other": "Sonstiges"
+    },
+    "statusLabels": {
+      "active": "Aktiv",
+      "passive": "Passiv",
+      "placed": "Platziert",
+      "doNotContact": "Nicht kontaktieren",
+      "archived": "Archiviert"
+    }
+  },
+  "jobs": {
+    "title": "Stellenausschreibungen",
+    "newJob": "Neue Stellenausschreibung",
+    "jobTitle": "Berufsbezeichnung",
+    "client": "Klient",
+    "description": "Beschreibung",
+    "requirements": "Anforderungen",
+    "location": "Ort",
+    "rateRange": "Tarifbereich",
+    "openings": "Offene Stellen",
+    "filled": "Besetzt",
+    "priority": {
+      "low": "Niedrig",
+      "medium": "Mittel",
+      "high": "Hoch",
+      "urgent": "Dringend"
+    },
+    "statusLabels": {
+      "open": "Offen",
+      "onHold": "Angehalten",
+      "filled": "Besetzt",
+      "cancelled": "Abgebrochen",
+      "closed": "Geschlossen"
+    }
+  },
+  "submissions": {
+    "title": "Einsendungen",
+    "newSubmission": "Neue Einsendung",
+    "candidate": "Kandidat",
+    "jobOrder": "Stellenausschreibung",
+    "billRate": "Rechnungstarif",
+    "payRate": "Stundensatz",
+    "margin": "Gewinnspanne",
+    "statusLabels": {
+      "submitted": "Eingereicht",
+      "clientReview": "Kundenbetrachtung",
+      "interviewScheduled": "Interview geplant",
+      "accepted": "Akzeptiert",
+      "rejected": "Abgelehnt",
+      "withdrawn": "Zurückgezogen"
+    }
+  },
+  "interviews": {
+    "title": "Interviews",
+    "scheduleInterview": "Interview planen",
+    "interviewDate": "Interviewdatum",
+    "interviewType": "Interview-Typ",
+    "interviewer": "Interviewer",
+    "feedback": "Rückmeldung",
+    "types": {
+      "phone": "Telefonstichprobe",
+      "video": "Videointerview",
+      "onsite": "Persönliches Interview",
+      "technical": "Technisches Interview",
+      "panel": "Panelinterview"
+    }
+  },
+  "placements": {
+    "title": "Platzierungen",
+    "startDate": "Startdatum",
+    "endDate": "Enddatum",
+    "billRate": "Rechnungstarif",
+    "payRate": "Stundensatz",
+    "statusLabels": {
+      "active": "Aktiv",
+      "completed": "Abgeschlossen",
+      "terminated": "Beendet",
+      "onHold": "Angehalten"
+    }
+  },
+  "timesheets": {
+    "title": "Stundenzettel",
+    "weekEnding": "Woche endend",
+    "regularHours": "Normalbereiche",
+    "overtimeHours": "Überstunden",
+    "totalHours": "Gesamtstunden",
+    "approve": "Genehmigen",
+    "reject": "Ablehnen",
+    "statusLabels": {
+      "draft": "Entwurf",
+      "submitted": "Eingereicht",
+      "approved": "Genehmigt",
+      "rejected": "Abgelehnt"
+    }
+  },
+  "invoices": {
+    "title": "Rechnungen",
+    "generateInvoice": "Rechnung generieren",
+    "invoiceNumber": "Rechnungsnummer #",
+    "amount": "Betrag",
+    "dueDate": "Fälligkeitsdatum",
+    "paidDate": "Zahlungsdatum",
+    "statusLabels": {
+      "draft": "Entwurf",
+      "sent": "Gesendet",
+      "paid": "Bezahlt",
+      "overdue": "Überfällig",
+      "void": "Ungültig"
+    }
+  },
+  "auth": {
+    "signIn": "Anmelden",
+    "signUp": "Registrieren",
+    "signOut": "Abmelden",
+    "email": "E-Mail-Adresse",
+    "password": "Passwort"
+  }
+}

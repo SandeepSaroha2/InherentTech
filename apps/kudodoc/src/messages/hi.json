@@ -1,0 +1,88 @@
+{
+  "common": {
+    "appName": "KudoDoc",
+    "dashboard": "डैशबोर्ड",
+    "templates": "टेम्पलेट",
+    "documents": "दस्तावेज़",
+    "signatures": "हस्ताक्षर",
+    "search": "खोजें",
+    "filter": "फ़िल्टर करें",
+    "create": "बनाएं",
+    "edit": "संपादित करें",
+    "delete": "हटाएं",
+    "save": "सहेजें",
+    "cancel": "रद्द करें",
+    "loading": "लोड हो रहा है...",
+    "noResults": "कोई परिणाम नहीं",
+    "confirm": "पुष्टि करें",
+    "back": "वापस",
+    "next": "अगला",
+    "submit": "जमा करें",
+    "close": "बंद करें",
+    "actions": "कार्य",
+    "status": "स्थिति",
+    "date": "तारीख",
+    "name": "नाम",
+    "email": "ईमेल",
+    "viewAll": "सभी देखें",
+    "logout": "लॉग आउट",
+    "profile": "प्रोफ़ाइल",
+    "language": "भाषा"
+  },
+  "dashboard": {
+    "title": "डैशबोर्ड",
+    "totalDocuments": "कुल दस्तावेज़",
+    "pendingSignatures": "लंबित हस्ताक्षर",
+    "completedToday": "आज पूर्ण किए गए",
+    "recentDocuments": "हाल के दस्तावेज़"
+  },
+  "templates": {
+    "title": "टेम्पलेट",
+    "newTemplate": "नया टेम्पलेट",
+    "templateName": "टेम्पलेट का नाम",
+    "description": "विवरण",
+    "category": "श्रेणी",
+    "fields": "फील्ड",
+    "preview": "पूर्वावलोकन",
+    "useTemplate": "टेम्पलेट का उपयोग करें",
+    "categories": {
+      "contracts": "अनुबंध",
+      "agreements": "समझौते",
+      "forms": "प्रपत्र",
+      "letters": "पत्र",
+      "other": "अन्य"
+    }
+  },
+  "documents": {
+    "title": "दस्तावेज़",
+    "newDocument": "नया दस्तावेज़",
+    "fromTemplate": "टेम्पलेट से",
+    "upload": "अपलोड करें",
+    "documentName": "दस्तावेज़ का नाम",
+    "createdBy": "द्वारा बनाया गया",
+    "lastModified": "अंतिम संशोधन",
+    "statusLabels": {
+      "draft": "ड्राफ्ट",
+      "ready": "हस्ताक्षर के लिए तैयार",
+      "pending": "हस्ताक्षर लंबित",
+      "signed": "हस्ताक्षरित",
+      "completed": "पूर्ण"
+    }
+  },
+  "signatures": {
+    "title": "हस्ताक्षर",
+    "requestSignature": "हस्ताक्षर का अनुरोध करें",
+    "signerName": "हस्ताक्षरकर्ता का नाम",
+    "signerEmail": "हस्ताक्षरकर्ता ईमेल",
+    "signedAt": "हस्ताक्षरित",
+    "expiresAt": "समाप्त होता है",
+    "remind": "याद दिलाएं",
+    "statusLabels": {
+      "pending": "लंबित",
+      "viewed": "देखा गया",
+      "signed": "हस्ताक्षरित",
+      "expired": "समाप्त",
+      "declined": "अस्वीकार किया गया"
+    }
+  }
+}

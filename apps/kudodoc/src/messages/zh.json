@@ -1,0 +1,85 @@
+{
+  "common": {
+    "appName": "KudoDoc",
+    "dashboard": "仪表板",
+    "templates": "模板",
+    "documents": "文件",
+    "signatures": "签名",
+    "search": "搜索",
+    "create": "创建",
+    "edit": "编辑",
+    "delete": "删除",
+    "save": "保存",
+    "cancel": "取消",
+    "loading": "加载中...",
+    "noResults": "未找到结果",
+    "submit": "提交",
+    "close": "关闭",
+    "actions": "操作",
+    "status": "状态",
+    "date": "日期",
+    "logout": "登出",
+    "language": "语言"
+  },
+  "dashboard": {
+    "title": "文件仪表板",
+    "totalDocuments": "总文件数",
+    "pendingSignatures": "待签署",
+    "completedToday": "今日完成",
+    "recentDocuments": "最近的文件"
+  },
+  "templates": {
+    "title": "文件模板",
+    "newTemplate": "新模板",
+    "templateName": "模板名称",
+    "description": "描述",
+    "category": "类别",
+    "fields": "模板字段",
+    "preview": "预览",
+    "useTemplate": "使用模板",
+    "categories": {
+      "legal": "法律",
+      "staffing": "人员配置",
+      "hr": "人力资源",
+      "finance": "财务",
+      "custom": "自定义"
+    }
+  },
+  "documents": {
+    "title": "文件",
+    "newDocument": "新文件",
+    "fromTemplate": "从模板创建",
+    "upload": "上传文件",
+    "documentName": "文件名称",
+    "createdBy": "创建者",
+    "lastModified": "最后修改",
+    "statusLabels": {
+      "draft": "草稿",
+      "pendingSignature": "待签署",
+      "signed": "已签署",
+      "expired": "已过期",
+      "voided": "已作废"
+    }
+  },
+  "signatures": {
+    "title": "签署请求",
+    "requestSignature": "请求签署",
+    "signerName": "签署人姓名",
+    "signerEmail": "签署人电子邮件",
+    "signedAt": "签署时间",
+    "expiresAt": "过期时间",
+    "remind": "发送提醒",
+    "statusLabels": {
+      "pending": "待处理",
+      "signed": "已签署",
+      "declined": "已拒绝",
+      "expired": "已过期"
+    }
+  },
+  "auth": {
+    "signIn": "登录",
+    "signOut": "登出",
+    "email": "电子邮件地址",
+    "password": "密码"
+  }
+}

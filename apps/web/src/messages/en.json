@@ -1,0 +1,46 @@
+{
+  "common": {
+    "appName": "InherentTech",
+    "home": "Home",
+    "about": "About",
+    "products": "Products",
+    "pricing": "Pricing",
+    "contact": "Contact",
+    "signIn": "Sign In",
+    "getStarted": "Get Started",
+    "learnMore": "Learn More",
+    "language": "Language"
+  },
+  "hero": {
+    "title": "AI-Powered IT Staffing Platform",
+    "subtitle": "Streamline your recruiting workflow with intelligent automation",
+    "cta": "Start Free Trial"
+  },
+  "products": {
+    "aiocrm": {
+      "name": "AIOCRM",
+      "description": "AI-powered CRM for staffing agencies"
+    },
+    "ats": {
+      "name": "ATS",
+      "description": "Applicant tracking system with smart matching"
+    },
+    "kudodoc": {
+      "name": "KudoDoc",
+      "description": "Document management and e-signatures"
+    },
+    "jobplatform": {
+      "name": "Job Platform",
+      "description": "Employee portal and job board"
+    },
+    "ecafy": {
+      "name": "eCafy",
+      "description": "Mass email campaign management"
+    }
+  },
+  "footer": {
+    "copyright": "© {year} InherentTech. All rights reserved.",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service"
+  }
+}

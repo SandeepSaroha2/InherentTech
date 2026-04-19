@@ -1,0 +1,93 @@
+{
+  "common": {
+    "appName": "Portail des employés",
+    "portal": "Portail",
+    "timesheets": "Feuilles de temps",
+    "placements": "Placements",
+    "documents": "Documents",
+    "profile": "Profil",
+    "search": "Rechercher",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "loading": "Chargement...",
+    "submit": "Soumettre",
+    "close": "Fermer",
+    "actions": "Actions",
+    "status": "Statut",
+    "date": "Date",
+    "logout": "Déconnexion",
+    "language": "Langue"
+  },
+  "portal": {
+    "title": "Tableau de bord des employés",
+    "welcome": "Bienvenue de retour",
+    "currentPlacement": "Placement actuel",
+    "hoursThisWeek": "Heures cette semaine",
+    "nextPayDate": "Date du prochain salaire",
+    "quickActions": "Actions rapides",
+    "submitTimesheet": "Soumettre une feuille de temps",
+    "viewDocuments": "Afficher les documents",
+    "updateProfile": "Mettre à jour le profil"
+  },
+  "timesheets": {
+    "title": "Feuilles de temps",
+    "currentWeek": "Semaine en cours",
+    "weekEnding": "Semaine se terminant",
+    "day": {
+      "monday": "Lundi",
+      "tuesday": "Mardi",
+      "wednesday": "Mercredi",
+      "thursday": "Jeudi",
+      "friday": "Vendredi",
+      "saturday": "Samedi",
+      "sunday": "Dimanche"
+    },
+    "hours": "Heures",
+    "totalHours": "Total des heures",
+    "submit": "Soumettre la feuille de temps",
+    "history": "Historique des feuilles de temps",
+    "statusLabels": {
+      "draft": "Brouillon",
+      "submitted": "Soumis",
+      "approved": "Approuvé",
+      "rejected": "Rejeté"
+    }
+  },
+  "placements": {
+    "title": "Mes placements",
+    "active": "Placements actifs",
+    "past": "Placements antérieurs",
+    "client": "Client",
+    "jobTitle": "Titre du poste",
+    "startDate": "Date de début",
+    "endDate": "Date de fin",
+    "rate": "Taux"
+  },
+  "documents": {
+    "title": "Documents",
+    "sign": "Signer",
+    "download": "Télécharger",
+    "pending": "En attente de signature",
+    "signed": "Signé",
+    "all": "Tous les documents"
+  },
+  "profile": {
+    "title": "Mon profil",
+    "personalInfo": "Informations personnelles",
+    "firstName": "Prénom",
+    "lastName": "Nom de famille",
+    "email": "Courrier électronique",
+    "phone": "Téléphone",
+    "address": "Adresse",
+    "emergencyContact": "Contact d'urgence",
+    "accountSettings": "Paramètres du compte",
+    "changePassword": "Changer le mot de passe",
+    "notifications": "Préférences de notification"
+  },
+  "auth": {
+    "signIn": "Se connecter",
+    "signOut": "Se déconnecter",
+    "email": "Adresse électronique",
+    "password": "Mot de passe"
+  }
+}

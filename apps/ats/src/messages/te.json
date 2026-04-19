@@ -1,0 +1,184 @@
+{
+  "common": {
+    "appName": "ATS",
+    "dashboard": "డ్యాష్‌బోర్డ్",
+    "candidates": "అభ్యర్థులు",
+    "jobs": "ఉద్యోగ పంపిణీలు",
+    "submissions": "సమర్పణలు",
+    "interviews": "ఇంటర్వ్యూ",
+    "placements": "నియమనాలు",
+    "timesheets": "టైమ్‌షీట్‌లు",
+    "invoices": "ఇన్‌వాయిస్‌లు",
+    "search": "శోధన",
+    "filter": "ఫిల్టర్",
+    "create": "సృష్టించండి",
+    "edit": "సవరించండి",
+    "delete": "తొలగించండి",
+    "save": "సేవ్ చేయు",
+    "cancel": "రద్దు చేయు",
+    "loading": "లోడ్ చేస్తున్నారు...",
+    "noResults": "ఫలితాలు కనుగొనబడలేదు",
+    "confirm": "నిర్ధారించండి",
+    "back": "తిరిగి",
+    "next": "తర్వాత",
+    "submit": "సమర్పించు",
+    "close": "మూయు",
+    "actions": "చర్యలు",
+    "status": "స్థితి",
+    "date": "తేదీ",
+    "name": "పేరు",
+    "email": "ఇమెయిల్",
+    "phone": "ఫోన్",
+    "viewAll": "అన్నీ చూడండి",
+    "logout": "లాగ్‌అవుట్",
+    "profile": "ప్రొఫైల్",
+    "language": "భాష"
+  },
+  "dashboard": {
+    "title": "ATS డ్యాష్‌బోర్డ్",
+    "activeCandidates": "క్రియాశీల అభ్యర్థులు",
+    "openJobs": "తెరిచిన ఉద్యోగాలు",
+    "pendingSubmissions": "విషయం సమర్పణలు",
+    "activePlacements": "క్రియాశీల నియమనాలు",
+    "upcomingInterviews": "రాబోయే ఇంటర్వ్యూ",
+    "recentSubmissions": "ఇటీవలి సమర్పణలు"
+  },
+  "candidates": {
+    "title": "అభ్యర్థులు",
+    "addCandidate": "అభ్యర్థిని జోడించండి",
+    "parseResume": "సారాంశాన్ని విశ్లేషించండి",
+    "firstName": "మొదటి పేరు",
+    "lastName": "చివరి పేరు",
+    "currentTitle": "ప్రస్తుత శీర్షిక",
+    "skills": "నైపుణ్యాలు",
+    "experience": "అనుభవ సంవత్సరాలు",
+    "expectedRate": "ఆశించిన రేటు",
+    "location": "ప్రదేశం",
+    "visaStatus": "విసా స్థితి",
+    "visa": {
+      "usCitizen": "US పౌరుడు",
+      "greenCard": "గ్రీన్ కార్డ్",
+      "h1b": "H-1B",
+      "h4Ead": "H-4 EAD",
+      "l1": "L-1",
+      "opt": "OPT",
+      "cpt": "CPT",
+      "tn": "TN",
+      "other": "ఇతర"
+    },
+    "statusLabels": {
+      "active": "క్రియాశీల",
+      "passive": "నిష్క్రియ",
+      "placed": "ఉంచిన",
+      "doNotContact": "సంప్రదించవద్దు",
+      "archived": "ఆర్కైవ్ చేయబడినవి"
+    }
+  },
+  "jobs": {
+    "title": "ఉద్యోగ పంపిణీలు",
+    "newJob": "కొత్త ఉద్యోగ పంపిణీ",
+    "jobTitle": "ఉద్యోగ శీర్షిక",
+    "client": "క్లయంట్",
+    "description": "వర్ణన",
+    "requirements": "అవసరాలు",
+    "location": "ప్రదేశం",
+    "rateRange": "రేటు పరిధి",
+    "openings": "ఖాళీలు",
+    "filled": "నిండిన",
+    "priority": {
+      "low": "తక్కువ",
+      "medium": "మధ్యম",
+      "high": "ఎక్కువ",
+      "urgent": "అత్యవసరం"
+    },
+    "statusLabels": {
+      "open": "తెరిచిన",
+      "onHold": "హోల్డ్ లో",
+      "filled": "నిండిన",
+      "cancelled": "రద్దు చేయబడినవి",
+      "closed": "మూయబడిన"
+    }
+  },
+  "submissions": {
+    "title": "సమర్పణలు",
+    "newSubmission": "కొత్త సమర్పణ",
+    "candidate": "అభ్యర్థి",
+    "jobOrder": "ఉద్యోగ పంపిణీ",
+    "billRate": "బిల్లు రేటు",
+    "payRate": "చెల్లింపు రేటు",
+    "margin": "మార్జిన్",
+    "statusLabels": {
+      "submitted": "సమర్పించారు",
+      "clientReview": "క్లయంట్ సమీక్ష",
+      "interviewScheduled": "ఇంటర్వ్యూ షెడ్యూల్ చేయబడింది",
+      "accepted": "ఆమోదించారు",
+      "rejected": "తిరస్కరించారు",
+      "withdrawn": "ఉపసంహరించారు"
+    }
+  },
+  "interviews": {
+    "title": "ఇంటర్వ్యూ",
+    "scheduleInterview": "ఇంటర్వ్యూ షెడ్యూల్ చేయండి",
+    "interviewDate": "ఇంటర్వ్యూ తేదీ",
+    "interviewType": "ఇంటర్వ్యూ రకం",
+    "interviewer": "ఇంటర్వ్యూయర్",
+    "feedback": "ప్రతిస్పందన",
+    "types": {
+      "phone": "ఫోన్ స్క్రీన్",
+      "video": "వీడియో ఇంటర్వ్యూ",
+      "onsite": "ఆన్‌సైట్ ఇంటర్వ్యూ",
+      "technical": "సాంకేతిక ఇంటర్వ్యూ",
+      "panel": "ప్యానెల్ ఇంటర్వ్యూ"
+    }
+  },
+  "placements": {
+    "title": "నియమనాలు",
+    "startDate": "ప్రారంభ తేదీ",
+    "endDate": "ముగింపు తేదీ",
+    "billRate": "బిల్లు రేటు",
+    "payRate": "చెల్లింపు రేటు",
+    "statusLabels": {
+      "active": "క్రియాశీల",
+      "completed": "పూర్తిచేయబడినవి",
+      "terminated": "నిలిపివేయబడినవి",
+      "onHold": "హోల్డ్ లో"
+    }
+  },
+  "timesheets": {
+    "title": "టైమ్‌షీట్‌లు",
+    "weekEnding": "వారం ముగియువారం",
+    "regularHours": "సాధారణ గంటలు",
+    "overtimeHours": "అతిరేక సమయ గంటలు",
+    "totalHours": "మొత్తం గంటలు",
+    "approve": "ఆమోదించండి",
+    "reject": "తిరస్కరించండి",
+    "statusLabels": {
+      "draft": "డ్రాఫ్ట్",
+      "submitted": "సమర్పించారు",
+      "approved": "ఆమోదించారు",
+      "rejected": "తిరస్కరించారు"
+    }
+  },
+  "invoices": {
+    "title": "ఇన్‌వాయిస్‌లు",
+    "generateInvoice": "ఇన్‌వాయిస్ జనరేట్ చేయండి",
+    "invoiceNumber": "ఇన్‌వాయిస్ #",
+    "amount": "మొత్తం",
+    "dueDate": "నిర్ణీత తేదీ",
+    "paidDate": "చెల్లింపు తేదీ",
+    "statusLabels": {
+      "draft": "డ్రాఫ్ట్",
+      "sent": "పంపించారు",
+      "paid": "చెల్లించారు",
+      "overdue": "నిర్ణీత సమయానికి ఆ",
+      "void": "చెల్లనిది"
+    }
+  },
+  "auth": {
+    "signIn": "సంతకం చేయు",
+    "signUp": "సైన్ అప్",
+    "signOut": "సంతకం చేయండి",
+    "email": "ఇమెయిల్ అడ్రస్",
+    "password": "పాస్‌వర్డ్"
+  }
+}

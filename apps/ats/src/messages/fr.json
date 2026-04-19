@@ -1,0 +1,184 @@
+{
+  "common": {
+    "appName": "ATS",
+    "dashboard": "Tableau de bord",
+    "candidates": "Candidats",
+    "jobs": "Offres d'emploi",
+    "submissions": "Soumissions",
+    "interviews": "Entretiens",
+    "placements": "Placements",
+    "timesheets": "Feuilles de temps",
+    "invoices": "Factures",
+    "search": "Rechercher",
+    "filter": "Filtrer",
+    "create": "Créer",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "loading": "Chargement...",
+    "noResults": "Aucun résultat trouvé",
+    "confirm": "Confirmer",
+    "back": "Retour",
+    "next": "Suivant",
+    "submit": "Soumettre",
+    "close": "Fermer",
+    "actions": "Actions",
+    "status": "Statut",
+    "date": "Date",
+    "name": "Nom",
+    "email": "Courrier électronique",
+    "phone": "Téléphone",
+    "viewAll": "Voir tout",
+    "logout": "Déconnexion",
+    "profile": "Profil",
+    "language": "Langue"
+  },
+  "dashboard": {
+    "title": "Tableau de bord ATS",
+    "activeCandidates": "Candidats actifs",
+    "openJobs": "Offres d'emploi ouvertes",
+    "pendingSubmissions": "Soumissions en attente",
+    "activePlacements": "Placements actifs",
+    "upcomingInterviews": "Entretiens à venir",
+    "recentSubmissions": "Soumissions récentes"
+  },
+  "candidates": {
+    "title": "Candidats",
+    "addCandidate": "Ajouter un candidat",
+    "parseResume": "Analyser le CV",
+    "firstName": "Prénom",
+    "lastName": "Nom de famille",
+    "currentTitle": "Titre actuel",
+    "skills": "Compétences",
+    "experience": "Années d'expérience",
+    "expectedRate": "Taux attendu",
+    "location": "Localisation",
+    "visaStatus": "Statut de visa",
+    "visa": {
+      "usCitizen": "Citoyen américain",
+      "greenCard": "Carte verte",
+      "h1b": "H-1B",
+      "h4Ead": "H-4 EAD",
+      "l1": "L-1",
+      "opt": "OPT",
+      "cpt": "CPT",
+      "tn": "TN",
+      "other": "Autre"
+    },
+    "statusLabels": {
+      "active": "Actif",
+      "passive": "Passif",
+      "placed": "Placé",
+      "doNotContact": "Ne pas contacter",
+      "archived": "Archivé"
+    }
+  },
+  "jobs": {
+    "title": "Offres d'emploi",
+    "newJob": "Nouvelle offre d'emploi",
+    "jobTitle": "Titre du poste",
+    "client": "Client",
+    "description": "Description",
+    "requirements": "Exigences",
+    "location": "Localisation",
+    "rateRange": "Plage de taux",
+    "openings": "Postes vacants",
+    "filled": "Pourvu",
+    "priority": {
+      "low": "Faible",
+      "medium": "Moyen",
+      "high": "Élevée",
+      "urgent": "Urgent"
+    },
+    "statusLabels": {
+      "open": "Ouvert",
+      "onHold": "En attente",
+      "filled": "Pourvu",
+      "cancelled": "Annulé",
+      "closed": "Fermé"
+    }
+  },
+  "submissions": {
+    "title": "Soumissions",
+    "newSubmission": "Nouvelle soumission",
+    "candidate": "Candidat",
+    "jobOrder": "Offre d'emploi",
+    "billRate": "Taux de facturation",
+    "payRate": "Taux de salaire",
+    "margin": "Marge",
+    "statusLabels": {
+      "submitted": "Soumis",
+      "clientReview": "Révision client",
+      "interviewScheduled": "Entretien programmé",
+      "accepted": "Accepté",
+      "rejected": "Rejeté",
+      "withdrawn": "Retiré"
+    }
+  },
+  "interviews": {
+    "title": "Entretiens",
+    "scheduleInterview": "Programmer un entretien",
+    "interviewDate": "Date de l'entretien",
+    "interviewType": "Type d'entretien",
+    "interviewer": "Enquêteur",
+    "feedback": "Retour d'information",
+    "types": {
+      "phone": "Dépistage téléphonique",
+      "video": "Entretien vidéo",
+      "onsite": "Entretien sur site",
+      "technical": "Entretien technique",
+      "panel": "Entretien collectif"
+    }
+  },
+  "placements": {
+    "title": "Placements",
+    "startDate": "Date de début",
+    "endDate": "Date de fin",
+    "billRate": "Taux de facturation",
+    "payRate": "Taux de salaire",
+    "statusLabels": {
+      "active": "Actif",
+      "completed": "Complété",
+      "terminated": "Résilié",
+      "onHold": "En attente"
+    }
+  },
+  "timesheets": {
+    "title": "Feuilles de temps",
+    "weekEnding": "Semaine se terminant",
+    "regularHours": "Heures normales",
+    "overtimeHours": "Heures supplémentaires",
+    "totalHours": "Total des heures",
+    "approve": "Approuver",
+    "reject": "Rejeter",
+    "statusLabels": {
+      "draft": "Brouillon",
+      "submitted": "Soumis",
+      "approved": "Approuvé",
+      "rejected": "Rejeté"
+    }
+  },
+  "invoices": {
+    "title": "Factures",
+    "generateInvoice": "Générer une facture",
+    "invoiceNumber": "Facture #",
+    "amount": "Montant",
+    "dueDate": "Date d'échéance",
+    "paidDate": "Date de paiement",
+    "statusLabels": {
+      "draft": "Brouillon",
+      "sent": "Envoyé",
+      "paid": "Payé",
+      "overdue": "En retard",
+      "void": "Annulé"
+    }
+  },
+  "auth": {
+    "signIn": "Se connecter",
+    "signUp": "S'inscrire",
+    "signOut": "Se déconnecter",
+    "email": "Adresse électronique",
+    "password": "Mot de passe"
+  }
+}

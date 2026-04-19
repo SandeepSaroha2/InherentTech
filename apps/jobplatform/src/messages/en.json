@@ -1,0 +1,93 @@
+{
+  "common": {
+    "appName": "Employee Portal",
+    "portal": "Portal",
+    "timesheets": "Timesheets",
+    "placements": "Placements",
+    "documents": "Documents",
+    "profile": "Profile",
+    "search": "Search",
+    "save": "Save",
+    "cancel": "Cancel",
+    "loading": "Loading...",
+    "submit": "Submit",
+    "close": "Close",
+    "actions": "Actions",
+    "status": "Status",
+    "date": "Date",
+    "logout": "Logout",
+    "language": "Language"
+  },
+  "portal": {
+    "title": "Employee Dashboard",
+    "welcome": "Welcome back",
+    "currentPlacement": "Current Placement",
+    "hoursThisWeek": "Hours This Week",
+    "nextPayDate": "Next Pay Date",
+    "quickActions": "Quick Actions",
+    "submitTimesheet": "Submit Timesheet",
+    "viewDocuments": "View Documents",
+    "updateProfile": "Update Profile"
+  },
+  "timesheets": {
+    "title": "Timesheets",
+    "currentWeek": "Current Week",
+    "weekEnding": "Week Ending",
+    "day": {
+      "monday": "Monday",
+      "tuesday": "Tuesday",
+      "wednesday": "Wednesday",
+      "thursday": "Thursday",
+      "friday": "Friday",
+      "saturday": "Saturday",
+      "sunday": "Sunday"
+    },
+    "hours": "Hours",
+    "totalHours": "Total Hours",
+    "submit": "Submit Timesheet",
+    "history": "Timesheet History",
+    "statusLabels": {
+      "draft": "Draft",
+      "submitted": "Submitted",
+      "approved": "Approved",
+      "rejected": "Rejected"
+    }
+  },
+  "placements": {
+    "title": "My Placements",
+    "active": "Active Placements",
+    "past": "Past Placements",
+    "client": "Client",
+    "jobTitle": "Job Title",
+    "startDate": "Start Date",
+    "endDate": "End Date",
+    "rate": "Rate"
+  },
+  "documents": {
+    "title": "Documents",
+    "sign": "Sign",
+    "download": "Download",
+    "pending": "Pending Signature",
+    "signed": "Signed",
+    "all": "All Documents"
+  },
+  "profile": {
+    "title": "My Profile",
+    "personalInfo": "Personal Information",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "email": "Email",
+    "phone": "Phone",
+    "address": "Address",
+    "emergencyContact": "Emergency Contact",
+    "accountSettings": "Account Settings",
+    "changePassword": "Change Password",
+    "notifications": "Notification Preferences"
+  },
+  "auth": {
+    "signIn": "Sign In",
+    "signOut": "Sign Out",
+    "email": "Email Address",
+    "password": "Password"
+  }
+}

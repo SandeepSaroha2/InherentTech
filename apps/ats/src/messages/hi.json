@@ -1,0 +1,179 @@
+{
+  "common": {
+    "appName": "ATS",
+    "dashboard": "डैशबोर्ड",
+    "candidates": "उम्मीदवार",
+    "jobs": "नौकरी के आदेश",
+    "submissions": "सबमिशन",
+    "interviews": "साक्षात्कार",
+    "placements": "नियुक्तियाँ",
+    "timesheets": "टाइमशीट",
+    "invoices": "चालान",
+    "search": "खोजें",
+    "filter": "फ़िल्टर करें",
+    "create": "बनाएं",
+    "edit": "संपादित करें",
+    "delete": "हटाएं",
+    "save": "सहेजें",
+    "cancel": "रद्द करें",
+    "loading": "लोड हो रहा है...",
+    "noResults": "कोई परिणाम नहीं",
+    "confirm": "पुष्टि करें",
+    "back": "वापस",
+    "next": "अगला",
+    "submit": "जमा करें",
+    "close": "बंद करें",
+    "actions": "कार्य",
+    "status": "स्थिति",
+    "date": "तारीख",
+    "name": "नाम",
+    "email": "ईमेल",
+    "phone": "फोन",
+    "viewAll": "सभी देखें",
+    "logout": "लॉग आउट",
+    "profile": "प्रोफ़ाइल",
+    "language": "भाषा"
+  },
+  "dashboard": {
+    "title": "डैशबोर्ड",
+    "activeCandidates": "सक्रिय उम्मीदवार",
+    "openJobs": "खुली नौकरियाँ",
+    "pendingSubmissions": "लंबित सबमिशन",
+    "activePlacements": "सक्रिय नियुक्तियाँ",
+    "upcomingInterviews": "आने वाले साक्षात्कार",
+    "recentSubmissions": "हाल के सबमिशन"
+  },
+  "candidates": {
+    "title": "उम्मीदवार",
+    "addCandidate": "उम्मीदवार जोड़ें",
+    "parseResume": "रिज्यूमे विश्लेषण करें",
+    "firstName": "पहला नाम",
+    "lastName": "अंतिम नाम",
+    "currentTitle": "वर्तमान पद",
+    "skills": "कौशल",
+    "experience": "अनुभव",
+    "expectedRate": "अपेक्षित दर",
+    "location": "स्थान",
+    "visaStatus": "वीजा स्थिति",
+    "visaTypes": {
+      "citizen": "नागरिक",
+      "greencard": "ग्रीन कार्ड",
+      "h1b": "H1B",
+      "l1": "L1",
+      "ead": "EAD",
+      "other": "अन्य"
+    },
+    "statusLabels": {
+      "active": "सक्रिय",
+      "inactive": "निष्क्रिय",
+      "hired": "नियुक्त",
+      "rejected": "अस्वीकृत"
+    }
+  },
+  "jobs": {
+    "title": "नौकरी के आदेश",
+    "newJob": "नया आदेश",
+    "jobTitle": "नौकरी का शीर्षक",
+    "client": "ग्राहक",
+    "description": "विवरण",
+    "requirements": "आवश्यकताएँ",
+    "location": "स्थान",
+    "rateRange": "दर की सीमा",
+    "openings": "खुली स्थितियाँ",
+    "filled": "भरी गई",
+    "priorityLevels": {
+      "low": "कम",
+      "medium": "मध्यम",
+      "high": "उच्च",
+      "urgent": "आपातकालीन"
+    },
+    "statusLabels": {
+      "draft": "ड्राफ्ट",
+      "open": "खुला",
+      "onhold": "होल्ड पर",
+      "filled": "भरा गया",
+      "closed": "बंद"
+    }
+  },
+  "submissions": {
+    "title": "सबमिशन",
+    "newSubmission": "नया सबमिशन",
+    "candidate": "उम्मीदवार",
+    "jobOrder": "नौकरी का आदेश",
+    "billRate": "बिल दर",
+    "payRate": "भुगतान दर",
+    "margin": "मार्जिन",
+    "statusLabels": {
+      "submitted": "प्रस्तुत",
+      "reviewed": "समीक्षित",
+      "accepted": "स्वीकृत",
+      "rejected": "अस्वीकृत",
+      "interview": "साक्षात्कार में"
+    }
+  },
+  "interviews": {
+    "title": "साक्षात्कार",
+    "scheduleInterview": "साक्षात्कार शेड्यूल करें",
+    "interviewDate": "साक्षात्कार की तारीख",
+    "interviewType": "साक्षात्कार का प्रकार",
+    "interviewer": "साक्षात्कारकर्ता",
+    "feedback": "प्रतिक्रिया",
+    "types": {
+      "phone": "फोन",
+      "video": "वीडियो",
+      "inperson": "व्यक्तिगत",
+      "technical": "तकनीकी"
+    }
+  },
+  "placements": {
+    "title": "नियुक्तियाँ",
+    "startDate": "शुरुआत की तारीख",
+    "endDate": "समाप्ति की तारीख",
+    "billRate": "बिल दर",
+    "payRate": "भुगतान दर",
+    "statusLabels": {
+      "active": "सक्रिय",
+      "completed": "पूर्ण",
+      "terminated": "समाप्त",
+      "onhire": "नियुक्त"
+    }
+  },
+  "timesheets": {
+    "title": "टाइमशीट",
+    "weekEnding": "सप्ताह समाप्त",
+    "regularHours": "नियमित घंटे",
+    "overtimeHours": "अतिरिक्त घंटे",
+    "totalHours": "कुल घंटे",
+    "approve": "अनुमोदन करें",
+    "reject": "अस्वीकार करें",
+    "statusLabels": {
+      "draft": "ड्राफ्ट",
+      "submitted": "प्रस्तुत",
+      "approved": "अनुमोदित",
+      "rejected": "अस्वीकृत",
+      "invoiced": "चालान किया गया"
+    }
+  },
+  "invoices": {
+    "title": "चालान",
+    "generateInvoice": "चालान बनाएं",
+    "invoiceNumber": "चालान संख्या",
+    "amount": "राशि",
+    "dueDate": "देय तारीख",
+    "paidDate": "भुगतान की तारीख",
+    "statusLabels": {
+      "draft": "ड्राफ्ट",
+      "sent": "भेजा गया",
+      "paid": "भुगतान किया गया",
+      "overdue": "अतिदेय",
+      "void": "रद्द"
+    }
+  },
+  "auth": {
+    "signIn": "साइन इन करें",
+    "signUp": "साइन अप करें",
+    "signOut": "साइन आउट करें",
+    "email": "ईमेल",
+    "password": "पासवर्ड"
+  }
+}

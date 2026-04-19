@@ -1,0 +1,93 @@
+{
+  "common": {
+    "appName": "员工门户",
+    "portal": "门户",
+    "timesheets": "时间表",
+    "placements": "工作安排",
+    "documents": "文件",
+    "profile": "个人资料",
+    "search": "搜索",
+    "save": "保存",
+    "cancel": "取消",
+    "loading": "加载中...",
+    "submit": "提交",
+    "close": "关闭",
+    "actions": "操作",
+    "status": "状态",
+    "date": "日期",
+    "logout": "登出",
+    "language": "语言"
+  },
+  "portal": {
+    "title": "员工仪表板",
+    "welcome": "欢迎回来",
+    "currentPlacement": "当前工作安排",
+    "hoursThisWeek": "本周小时数",
+    "nextPayDate": "下一个发薪日",
+    "quickActions": "快速操作",
+    "submitTimesheet": "提交时间表",
+    "viewDocuments": "查看文件",
+    "updateProfile": "更新个人资料"
+  },
+  "timesheets": {
+    "title": "时间表",
+    "currentWeek": "当前周",
+    "weekEnding": "周结束",
+    "day": {
+      "monday": "星期一",
+      "tuesday": "星期二",
+      "wednesday": "星期三",
+      "thursday": "星期四",
+      "friday": "星期五",
+      "saturday": "星期六",
+      "sunday": "星期日"
+    },
+    "hours": "小时数",
+    "totalHours": "总小时数",
+    "submit": "提交时间表",
+    "history": "时间表历史记录",
+    "statusLabels": {
+      "draft": "草稿",
+      "submitted": "已提交",
+      "approved": "已批准",
+      "rejected": "已拒绝"
+    }
+  },
+  "placements": {
+    "title": "我的工作安排",
+    "active": "活跃的工作安排",
+    "past": "过去的工作安排",
+    "client": "客户端",
+    "jobTitle": "职位名称",
+    "startDate": "开始日期",
+    "endDate": "结束日期",
+    "rate": "费率"
+  },
+  "documents": {
+    "title": "文件",
+    "sign": "签署",
+    "download": "下载",
+    "pending": "待签名",
+    "signed": "已签署",
+    "all": "所有文件"
+  },
+  "profile": {
+    "title": "我的个人资料",
+    "personalInfo": "个人信息",
+    "firstName": "名字",
+    "lastName": "姓氏",
+    "email": "电子邮件",
+    "phone": "电话",
+    "address": "地址",
+    "emergencyContact": "紧急联系人",
+    "accountSettings": "账户设置",
+    "changePassword": "更改密码",
+    "notifications": "通知首选项"
+  },
+  "auth": {
+    "signIn": "登录",
+    "signOut": "登出",
+    "email": "电子邮件地址",
+    "password": "密码"
+  }
+}

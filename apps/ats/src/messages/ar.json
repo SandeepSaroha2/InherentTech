@@ -1,0 +1,184 @@
+{
+  "common": {
+    "appName": "ATS",
+    "dashboard": "لوحة المعلومات",
+    "candidates": "المرشحون",
+    "jobs": "فرص العمل",
+    "submissions": "الإرسالات",
+    "interviews": "المقابلات",
+    "placements": "التعيينات",
+    "timesheets": "جداول الوقت",
+    "invoices": "الفواتير",
+    "search": "بحث",
+    "filter": "تصفية",
+    "create": "إنشاء",
+    "edit": "تحرير",
+    "delete": "حذف",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "loading": "جاري التحميل...",
+    "noResults": "لم يتم العثور على نتائج",
+    "confirm": "تأكيد",
+    "back": "رجوع",
+    "next": "التالي",
+    "submit": "إرسال",
+    "close": "إغلاق",
+    "actions": "الإجراءات",
+    "status": "الحالة",
+    "date": "التاريخ",
+    "name": "الاسم",
+    "email": "البريد الإلكتروني",
+    "phone": "الهاتف",
+    "viewAll": "عرض الكل",
+    "logout": "تسجيل الخروج",
+    "profile": "الملف الشخصي",
+    "language": "اللغة"
+  },
+  "dashboard": {
+    "title": "لوحة معلومات نظام تتبع المرشحين",
+    "activeCandidates": "المرشحون النشطون",
+    "openJobs": "فرص العمل المفتوحة",
+    "pendingSubmissions": "الإرسالات المعلقة",
+    "activePlacements": "التعيينات النشطة",
+    "upcomingInterviews": "المقابلات القادمة",
+    "recentSubmissions": "الإرسالات الأخيرة"
+  },
+  "candidates": {
+    "title": "المرشحون",
+    "addCandidate": "إضافة مرشح",
+    "parseResume": "تحليل السيرة الذاتية",
+    "firstName": "الاسم الأول",
+    "lastName": "الكنية",
+    "currentTitle": "المسمى الوظيفي الحالي",
+    "skills": "المهارات",
+    "experience": "سنوات الخبرة",
+    "expectedRate": "السعر المتوقع",
+    "location": "الموقع",
+    "visaStatus": "حالة التأشيرة",
+    "visa": {
+      "usCitizen": "مواطن أمريكي",
+      "greenCard": "بطاقة الإقامة الدائمة",
+      "h1b": "H-1B",
+      "h4Ead": "H-4 EAD",
+      "l1": "L-1",
+      "opt": "OPT",
+      "cpt": "CPT",
+      "tn": "TN",
+      "other": "أخرى"
+    },
+    "statusLabels": {
+      "active": "نشط",
+      "passive": "سلبي",
+      "placed": "معين",
+      "doNotContact": "عدم الاتصال",
+      "archived": "مؤرشف"
+    }
+  },
+  "jobs": {
+    "title": "فرص العمل",
+    "newJob": "فرصة عمل جديدة",
+    "jobTitle": "المسمى الوظيفي",
+    "client": "العميل",
+    "description": "الوصف",
+    "requirements": "المتطلبات",
+    "location": "الموقع",
+    "rateRange": "نطاق السعر",
+    "openings": "الفتحات",
+    "filled": "مملوء",
+    "priority": {
+      "low": "منخفض",
+      "medium": "متوسط",
+      "high": "عالي",
+      "urgent": "عاجل"
+    },
+    "statusLabels": {
+      "open": "مفتوح",
+      "onHold": "قيد الانتظار",
+      "filled": "مملوء",
+      "cancelled": "ملغي",
+      "closed": "مغلق"
+    }
+  },
+  "submissions": {
+    "title": "الإرسالات",
+    "newSubmission": "إرسال جديد",
+    "candidate": "المرشح",
+    "jobOrder": "فرصة العمل",
+    "billRate": "سعر الفاتورة",
+    "payRate": "سعر الراتب",
+    "margin": "الهامش",
+    "statusLabels": {
+      "submitted": "تم الإرسال",
+      "clientReview": "مراجعة العميل",
+      "interviewScheduled": "تم جدولة المقابلة",
+      "accepted": "موافق عليه",
+      "rejected": "مرفوض",
+      "withdrawn": "مسحوب"
+    }
+  },
+  "interviews": {
+    "title": "المقابلات",
+    "scheduleInterview": "جدولة المقابلة",
+    "interviewDate": "تاريخ المقابلة",
+    "interviewType": "نوع المقابلة",
+    "interviewer": "المقابل",
+    "feedback": "الملاحظات",
+    "types": {
+      "phone": "فحص الهاتف",
+      "video": "مقابلة الفيديو",
+      "onsite": "مقابلة حضورية",
+      "technical": "المقابلة التقنية",
+      "panel": "مقابلة اللجنة"
+    }
+  },
+  "placements": {
+    "title": "التعيينات",
+    "startDate": "تاريخ البدء",
+    "endDate": "تاريخ الانتهاء",
+    "billRate": "سعر الفاتورة",
+    "payRate": "سعر الراتب",
+    "statusLabels": {
+      "active": "نشط",
+      "completed": "مكتمل",
+      "terminated": "منهي",
+      "onHold": "قيد الانتظار"
+    }
+  },
+  "timesheets": {
+    "title": "جداول الوقت",
+    "weekEnding": "الأسبوع ينتهي في",
+    "regularHours": "الساعات العادية",
+    "overtimeHours": "ساعات العمل الإضافي",
+    "totalHours": "إجمالي الساعات",
+    "approve": "موافقة",
+    "reject": "رفض",
+    "statusLabels": {
+      "draft": "مسودة",
+      "submitted": "تم الإرسال",
+      "approved": "موافق عليه",
+      "rejected": "مرفوض"
+    }
+  },
+  "invoices": {
+    "title": "الفواتير",
+    "generateInvoice": "إنشاء فاتورة",
+    "invoiceNumber": "رقم الفاتورة #",
+    "amount": "المبلغ",
+    "dueDate": "تاريخ الاستحقاق",
+    "paidDate": "تاريخ الدفع",
+    "statusLabels": {
+      "draft": "مسودة",
+      "sent": "مرسل",
+      "paid": "مدفوع",
+      "overdue": "متأخر",
+      "void": "ملغي"
+    }
+  },
+  "auth": {
+    "signIn": "تسجيل الدخول",
+    "signUp": "التسجيل",
+    "signOut": "تسجيل الخروج",
+    "email": "عنوان البريد الإلكتروني",
+    "password": "كلمة المرور"
+  }
+}

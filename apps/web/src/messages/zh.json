@@ -1,0 +1,46 @@
+{
+  "common": {
+    "appName": "InherentTech",
+    "home": "首页",
+    "about": "关于",
+    "products": "产品",
+    "pricing": "定价",
+    "contact": "联系",
+    "signIn": "登录",
+    "getStarted": "开始使用",
+    "learnMore": "了解更多",
+    "language": "语言"
+  },
+  "hero": {
+    "title": "AI驱动的IT人力资源平台",
+    "subtitle": "使用智能自动化简化您的招聘工作流程",
+    "cta": "免费试用"
+  },
+  "products": {
+    "aiocrm": {
+      "name": "AIOCRM",
+      "description": "为人力资源机构提供的AI驱动型CRM"
+    },
+    "ats": {
+      "name": "ATS",
+      "description": "具有智能匹配的求职者跟踪系统"
+    },
+    "kudodoc": {
+      "name": "KudoDoc",
+      "description": "文档管理和电子签名"
+    },
+    "jobplatform": {
+      "name": "工作平台",
+      "description": "员工门户和工作板"
+    },
+    "ecafy": {
+      "name": "eCafy",
+      "description": "大规模电子邮件营销活动管理"
+    }
+  },
+  "footer": {
+    "copyright": "© {year} InherentTech。版权所有。",
+    "privacy": "隐私政策",
+    "terms": "服务条款"
+  }
+}

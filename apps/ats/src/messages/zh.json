@@ -1,0 +1,184 @@
+{
+  "common": {
+    "appName": "ATS",
+    "dashboard": "仪表板",
+    "candidates": "候选人",
+    "jobs": "职位",
+    "submissions": "提交",
+    "interviews": "面试",
+    "placements": "工作安排",
+    "timesheets": "时间表",
+    "invoices": "发票",
+    "search": "搜索",
+    "filter": "筛选",
+    "create": "创建",
+    "edit": "编辑",
+    "delete": "删除",
+    "save": "保存",
+    "cancel": "取消",
+    "loading": "加载中...",
+    "noResults": "未找到结果",
+    "confirm": "确认",
+    "back": "返回",
+    "next": "下一个",
+    "submit": "提交",
+    "close": "关闭",
+    "actions": "操作",
+    "status": "状态",
+    "date": "日期",
+    "name": "名称",
+    "email": "电子邮件",
+    "phone": "电话",
+    "viewAll": "查看全部",
+    "logout": "登出",
+    "profile": "个人资料",
+    "language": "语言"
+  },
+  "dashboard": {
+    "title": "ATS仪表板",
+    "activeCandidates": "活跃候选人",
+    "openJobs": "开放职位",
+    "pendingSubmissions": "待处理提交",
+    "activePlacements": "活跃的工作安排",
+    "upcomingInterviews": "即将进行的面试",
+    "recentSubmissions": "最近的提交"
+  },
+  "candidates": {
+    "title": "候选人",
+    "addCandidate": "添加候选人",
+    "parseResume": "解析简历",
+    "firstName": "名字",
+    "lastName": "姓氏",
+    "currentTitle": "当前职位",
+    "skills": "技能",
+    "experience": "工作经验年数",
+    "expectedRate": "期望费率",
+    "location": "位置",
+    "visaStatus": "签证状态",
+    "visa": {
+      "usCitizen": "美国公民",
+      "greenCard": "绿卡",
+      "h1b": "H-1B",
+      "h4Ead": "H-4 EAD",
+      "l1": "L-1",
+      "opt": "OPT",
+      "cpt": "CPT",
+      "tn": "TN",
+      "other": "其他"
+    },
+    "statusLabels": {
+      "active": "活跃",
+      "passive": "被动",
+      "placed": "已安排",
+      "doNotContact": "请勿联系",
+      "archived": "已存档"
+    }
+  },
+  "jobs": {
+    "title": "职位",
+    "newJob": "新职位",
+    "jobTitle": "职位名称",
+    "client": "客户端",
+    "description": "描述",
+    "requirements": "要求",
+    "location": "位置",
+    "rateRange": "费率范围",
+    "openings": "空缺职位",
+    "filled": "已填充",
+    "priority": {
+      "low": "低",
+      "medium": "中",
+      "high": "高",
+      "urgent": "紧急"
+    },
+    "statusLabels": {
+      "open": "开放",
+      "onHold": "暂停",
+      "filled": "已填充",
+      "cancelled": "已取消",
+      "closed": "已关闭"
+    }
+  },
+  "submissions": {
+    "title": "提交",
+    "newSubmission": "新提交",
+    "candidate": "候选人",
+    "jobOrder": "职位",
+    "billRate": "账单费率",
+    "payRate": "薪酬费率",
+    "margin": "利润率",
+    "statusLabels": {
+      "submitted": "已提交",
+      "clientReview": "客户端审查",
+      "interviewScheduled": "面试已安排",
+      "accepted": "已接受",
+      "rejected": "已拒绝",
+      "withdrawn": "已撤回"
+    }
+  },
+  "interviews": {
+    "title": "面试",
+    "scheduleInterview": "安排面试",
+    "interviewDate": "面试日期",
+    "interviewType": "面试类型",
+    "interviewer": "面试官",
+    "feedback": "反馈",
+    "types": {
+      "phone": "电话筛选",
+      "video": "视频面试",
+      "onsite": "现场面试",
+      "technical": "技术面试",
+      "panel": "小组面试"
+    }
+  },
+  "placements": {
+    "title": "工作安排",
+    "startDate": "开始日期",
+    "endDate": "结束日期",
+    "billRate": "账单费率",
+    "payRate": "薪酬费率",
+    "statusLabels": {
+      "active": "活跃",
+      "completed": "已完成",
+      "terminated": "已终止",
+      "onHold": "暂停"
+    }
+  },
+  "timesheets": {
+    "title": "时间表",
+    "weekEnding": "周结束",
+    "regularHours": "正常小时数",
+    "overtimeHours": "加班小时数",
+    "totalHours": "总小时数",
+    "approve": "批准",
+    "reject": "拒绝",
+    "statusLabels": {
+      "draft": "草稿",
+      "submitted": "已提交",
+      "approved": "已批准",
+      "rejected": "已拒绝"
+    }
+  },
+  "invoices": {
+    "title": "发票",
+    "generateInvoice": "生成发票",
+    "invoiceNumber": "发票#",
+    "amount": "金额",
+    "dueDate": "到期日期",
+    "paidDate": "付款日期",
+    "statusLabels": {
+      "draft": "草稿",
+      "sent": "已发送",
+      "paid": "已支付",
+      "overdue": "逾期",
+      "void": "作废"
+    }
+  },
+  "auth": {
+    "signIn": "登录",
+    "signUp": "注册",
+    "signOut": "登出",
+    "email": "电子邮件地址",
+    "password": "密码"
+  }
+}

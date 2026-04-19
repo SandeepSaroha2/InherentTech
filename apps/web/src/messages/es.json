@@ -1,0 +1,46 @@
+{
+  "common": {
+    "appName": "InherentTech",
+    "home": "Inicio",
+    "about": "Acerca de",
+    "products": "Productos",
+    "pricing": "Precios",
+    "contact": "Contacto",
+    "signIn": "Iniciar Sesión",
+    "getStarted": "Comenzar",
+    "learnMore": "Más Información",
+    "language": "Idioma"
+  },
+  "hero": {
+    "title": "Soluciones de IA para Staffing de TI",
+    "subtitle": "Automatice su flujo de trabajo de reclutamiento con inteligencia artificial avanzada",
+    "cta": "Comenzar Ahora"
+  },
+  "products": {
+    "aiocrm": {
+      "name": "AIOCRM",
+      "description": "Gestión de relaciones con clientes impulsada por IA para optimizar su cartera de ventas y mejorar la retención de clientes"
+    },
+    "ats": {
+      "name": "ATS",
+      "description": "Sistema de seguimiento de candidatos inteligente que simplifica todo su proceso de contratación"
+    },
+    "jobplatform": {
+      "name": "Portal de Empleados",
+      "description": "Plataforma completa para que los empleados gestionen hojas de tiempo, colocaciones y documentos"
+    },
+    "kudodoc": {
+      "name": "KudoDoc",
+      "description": "Solución de gestión de documentos y firmas electrónicas para agilizar acuerdos comerciales"
+    },
+    "xgnmail": {
+      "name": "XGNMail",
+      "description": "Plataforma de correo electrónico empresarial segura y confiable"
+    }
+  },
+  "footer": {
+    "copyright": "© 2026 InherentTech. Todos los derechos reservados.",
+    "privacy": "Política de Privacidad",
+    "terms": "Términos de Servicio"
+  }
+}

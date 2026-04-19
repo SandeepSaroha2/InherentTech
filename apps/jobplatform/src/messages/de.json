@@ -1,0 +1,93 @@
+{
+  "common": {
+    "appName": "Mitarbeiterportal",
+    "portal": "Portal",
+    "timesheets": "Stundenzettel",
+    "placements": "Platzierungen",
+    "documents": "Dokumente",
+    "profile": "Profil",
+    "search": "Suche",
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "loading": "Wird geladen...",
+    "submit": "Einreichen",
+    "close": "Schließen",
+    "actions": "Maßnahmen",
+    "status": "Status",
+    "date": "Datum",
+    "logout": "Abmelden",
+    "language": "Sprache"
+  },
+  "portal": {
+    "title": "Mitarbeiterdashboard",
+    "welcome": "Willkommen zurück",
+    "currentPlacement": "Aktuelle Platzierung",
+    "hoursThisWeek": "Stunden diese Woche",
+    "nextPayDate": "Nächster Zahlungstag",
+    "quickActions": "Schnellzugriffe",
+    "submitTimesheet": "Stundenzettel einreichen",
+    "viewDocuments": "Dokumente anzeigen",
+    "updateProfile": "Profil aktualisieren"
+  },
+  "timesheets": {
+    "title": "Stundenzettel",
+    "currentWeek": "Aktuelle Woche",
+    "weekEnding": "Woche endend",
+    "day": {
+      "monday": "Montag",
+      "tuesday": "Dienstag",
+      "wednesday": "Mittwoch",
+      "thursday": "Donnerstag",
+      "friday": "Freitag",
+      "saturday": "Samstag",
+      "sunday": "Sonntag"
+    },
+    "hours": "Stunden",
+    "totalHours": "Gesamtstunden",
+    "submit": "Stundenzettel einreichen",
+    "history": "Stundenzettelverlauf",
+    "statusLabels": {
+      "draft": "Entwurf",
+      "submitted": "Eingereicht",
+      "approved": "Genehmigt",
+      "rejected": "Abgelehnt"
+    }
+  },
+  "placements": {
+    "title": "Meine Platzierungen",
+    "active": "Aktive Platzierungen",
+    "past": "Bisherige Platzierungen",
+    "client": "Klient",
+    "jobTitle": "Berufsbezeichnung",
+    "startDate": "Startdatum",
+    "endDate": "Enddatum",
+    "rate": "Tarif"
+  },
+  "documents": {
+    "title": "Dokumente",
+    "sign": "Unterzeichnen",
+    "download": "Herunterladen",
+    "pending": "Ausstehende Unterschrift",
+    "signed": "Unterzeichnet",
+    "all": "Alle Dokumente"
+  },
+  "profile": {
+    "title": "Mein Profil",
+    "personalInfo": "Persönliche Informationen",
+    "firstName": "Vorname",
+    "lastName": "Nachname",
+    "email": "E-Mail",
+    "phone": "Telefon",
+    "address": "Adresse",
+    "emergencyContact": "Notfallkontakt",
+    "accountSettings": "Kontoeinstellungen",
+    "changePassword": "Passwort ändern",
+    "notifications": "Benachrichtigungseinstellungen"
+  },
+  "auth": {
+    "signIn": "Anmelden",
+    "signOut": "Abmelden",
+    "email": "E-Mail-Adresse",
+    "password": "Passwort"
+  }
+}

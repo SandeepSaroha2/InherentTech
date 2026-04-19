@@ -1,0 +1,93 @@
+{
+  "common": {
+    "appName": "従業員ポータル",
+    "portal": "ポータル",
+    "timesheets": "タイムシート",
+    "placements": "配置",
+    "documents": "ドキュメント",
+    "profile": "プロフィール",
+    "search": "検索",
+    "save": "保存",
+    "cancel": "キャンセル",
+    "loading": "読み込み中...",
+    "submit": "送信",
+    "close": "閉じる",
+    "actions": "アクション",
+    "status": "ステータス",
+    "date": "日付",
+    "logout": "ログアウト",
+    "language": "言語"
+  },
+  "portal": {
+    "title": "従業員ダッシュボード",
+    "welcome": "お帰りなさい",
+    "currentPlacement": "現在の配置",
+    "hoursThisWeek": "今週の時間",
+    "nextPayDate": "次の支払い日",
+    "quickActions": "クイックアクション",
+    "submitTimesheet": "タイムシートを送信",
+    "viewDocuments": "ドキュメントを表示",
+    "updateProfile": "プロフィールを更新"
+  },
+  "timesheets": {
+    "title": "タイムシート",
+    "currentWeek": "当週",
+    "weekEnding": "週の終了",
+    "day": {
+      "monday": "月曜日",
+      "tuesday": "火曜日",
+      "wednesday": "水曜日",
+      "thursday": "木曜日",
+      "friday": "金曜日",
+      "saturday": "土曜日",
+      "sunday": "日曜日"
+    },
+    "hours": "時間",
+    "totalHours": "合計時間",
+    "submit": "タイムシートを送信",
+    "history": "タイムシート履歴",
+    "statusLabels": {
+      "draft": "下書き",
+      "submitted": "送信済み",
+      "approved": "承認済み",
+      "rejected": "却下"
+    }
+  },
+  "placements": {
+    "title": "私の配置",
+    "active": "アクティブな配置",
+    "past": "過去の配置",
+    "client": "クライアント",
+    "jobTitle": "職務経歴",
+    "startDate": "開始日",
+    "endDate": "終了日",
+    "rate": "レート"
+  },
+  "documents": {
+    "title": "ドキュメント",
+    "sign": "署名",
+    "download": "ダウンロード",
+    "pending": "署名待機中",
+    "signed": "署名済み",
+    "all": "すべてのドキュメント"
+  },
+  "profile": {
+    "title": "マイプロフィール",
+    "personalInfo": "個人情報",
+    "firstName": "名",
+    "lastName": "姓",
+    "email": "メールアドレス",
+    "phone": "電話",
+    "address": "住所",
+    "emergencyContact": "緊急連絡先",
+    "accountSettings": "アカウント設定",
+    "changePassword": "パスワード変更",
+    "notifications": "通知設定"
+  },
+  "auth": {
+    "signIn": "サインイン",
+    "signOut": "サインアウト",
+    "email": "メールアドレス",
+    "password": "パスワード"
+  }
+}

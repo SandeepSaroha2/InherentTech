@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@inherenttech/db": ["packages/db/src"],
+      "@inherenttech/shared": ["packages/shared/src"],
+      "@inherenttech/ui": ["packages/ui/src"],
+      "@inherenttech/config": ["packages/config/src"]
+    },
+    "skipLibCheck": true,
+    "strict": true
+  },
+  "references": [
+    { "path": "packages/db" },
+    { "path": "packages/shared" },
+    { "path": "packages/ui" },
+    { "path": "packages/config" },
+    { "path": "apps/web" },
+    { "path": "apps/aiocrm" },
+    { "path": "apps/ats" },
+    { "path": "apps/jobplatform" },
+    { "path": "apps/kudodoc" }
+  ]
+}

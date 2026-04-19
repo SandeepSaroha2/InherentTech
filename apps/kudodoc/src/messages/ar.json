@@ -1,0 +1,85 @@
+{
+  "common": {
+    "appName": "KudoDoc",
+    "dashboard": "لوحة المعلومات",
+    "templates": "القوالب",
+    "documents": "المستندات",
+    "signatures": "التوقيعات",
+    "search": "بحث",
+    "create": "إنشاء",
+    "edit": "تحرير",
+    "delete": "حذف",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "loading": "جاري التحميل...",
+    "noResults": "لم يتم العثور على نتائج",
+    "submit": "إرسال",
+    "close": "إغلاق",
+    "actions": "الإجراءات",
+    "status": "الحالة",
+    "date": "التاريخ",
+    "logout": "تسجيل الخروج",
+    "language": "اللغة"
+  },
+  "dashboard": {
+    "title": "لوحة معلومات المستند",
+    "totalDocuments": "إجمالي المستندات",
+    "pendingSignatures": "التوقيعات المعلقة",
+    "completedToday": "مكتمل اليوم",
+    "recentDocuments": "المستندات الأخيرة"
+  },
+  "templates": {
+    "title": "نماذج المستندات",
+    "newTemplate": "قالب جديد",
+    "templateName": "اسم القالب",
+    "description": "الوصف",
+    "category": "الفئة",
+    "fields": "حقول القالب",
+    "preview": "معاينة",
+    "useTemplate": "استخدام القالب",
+    "categories": {
+      "legal": "قانوني",
+      "staffing": "التوظيف",
+      "hr": "الموارد البشرية",
+      "finance": "مالي",
+      "custom": "مخصص"
+    }
+  },
+  "documents": {
+    "title": "المستندات",
+    "newDocument": "مستند جديد",
+    "fromTemplate": "من القالب",
+    "upload": "تحميل المستند",
+    "documentName": "اسم المستند",
+    "createdBy": "من قبل",
+    "lastModified": "آخر تعديل",
+    "statusLabels": {
+      "draft": "مسودة",
+      "pendingSignature": "انتظار التوقيع",
+      "signed": "موقع",
+      "expired": "انتهت صلاحيته",
+      "voided": "ملغي"
+    }
+  },
+  "signatures": {
+    "title": "طلبات التوقيع",
+    "requestSignature": "طلب توقيع",
+    "signerName": "اسم الموقع",
+    "signerEmail": "بريد الموقع الإلكتروني",
+    "signedAt": "وقعت في",
+    "expiresAt": "ينتهي في",
+    "remind": "إرسال تذكير",
+    "statusLabels": {
+      "pending": "قيد الانتظار",
+      "signed": "موقع",
+      "declined": "مرفوض",
+      "expired": "انتهت صلاحيته"
+    }
+  },
+  "auth": {
+    "signIn": "تسجيل الدخول",
+    "signOut": "تسجيل الخروج",
+    "email": "عنوان البريد الإلكتروني",
+    "password": "كلمة المرور"
+  }
+}

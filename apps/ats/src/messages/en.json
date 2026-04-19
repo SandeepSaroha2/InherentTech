@@ -1,0 +1,184 @@
+{
+  "common": {
+    "appName": "ATS",
+    "dashboard": "Dashboard",
+    "candidates": "Candidates",
+    "jobs": "Job Orders",
+    "submissions": "Submissions",
+    "interviews": "Interviews",
+    "placements": "Placements",
+    "timesheets": "Timesheets",
+    "invoices": "Invoices",
+    "search": "Search",
+    "filter": "Filter",
+    "create": "Create",
+    "edit": "Edit",
+    "delete": "Delete",
+    "save": "Save",
+    "cancel": "Cancel",
+    "loading": "Loading...",
+    "noResults": "No results found",
+    "confirm": "Confirm",
+    "back": "Back",
+    "next": "Next",
+    "submit": "Submit",
+    "close": "Close",
+    "actions": "Actions",
+    "status": "Status",
+    "date": "Date",
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone",
+    "viewAll": "View All",
+    "logout": "Logout",
+    "profile": "Profile",
+    "language": "Language"
+  },
+  "dashboard": {
+    "title": "ATS Dashboard",
+    "activeCandidates": "Active Candidates",
+    "openJobs": "Open Jobs",
+    "pendingSubmissions": "Pending Submissions",
+    "activePlacements": "Active Placements",
+    "upcomingInterviews": "Upcoming Interviews",
+    "recentSubmissions": "Recent Submissions"
+  },
+  "candidates": {
+    "title": "Candidates",
+    "addCandidate": "Add Candidate",
+    "parseResume": "Parse Resume",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "currentTitle": "Current Title",
+    "skills": "Skills",
+    "experience": "Years of Experience",
+    "expectedRate": "Expected Rate",
+    "location": "Location",
+    "visaStatus": "Visa Status",
+    "visa": {
+      "usCitizen": "US Citizen",
+      "greenCard": "Green Card",
+      "h1b": "H-1B",
+      "h4Ead": "H-4 EAD",
+      "l1": "L-1",
+      "opt": "OPT",
+      "cpt": "CPT",
+      "tn": "TN",
+      "other": "Other"
+    },
+    "statusLabels": {
+      "active": "Active",
+      "passive": "Passive",
+      "placed": "Placed",
+      "doNotContact": "Do Not Contact",
+      "archived": "Archived"
+    }
+  },
+  "jobs": {
+    "title": "Job Orders",
+    "newJob": "New Job Order",
+    "jobTitle": "Job Title",
+    "client": "Client",
+    "description": "Description",
+    "requirements": "Requirements",
+    "location": "Location",
+    "rateRange": "Rate Range",
+    "openings": "Openings",
+    "filled": "Filled",
+    "priority": {
+      "low": "Low",
+      "medium": "Medium",
+      "high": "High",
+      "urgent": "Urgent"
+    },
+    "statusLabels": {
+      "open": "Open",
+      "onHold": "On Hold",
+      "filled": "Filled",
+      "cancelled": "Cancelled",
+      "closed": "Closed"
+    }
+  },
+  "submissions": {
+    "title": "Submissions",
+    "newSubmission": "New Submission",
+    "candidate": "Candidate",
+    "jobOrder": "Job Order",
+    "billRate": "Bill Rate",
+    "payRate": "Pay Rate",
+    "margin": "Margin",
+    "statusLabels": {
+      "submitted": "Submitted",
+      "clientReview": "Client Review",
+      "interviewScheduled": "Interview Scheduled",
+      "accepted": "Accepted",
+      "rejected": "Rejected",
+      "withdrawn": "Withdrawn"
+    }
+  },
+  "interviews": {
+    "title": "Interviews",
+    "scheduleInterview": "Schedule Interview",
+    "interviewDate": "Interview Date",
+    "interviewType": "Interview Type",
+    "interviewer": "Interviewer",
+    "feedback": "Feedback",
+    "types": {
+      "phone": "Phone Screen",
+      "video": "Video Interview",
+      "onsite": "On-site Interview",
+      "technical": "Technical Interview",
+      "panel": "Panel Interview"
+    }
+  },
+  "placements": {
+    "title": "Placements",
+    "startDate": "Start Date",
+    "endDate": "End Date",
+    "billRate": "Bill Rate",
+    "payRate": "Pay Rate",
+    "statusLabels": {
+      "active": "Active",
+      "completed": "Completed",
+      "terminated": "Terminated",
+      "onHold": "On Hold"
+    }
+  },
+  "timesheets": {
+    "title": "Timesheets",
+    "weekEnding": "Week Ending",
+    "regularHours": "Regular Hours",
+    "overtimeHours": "Overtime Hours",
+    "totalHours": "Total Hours",
+    "approve": "Approve",
+    "reject": "Reject",
+    "statusLabels": {
+      "draft": "Draft",
+      "submitted": "Submitted",
+      "approved": "Approved",
+      "rejected": "Rejected"
+    }
+  },
+  "invoices": {
+    "title": "Invoices",
+    "generateInvoice": "Generate Invoice",
+    "invoiceNumber": "Invoice #",
+    "amount": "Amount",
+    "dueDate": "Due Date",
+    "paidDate": "Paid Date",
+    "statusLabels": {
+      "draft": "Draft",
+      "sent": "Sent",
+      "paid": "Paid",
+      "overdue": "Overdue",
+      "void": "Void"
+    }
+  },
+  "auth": {
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "signOut": "Sign Out",
+    "email": "Email Address",
+    "password": "Password"
+  }
+}

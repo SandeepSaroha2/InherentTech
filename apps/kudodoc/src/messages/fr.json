@@ -1,0 +1,85 @@
+{
+  "common": {
+    "appName": "KudoDoc",
+    "dashboard": "Tableau de bord",
+    "templates": "Modèles",
+    "documents": "Documents",
+    "signatures": "Signatures",
+    "search": "Rechercher",
+    "create": "Créer",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "loading": "Chargement...",
+    "noResults": "Aucun résultat trouvé",
+    "submit": "Soumettre",
+    "close": "Fermer",
+    "actions": "Actions",
+    "status": "Statut",
+    "date": "Date",
+    "logout": "Déconnexion",
+    "language": "Langue"
+  },
+  "dashboard": {
+    "title": "Tableau de bord des documents",
+    "totalDocuments": "Total des documents",
+    "pendingSignatures": "Signatures en attente",
+    "completedToday": "Complété aujourd'hui",
+    "recentDocuments": "Documents récents"
+  },
+  "templates": {
+    "title": "Modèles de documents",
+    "newTemplate": "Nouveau modèle",
+    "templateName": "Nom du modèle",
+    "description": "Description",
+    "category": "Catégorie",
+    "fields": "Champs de modèle",
+    "preview": "Aperçu",
+    "useTemplate": "Utiliser le modèle",
+    "categories": {
+      "legal": "Juridique",
+      "staffing": "Dotation en personnel",
+      "hr": "Ressources humaines",
+      "finance": "Finances",
+      "custom": "Personnalisé"
+    }
+  },
+  "documents": {
+    "title": "Documents",
+    "newDocument": "Nouveau document",
+    "fromTemplate": "À partir du modèle",
+    "upload": "Télécharger un document",
+    "documentName": "Nom du document",
+    "createdBy": "Créé par",
+    "lastModified": "Dernière modification",
+    "statusLabels": {
+      "draft": "Brouillon",
+      "pendingSignature": "En attente de signature",
+      "signed": "Signé",
+      "expired": "Expiré",
+      "voided": "Annulé"
+    }
+  },
+  "signatures": {
+    "title": "Demandes de signature",
+    "requestSignature": "Demander une signature",
+    "signerName": "Nom du signataire",
+    "signerEmail": "Email du signataire",
+    "signedAt": "Signé à",
+    "expiresAt": "Expire à",
+    "remind": "Envoyer un rappel",
+    "statusLabels": {
+      "pending": "En attente",
+      "signed": "Signé",
+      "declined": "Refusé",
+      "expired": "Expiré"
+    }
+  },
+  "auth": {
+    "signIn": "Se connecter",
+    "signOut": "Se déconnecter",
+    "email": "Adresse électronique",
+    "password": "Mot de passe"
+  }
+}

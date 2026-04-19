@@ -1,0 +1,85 @@
+{
+  "common": {
+    "appName": "KudoDoc",
+    "dashboard": "Painel de controle",
+    "templates": "Modelos",
+    "documents": "Documentos",
+    "signatures": "Assinaturas",
+    "search": "Pesquisar",
+    "create": "Criar",
+    "edit": "Editar",
+    "delete": "Deletar",
+    "save": "Salvar",
+    "cancel": "Cancelar",
+    "loading": "Carregando...",
+    "noResults": "Nenhum resultado encontrado",
+    "submit": "Enviar",
+    "close": "Fechar",
+    "actions": "Ações",
+    "status": "Status",
+    "date": "Data",
+    "logout": "Sair",
+    "language": "Idioma"
+  },
+  "dashboard": {
+    "title": "Painel de controle de documentos",
+    "totalDocuments": "Total de Documentos",
+    "pendingSignatures": "Assinaturas Pendentes",
+    "completedToday": "Concluído Hoje",
+    "recentDocuments": "Documentos Recentes"
+  },
+  "templates": {
+    "title": "Modelos de Documentos",
+    "newTemplate": "Novo Modelo",
+    "templateName": "Nome do Modelo",
+    "description": "Descrição",
+    "category": "Categoria",
+    "fields": "Campos do Modelo",
+    "preview": "Visualização",
+    "useTemplate": "Usar Modelo",
+    "categories": {
+      "legal": "Legal",
+      "staffing": "Staffing",
+      "hr": "Recursos Humanos",
+      "finance": "Financeiro",
+      "custom": "Personalizado"
+    }
+  },
+  "documents": {
+    "title": "Documentos",
+    "newDocument": "Novo Documento",
+    "fromTemplate": "Do Modelo",
+    "upload": "Enviar Documento",
+    "documentName": "Nome do Documento",
+    "createdBy": "Criado por",
+    "lastModified": "Última Modificação",
+    "statusLabels": {
+      "draft": "Rascunho",
+      "pendingSignature": "Aguardando Assinatura",
+      "signed": "Assinado",
+      "expired": "Expirado",
+      "voided": "Anulado"
+    }
+  },
+  "signatures": {
+    "title": "Solicitações de Assinatura",
+    "requestSignature": "Solicitar Assinatura",
+    "signerName": "Nome do Signatário",
+    "signerEmail": "Email do Signatário",
+    "signedAt": "Assinado em",
+    "expiresAt": "Expira em",
+    "remind": "Enviar Lembrete",
+    "statusLabels": {
+      "pending": "Pendente",
+      "signed": "Assinado",
+      "declined": "Recusado",
+      "expired": "Expirado"
+    }
+  },
+  "auth": {
+    "signIn": "Entrar",
+    "signOut": "Sair",
+    "email": "Endereço de Email",
+    "password": "Senha"
+  }
+}

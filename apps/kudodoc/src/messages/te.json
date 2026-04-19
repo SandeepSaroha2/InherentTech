@@ -1,0 +1,85 @@
+{
+  "common": {
+    "appName": "KudoDoc",
+    "dashboard": "డ్యాష్‌బోర్డ్",
+    "templates": "టెంప్లేట్‌లు",
+    "documents": "డాక్యుమెంట్‌లు",
+    "signatures": "సంతకాలు",
+    "search": "శోధన",
+    "create": "సృష్టించండి",
+    "edit": "సవరించండి",
+    "delete": "తొలగించండి",
+    "save": "సేవ్ చేయు",
+    "cancel": "రద్దు చేయు",
+    "loading": "లోడ్ చేస్తున్నారు...",
+    "noResults": "ఫలితాలు కనుగొనబడలేదు",
+    "submit": "సమర్పించు",
+    "close": "మూయు",
+    "actions": "చర్యలు",
+    "status": "స్థితి",
+    "date": "తేదీ",
+    "logout": "లాగ్‌అవుట్",
+    "language": "భాష"
+  },
+  "dashboard": {
+    "title": "డాక్యుమెంట్ డ్యాష్‌బోర్డ్",
+    "totalDocuments": "మొత్తం డాక్యుమెంట్‌లు",
+    "pendingSignatures": "విషయం సంతకాలు",
+    "completedToday": "ఈ రోజు పూర్తిచేయబడినవి",
+    "recentDocuments": "ఇటీవలి డాక్యుమెంట్‌లు"
+  },
+  "templates": {
+    "title": "డాక్యుమెంట్ టెంప్లేట్‌లు",
+    "newTemplate": "కొత్త టెంప్లేట్",
+    "templateName": "టెంప్లేట్ పేరు",
+    "description": "వర్ణన",
+    "category": "వర్గం",
+    "fields": "టెంప్లేట్ ఫీల్డ్‌లు",
+    "preview": "ప్రివ్యూ",
+    "useTemplate": "టెంప్లేట్‌ను ఉపయోగించండి",
+    "categories": {
+      "legal": "చట్టపరమైన",
+      "staffing": "కర్మచారీ సేవ",
+      "hr": "మానవ వనరులు",
+      "finance": "ఆర్థిక",
+      "custom": "కస్టమ్"
+    }
+  },
+  "documents": {
+    "title": "డాక్యుమెంట్‌లు",
+    "newDocument": "కొత్త డాక్యుమెంట్",
+    "fromTemplate": "టెంప్లేట్ నుండి",
+    "upload": "డాక్యుమెంట్‌ను అప్‌లోడ్ చేయండి",
+    "documentName": "డాక్యుమెంట్ పేరు",
+    "createdBy": "సృష్టించిన",
+    "lastModified": "చివరిసారి సవరించారు",
+    "statusLabels": {
+      "draft": "డ్రాఫ్ట్",
+      "pendingSignature": "సంతకం కోసం వేచున్నారు",
+      "signed": "సంతకం చేయబడినవి",
+      "expired": "కాలం ముగిసింది",
+      "voided": "చెల్లనిది"
+    }
+  },
+  "signatures": {
+    "title": "సంతకం అభ్యర్థనలు",
+    "requestSignature": "సంతకం అభ్యర్థించండి",
+    "signerName": "సంతకం చేసేవారి పేరు",
+    "signerEmail": "సంతకం చేసేవారి ఇమెయిల్",
+    "signedAt": "ఆ సమయంలో సంతకం చేయబడింది",
+    "expiresAt": "ఆ సమయంలో ముగియుతుంది",
+    "remind": "రిమైండర్ పంపండి",
+    "statusLabels": {
+      "pending": "విషయం",
+      "signed": "సంతకం చేయబడినవి",
+      "declined": "తిరస్కరించారు",
+      "expired": "కాలం ముగిసింది"
+    }
+  },
+  "auth": {
+    "signIn": "సంతకం చేయు",
+    "signOut": "సంతకం చేయండి",
+    "email": "ఇమెయిల్ అడ్రస్",
+    "password": "పాస్‌వర్డ్"
+  }
+}

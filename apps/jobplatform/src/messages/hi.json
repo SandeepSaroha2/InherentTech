@@ -1,0 +1,100 @@
+{
+  "common": {
+    "appName": "कर्मचारी पोर्टल",
+    "portal": "पोर्टल",
+    "timesheets": "टाइमशीट",
+    "placements": "नियुक्तियाँ",
+    "documents": "दस्तावेज़",
+    "profile": "प्रोफ़ाइल",
+    "search": "खोजें",
+    "filter": "फ़िल्टर करें",
+    "create": "बनाएं",
+    "edit": "संपादित करें",
+    "delete": "हटाएं",
+    "save": "सहेजें",
+    "cancel": "रद्द करें",
+    "loading": "लोड हो रहा है...",
+    "noResults": "कोई परिणाम नहीं",
+    "confirm": "पुष्टि करें",
+    "back": "वापस",
+    "next": "अगला",
+    "submit": "जमा करें",
+    "close": "बंद करें",
+    "actions": "कार्य",
+    "status": "स्थिति",
+    "date": "तारीख",
+    "name": "नाम",
+    "email": "ईमेल",
+    "phone": "फोन",
+    "viewAll": "सभी देखें",
+    "logout": "लॉग आउट",
+    "language": "भाषा"
+  },
+  "portal": {
+    "title": "कर्मचारी पोर्टल",
+    "welcome": "स्वागत है",
+    "currentPlacement": "वर्तमान नियुक्ति",
+    "hoursThisWeek": "इस सप्ताह के घंटे",
+    "nextPayDate": "अगली भुगतान तारीख",
+    "quickActions": "त्वरित कार्य",
+    "submitTimesheet": "टाइमशीट जमा करें",
+    "viewDocuments": "दस्तावेज़ देखें",
+    "updateProfile": "प्रोफ़ाइल अपडेट करें"
+  },
+  "timesheets": {
+    "title": "टाइमशीट",
+    "currentWeek": "वर्तमान सप्ताह",
+    "weekEnding": "सप्ताह समाप्त",
+    "dayNames": {
+      "mon": "सोमवार",
+      "tue": "मंगलवार",
+      "wed": "बुधवार",
+      "thu": "गुरुवार",
+      "fri": "शुक्रवार",
+      "sat": "शनिवार",
+      "sun": "रविवार"
+    },
+    "hours": "घंटे",
+    "totalHours": "कुल घंटे",
+    "submit": "जमा करें",
+    "history": "इतिहास",
+    "statusLabels": {
+      "draft": "ड्राफ्ट",
+      "submitted": "प्रस्तुत",
+      "approved": "अनुमोदित",
+      "rejected": "अस्वीकृत",
+      "paid": "भुगतान किया गया"
+    }
+  },
+  "placements": {
+    "title": "नियुक्तियाँ",
+    "active": "सक्रिय",
+    "past": "पिछली",
+    "client": "ग्राहक",
+    "jobTitle": "नौकरी का शीर्षक",
+    "startDate": "शुरुआत की तारीख",
+    "endDate": "समाप्ति की तारीख",
+    "rate": "दर"
+  },
+  "documents": {
+    "title": "दस्तावेज़",
+    "sign": "हस्ताक्षर करें",
+    "download": "डाउनलोड करें",
+    "pending": "लंबित",
+    "signed": "हस्ताक्षरित",
+    "all": "सभी"
+  },
+  "profile": {
+    "title": "प्रोफ़ाइल",
+    "personalInfo": "व्यक्तिगत जानकारी",
+    "firstName": "पहला नाम",
+    "lastName": "अंतिम नाम",
+    "email": "ईमेल",
+    "phone": "फोन",
+    "address": "पता",
+    "emergencyContact": "आपातकालीन संपर्क",
+    "accountSettings": "खाता सेटिंग्स",
+    "changePassword": "पासवर्ड बदलें",
+    "notifications": "सूचनाएं"
+  }
+}

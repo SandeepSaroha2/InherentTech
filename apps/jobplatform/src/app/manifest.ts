@@ -1,0 +1,21 @@
+import type { MetadataRoute } from 'next';
+
+export default function manifest(): MetadataRoute.Manifest {
+  return {
+    name: 'Employee Portal - InherentTech',
+    short_name: 'Portal',
+    description: 'Employee portal for consultants',
+    start_url: '/portal',
+    display: 'standalone',
+    background_color: '#ffffff',
+    theme_color: '#1e40af',
+    orientation: 'any',
+    categories: ['business', 'productivity'],
+    icons: [
+      { src: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' },
+      { src: '/icons/icon-512.png', sizes: '512x512', type: 'image/png' },
+      { src: '/icons/icon-maskable-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
+    ],
+    screenshots: [],
+  };
+}

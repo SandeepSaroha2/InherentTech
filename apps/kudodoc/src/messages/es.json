@@ -1,0 +1,88 @@
+{
+  "common": {
+    "appName": "KudoDoc",
+    "dashboard": "Panel de Control",
+    "templates": "Plantillas",
+    "documents": "Documentos",
+    "signatures": "Firmas",
+    "search": "Buscar",
+    "filter": "Filtrar",
+    "create": "Crear",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "loading": "Cargando...",
+    "noResults": "Sin resultados",
+    "confirm": "Confirmar",
+    "back": "Atrás",
+    "next": "Siguiente",
+    "submit": "Enviar",
+    "close": "Cerrar",
+    "actions": "Acciones",
+    "status": "Estado",
+    "date": "Fecha",
+    "name": "Nombre",
+    "email": "Correo Electrónico",
+    "viewAll": "Ver Todo",
+    "logout": "Cerrar Sesión",
+    "profile": "Perfil",
+    "language": "Idioma"
+  },
+  "dashboard": {
+    "title": "Panel de Control",
+    "totalDocuments": "Documentos Totales",
+    "pendingSignatures": "Firmas Pendientes",
+    "completedToday": "Completados Hoy",
+    "recentDocuments": "Documentos Recientes"
+  },
+  "templates": {
+    "title": "Plantillas",
+    "newTemplate": "Nueva Plantilla",
+    "templateName": "Nombre de la Plantilla",
+    "description": "Descripción",
+    "category": "Categoría",
+    "fields": "Campos",
+    "preview": "Vista Previa",
+    "useTemplate": "Usar Plantilla",
+    "categories": {
+      "contracts": "Contratos",
+      "agreements": "Acuerdos",
+      "forms": "Formularios",
+      "letters": "Cartas",
+      "other": "Otro"
+    }
+  },
+  "documents": {
+    "title": "Documentos",
+    "newDocument": "Nuevo Documento",
+    "fromTemplate": "Desde Plantilla",
+    "upload": "Cargar",
+    "documentName": "Nombre del Documento",
+    "createdBy": "Creado por",
+    "lastModified": "Última Modificación",
+    "statusLabels": {
+      "draft": "Borrador",
+      "ready": "Listo para Firmar",
+      "pending": "Pendiente de Firma",
+      "signed": "Firmado",
+      "completed": "Completado"
+    }
+  },
+  "signatures": {
+    "title": "Firmas",
+    "requestSignature": "Solicitar Firma",
+    "signerName": "Nombre del Firmante",
+    "signerEmail": "Correo del Firmante",
+    "signedAt": "Firmado en",
+    "expiresAt": "Expira en",
+    "remind": "Recordar",
+    "statusLabels": {
+      "pending": "Pendiente",
+      "viewed": "Visto",
+      "signed": "Firmado",
+      "expired": "Expirado",
+      "declined": "Rechazado"
+    }
+  }
+}

@@ -1,0 +1,85 @@
+{
+  "common": {
+    "appName": "KudoDoc",
+    "dashboard": "ダッシュボード",
+    "templates": "テンプレート",
+    "documents": "ドキュメント",
+    "signatures": "署名",
+    "search": "検索",
+    "create": "作成",
+    "edit": "編集",
+    "delete": "削除",
+    "save": "保存",
+    "cancel": "キャンセル",
+    "loading": "読み込み中...",
+    "noResults": "結果が見つかりません",
+    "submit": "送信",
+    "close": "閉じる",
+    "actions": "アクション",
+    "status": "ステータス",
+    "date": "日付",
+    "logout": "ログアウト",
+    "language": "言語"
+  },
+  "dashboard": {
+    "title": "ドキュメントダッシュボード",
+    "totalDocuments": "総ドキュメント数",
+    "pendingSignatures": "署名待機中",
+    "completedToday": "本日完了",
+    "recentDocuments": "最近のドキュメント"
+  },
+  "templates": {
+    "title": "ドキュメントテンプレート",
+    "newTemplate": "新しいテンプレート",
+    "templateName": "テンプレート名",
+    "description": "説明",
+    "category": "カテゴリ",
+    "fields": "テンプレートフィールド",
+    "preview": "プレビュー",
+    "useTemplate": "テンプレートを使用",
+    "categories": {
+      "legal": "法律",
+      "staffing": "人材配置",
+      "hr": "人的資源",
+      "finance": "財務",
+      "custom": "カスタム"
+    }
+  },
+  "documents": {
+    "title": "ドキュメント",
+    "newDocument": "新しいドキュメント",
+    "fromTemplate": "テンプレートから",
+    "upload": "ドキュメントをアップロード",
+    "documentName": "ドキュメント名",
+    "createdBy": "作成者",
+    "lastModified": "最終更新日時",
+    "statusLabels": {
+      "draft": "下書き",
+      "pendingSignature": "署名待機中",
+      "signed": "署名済み",
+      "expired": "期限切れ",
+      "voided": "無効"
+    }
+  },
+  "signatures": {
+    "title": "署名リクエスト",
+    "requestSignature": "署名をリクエスト",
+    "signerName": "署名者名",
+    "signerEmail": "署名者メール",
+    "signedAt": "署名日時",
+    "expiresAt": "有効期限",
+    "remind": "リマインダーを送信",
+    "statusLabels": {
+      "pending": "待機中",
+      "signed": "署名済み",
+      "declined": "却下",
+      "expired": "期限切れ"
+    }
+  },
+  "auth": {
+    "signIn": "サインイン",
+    "signOut": "サインアウト",
+    "email": "メールアドレス",
+    "password": "パスワード"
+  }
+}

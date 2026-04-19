@@ -1,0 +1,46 @@
+{
+  "common": {
+    "appName": "InherentTech",
+    "home": "Accueil",
+    "about": "À propos",
+    "products": "Produits",
+    "pricing": "Tarification",
+    "contact": "Contact",
+    "signIn": "Se connecter",
+    "getStarted": "Commencer",
+    "learnMore": "En savoir plus",
+    "language": "Langue"
+  },
+  "hero": {
+    "title": "Plateforme de dotation informatique alimentée par l'IA",
+    "subtitle": "Simplifiez votre flux de travail de recrutement avec l'automatisation intelligente",
+    "cta": "Essai Gratuit"
+  },
+  "products": {
+    "aiocrm": {
+      "name": "AIOCRM",
+      "description": "CRM alimenté par l'IA pour les agences de dotation"
+    },
+    "ats": {
+      "name": "ATS",
+      "description": "Système de suivi des candidats avec appariement intelligent"
+    },
+    "kudodoc": {
+      "name": "KudoDoc",
+      "description": "Gestion des documents et signatures électroniques"
+    },
+    "jobplatform": {
+      "name": "Plateforme d'emploi",
+      "description": "Portail des employés et tableau d'affichage des emplois"
+    },
+    "ecafy": {
+      "name": "eCafy",
+      "description": "Gestion des campagnes de courrier électronique en masse"
+    }
+  },
+  "footer": {
+    "copyright": "© {year} InherentTech. Tous droits réservés.",
+    "privacy": "Politique de confidentialité",
+    "terms": "Conditions d'utilisation"
+  }
+}

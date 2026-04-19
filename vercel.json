@@ -1,0 +1,22 @@
+{
+  "$schema": "https://vercel.com/schemas/vercel.json",
+  "buildCommand": "npm run build",
+  "installCommand": "npm ci",
+  "env": {
+    "DATABASE_URL": "@database_url",
+    "DIRECT_URL": "@direct_url",
+    "SUPABASE_URL": "@supabase_url",
+    "SUPABASE_ANON_KEY": "@supabase_anon_key",
+    "SUPABASE_SERVICE_KEY": "@supabase_service_key",
+    "NEXT_PUBLIC_SUPABASE_URL": "@next_public_supabase_url",
+    "NEXT_PUBLIC_SUPABASE_ANON_KEY": "@next_public_supabase_anon_key",
+    "STRIPE_SECRET_KEY": "@stripe_secret_key",
+    "STRIPE_PUBLISHABLE_KEY": "@stripe_publishable_key",
+    "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY": "@next_public_stripe_publishable_key",
+    "RESEND_API_KEY": "@resend_api_key",
+    "ANTHROPIC_API_KEY": "@anthropic_api_key",
+    "RETELL_API_KEY": "@retell_api_key",
+    "VONAGE_API_KEY": "@vonage_api_key",
+    "VONAGE_API_SECRET": "@vonage_api_secret"
+  }
+}

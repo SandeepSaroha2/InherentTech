@@ -1,0 +1,46 @@
+{
+  "common": {
+    "appName": "InherentTech",
+    "home": "ホーム",
+    "about": "について",
+    "products": "製品",
+    "pricing": "価格",
+    "contact": "お問い合わせ",
+    "signIn": "サインイン",
+    "getStarted": "始める",
+    "learnMore": "詳細はこちら",
+    "language": "言語"
+  },
+  "hero": {
+    "title": "AI駆動型IT人材派遣プラットフォーム",
+    "subtitle": "インテリジェント自動化で採用ワークフローを合理化",
+    "cta": "無料トライアルを開始"
+  },
+  "products": {
+    "aiocrm": {
+      "name": "AIOCRM",
+      "description": "人材派遣会社向けのAI駆動型CRM"
+    },
+    "ats": {
+      "name": "ATS",
+      "description": "スマートマッチング機能付き求職者追跡システム"
+    },
+    "kudodoc": {
+      "name": "KudoDoc",
+      "description": "ドキュメント管理と電子署名"
+    },
+    "jobplatform": {
+      "name": "ジョブプラットフォーム",
+      "description": "従業員ポータルと求人掲示板"
+    },
+    "ecafy": {
+      "name": "eCafy",
+      "description": "大規模メールキャンペーン管理"
+    }
+  },
+  "footer": {
+    "copyright": "© {year} InherentTech. すべての権利を保有しています。",
+    "privacy": "プライバシーポリシー",
+    "terms": "サービス利用規約"
+  }
+}

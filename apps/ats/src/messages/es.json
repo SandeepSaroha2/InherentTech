@@ -1,0 +1,179 @@
+{
+  "common": {
+    "appName": "ATS",
+    "dashboard": "Panel de Control",
+    "candidates": "Candidatos",
+    "jobs": "Órdenes de Trabajo",
+    "submissions": "Presentaciones",
+    "interviews": "Entrevistas",
+    "placements": "Colocaciones",
+    "timesheets": "Hojas de Tiempo",
+    "invoices": "Facturas",
+    "search": "Buscar",
+    "filter": "Filtrar",
+    "create": "Crear",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "loading": "Cargando...",
+    "noResults": "Sin resultados",
+    "confirm": "Confirmar",
+    "back": "Atrás",
+    "next": "Siguiente",
+    "submit": "Enviar",
+    "close": "Cerrar",
+    "actions": "Acciones",
+    "status": "Estado",
+    "date": "Fecha",
+    "name": "Nombre",
+    "email": "Correo Electrónico",
+    "phone": "Teléfono",
+    "viewAll": "Ver Todo",
+    "logout": "Cerrar Sesión",
+    "profile": "Perfil",
+    "language": "Idioma"
+  },
+  "dashboard": {
+    "title": "Panel de Control",
+    "activeCandidates": "Candidatos Activos",
+    "openJobs": "Órdenes Abiertas",
+    "pendingSubmissions": "Presentaciones Pendientes",
+    "activePlacements": "Colocaciones Activas",
+    "upcomingInterviews": "Entrevistas Próximas",
+    "recentSubmissions": "Presentaciones Recientes"
+  },
+  "candidates": {
+    "title": "Candidatos",
+    "addCandidate": "Agregar Candidato",
+    "parseResume": "Analizar Currículum",
+    "firstName": "Nombre",
+    "lastName": "Apellido",
+    "currentTitle": "Puesto Actual",
+    "skills": "Habilidades",
+    "experience": "Experiencia",
+    "expectedRate": "Tarifa Esperada",
+    "location": "Ubicación",
+    "visaStatus": "Estado de Visa",
+    "visaTypes": {
+      "citizen": "Ciudadano",
+      "greencard": "Tarjeta Verde",
+      "h1b": "H1B",
+      "l1": "L1",
+      "ead": "EAD",
+      "other": "Otro"
+    },
+    "statusLabels": {
+      "active": "Activo",
+      "inactive": "Inactivo",
+      "hired": "Contratado",
+      "rejected": "Rechazado"
+    }
+  },
+  "jobs": {
+    "title": "Órdenes de Trabajo",
+    "newJob": "Nueva Orden",
+    "jobTitle": "Título del Puesto",
+    "client": "Cliente",
+    "description": "Descripción",
+    "requirements": "Requisitos",
+    "location": "Ubicación",
+    "rateRange": "Rango de Tarifa",
+    "openings": "Vacantes",
+    "filled": "Cubiertas",
+    "priorityLevels": {
+      "low": "Baja",
+      "medium": "Media",
+      "high": "Alta",
+      "urgent": "Urgente"
+    },
+    "statusLabels": {
+      "draft": "Borrador",
+      "open": "Abierta",
+      "onhold": "En Espera",
+      "filled": "Cubierta",
+      "closed": "Cerrada"
+    }
+  },
+  "submissions": {
+    "title": "Presentaciones",
+    "newSubmission": "Nueva Presentación",
+    "candidate": "Candidato",
+    "jobOrder": "Orden de Trabajo",
+    "billRate": "Tarifa de Facturación",
+    "payRate": "Tarifa de Pago",
+    "margin": "Margen",
+    "statusLabels": {
+      "submitted": "Presentado",
+      "reviewed": "Revisado",
+      "accepted": "Aceptado",
+      "rejected": "Rechazado",
+      "interview": "En Entrevista"
+    }
+  },
+  "interviews": {
+    "title": "Entrevistas",
+    "scheduleInterview": "Programar Entrevista",
+    "interviewDate": "Fecha de Entrevista",
+    "interviewType": "Tipo de Entrevista",
+    "interviewer": "Entrevistador",
+    "feedback": "Retroalimentación",
+    "types": {
+      "phone": "Telefónica",
+      "video": "Vídeo",
+      "inperson": "Presencial",
+      "technical": "Técnica"
+    }
+  },
+  "placements": {
+    "title": "Colocaciones",
+    "startDate": "Fecha de Inicio",
+    "endDate": "Fecha de Fin",
+    "billRate": "Tarifa de Facturación",
+    "payRate": "Tarifa de Pago",
+    "statusLabels": {
+      "active": "Activa",
+      "completed": "Completada",
+      "terminated": "Terminada",
+      "onhire": "Contratado"
+    }
+  },
+  "timesheets": {
+    "title": "Hojas de Tiempo",
+    "weekEnding": "Semana Terminada",
+    "regularHours": "Horas Regulares",
+    "overtimeHours": "Horas Extra",
+    "totalHours": "Horas Totales",
+    "approve": "Aprobar",
+    "reject": "Rechazar",
+    "statusLabels": {
+      "draft": "Borrador",
+      "submitted": "Presentada",
+      "approved": "Aprobada",
+      "rejected": "Rechazada",
+      "invoiced": "Facturada"
+    }
+  },
+  "invoices": {
+    "title": "Facturas",
+    "generateInvoice": "Generar Factura",
+    "invoiceNumber": "Número de Factura",
+    "amount": "Cantidad",
+    "dueDate": "Fecha de Vencimiento",
+    "paidDate": "Fecha de Pago",
+    "statusLabels": {
+      "draft": "Borrador",
+      "sent": "Enviada",
+      "paid": "Pagada",
+      "overdue": "Vencida",
+      "void": "Anulada"
+    }
+  },
+  "auth": {
+    "signIn": "Iniciar Sesión",
+    "signUp": "Registrarse",
+    "signOut": "Cerrar Sesión",
+    "email": "Correo Electrónico",
+    "password": "Contraseña"
+  }
+}

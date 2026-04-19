@@ -1,0 +1,85 @@
+{
+  "common": {
+    "appName": "KudoDoc",
+    "dashboard": "Dashboard",
+    "templates": "Templates",
+    "documents": "Documents",
+    "signatures": "Signatures",
+    "search": "Search",
+    "create": "Create",
+    "edit": "Edit",
+    "delete": "Delete",
+    "save": "Save",
+    "cancel": "Cancel",
+    "loading": "Loading...",
+    "noResults": "No results found",
+    "submit": "Submit",
+    "close": "Close",
+    "actions": "Actions",
+    "status": "Status",
+    "date": "Date",
+    "logout": "Logout",
+    "language": "Language"
+  },
+  "dashboard": {
+    "title": "Document Dashboard",
+    "totalDocuments": "Total Documents",
+    "pendingSignatures": "Pending Signatures",
+    "completedToday": "Completed Today",
+    "recentDocuments": "Recent Documents"
+  },
+  "templates": {
+    "title": "Document Templates",
+    "newTemplate": "New Template",
+    "templateName": "Template Name",
+    "description": "Description",
+    "category": "Category",
+    "fields": "Template Fields",
+    "preview": "Preview",
+    "useTemplate": "Use Template",
+    "categories": {
+      "legal": "Legal",
+      "staffing": "Staffing",
+      "hr": "HR",
+      "finance": "Finance",
+      "custom": "Custom"
+    }
+  },
+  "documents": {
+    "title": "Documents",
+    "newDocument": "New Document",
+    "fromTemplate": "From Template",
+    "upload": "Upload Document",
+    "documentName": "Document Name",
+    "createdBy": "Created By",
+    "lastModified": "Last Modified",
+    "statusLabels": {
+      "draft": "Draft",
+      "pendingSignature": "Pending Signature",
+      "signed": "Signed",
+      "expired": "Expired",
+      "voided": "Voided"
+    }
+  },
+  "signatures": {
+    "title": "Signature Requests",
+    "requestSignature": "Request Signature",
+    "signerName": "Signer Name",
+    "signerEmail": "Signer Email",
+    "signedAt": "Signed At",
+    "expiresAt": "Expires At",
+    "remind": "Send Reminder",
+    "statusLabels": {
+      "pending": "Pending",
+      "signed": "Signed",
+      "declined": "Declined",
+      "expired": "Expired"
+    }
+  },
+  "auth": {
+    "signIn": "Sign In",
+    "signOut": "Sign Out",
+    "email": "Email Address",
+    "password": "Password"
+  }
+}

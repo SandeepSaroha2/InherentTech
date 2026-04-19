@@ -1,0 +1,46 @@
+{
+  "common": {
+    "appName": "InherentTech",
+    "home": "Startseite",
+    "about": "Über uns",
+    "products": "Produkte",
+    "pricing": "Preisgestaltung",
+    "contact": "Kontakt",
+    "signIn": "Anmelden",
+    "getStarted": "Jetzt starten",
+    "learnMore": "Mehr erfahren",
+    "language": "Sprache"
+  },
+  "hero": {
+    "title": "KI-gestützte IT-Personalvermittlungsplattform",
+    "subtitle": "Optimieren Sie Ihren Einstellungsprozess mit intelligenter Automatisierung",
+    "cta": "Kostenlos testen"
+  },
+  "products": {
+    "aiocrm": {
+      "name": "AIOCRM",
+      "description": "KI-gestütztes CRM für Personalvermittlungsagenturen"
+    },
+    "ats": {
+      "name": "ATS",
+      "description": "Kandidatenverfolgungssystem mit intelligenter Zuordnung"
+    },
+    "kudodoc": {
+      "name": "KudoDoc",
+      "description": "Dokumentenverwaltung und elektronische Signaturen"
+    },
+    "jobplatform": {
+      "name": "Jobplattform",
+      "description": "Arbeitnehmerportal und Jobportal"
+    },
+    "ecafy": {
+      "name": "eCafy",
+      "description": "Verwaltung von Massen-E-Mail-Kampagnen"
+    }
+  },
+  "footer": {
+    "copyright": "© {year} InherentTech. Alle Rechte vorbehalten.",
+    "privacy": "Datenschutzrichtlinie",
+    "terms": "Nutzungsbedingungen"
+  }
+}

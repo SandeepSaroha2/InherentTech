@@ -1,0 +1,93 @@
+{
+  "common": {
+    "appName": "ఉద్యోగ కర్మచారి పోర్టల్",
+    "portal": "పోర్టల్",
+    "timesheets": "టైమ్‌షీట్‌లు",
+    "placements": "నియమనాలు",
+    "documents": "డాక్యుమెంట్‌లు",
+    "profile": "ప్రొఫైల్",
+    "search": "శోధన",
+    "save": "సేవ్ చేయు",
+    "cancel": "రద్దు చేయు",
+    "loading": "లోడ్ చేస్తున్నారు...",
+    "submit": "సమర్పించు",
+    "close": "మూయు",
+    "actions": "చర్యలు",
+    "status": "స్థితి",
+    "date": "తేదీ",
+    "logout": "లాగ్‌అవుట్",
+    "language": "భాష"
+  },
+  "portal": {
+    "title": "ఉద్యోగ కర్మచారి డ్యాష్‌బోర్డ్",
+    "welcome": "తిరిగి స్వాగతం",
+    "currentPlacement": "ప్రస్తుత నియమనం",
+    "hoursThisWeek": "ఈ వారం గంటలు",
+    "nextPayDate": "తర్వాత చెల్లింపు తేదీ",
+    "quickActions": "త్వరిత చర్యలు",
+    "submitTimesheet": "టైమ్‌షీట్ సమర్పించు",
+    "viewDocuments": "డాక్యుమెంట్‌లను చూడండి",
+    "updateProfile": "ప్రొఫైల్‌ను నవీకరించండి"
+  },
+  "timesheets": {
+    "title": "టైమ్‌షీట్‌లు",
+    "currentWeek": "ప్రస్తుత వారం",
+    "weekEnding": "వారం ముగియువారం",
+    "day": {
+      "monday": "సోమవారం",
+      "tuesday": "మంగళవారం",
+      "wednesday": "బుధవారం",
+      "thursday": "గురువారం",
+      "friday": "శుక్రవారం",
+      "saturday": "శనివారం",
+      "sunday": "ఆదివారం"
+    },
+    "hours": "గంటలు",
+    "totalHours": "మొత్తం గంటలు",
+    "submit": "టైమ్‌షీట్ సమర్పించు",
+    "history": "టైమ్‌షీట్ చరిత్ర",
+    "statusLabels": {
+      "draft": "డ్రాఫ్ట్",
+      "submitted": "సమర్పించారు",
+      "approved": "ఆమోదించారు",
+      "rejected": "తిరస్కరించారు"
+    }
+  },
+  "placements": {
+    "title": "నా నియమనాలు",
+    "active": "క్రియాశీల నియమనాలు",
+    "past": "గత నియమనాలు",
+    "client": "క్లায়েంట్",
+    "jobTitle": "ఉద్యోగ శీర్షిక",
+    "startDate": "ప్రారంభ తేదీ",
+    "endDate": "ముగింపు తేదీ",
+    "rate": "రేట్"
+  },
+  "documents": {
+    "title": "డాక్యుమెంట్‌లు",
+    "sign": "సంతకం",
+    "download": "డౌన్‌లోడ్",
+    "pending": "సంతకం కోసం వేచున్నారు",
+    "signed": "సంతకం చేయబడినవి",
+    "all": "అన్ని డాక్యుమెంట్‌లు"
+  },
+  "profile": {
+    "title": "నా ప్రొఫైల్",
+    "personalInfo": "వ్యక్తిగత సమాచారం",
+    "firstName": "మొదటి పేరు",
+    "lastName": "చివరి పేరు",
+    "email": "ఇమెయిల్",
+    "phone": "ఫోన్",
+    "address": "సరిపోల్చ",
+    "emergencyContact": "అత్యవసర సంప్రదింపు",
+    "accountSettings": "ఖాతా సెట్టింగ్‌లు",
+    "changePassword": "పాస్‌వర్డ్ మార్చండి",
+    "notifications": "నోటిఫికేషన్ ప్రాధాన్యతలు"
+  },
+  "auth": {
+    "signIn": "సంతకం చేయు",
+    "signOut": "సంతకం చేయండి",
+    "email": "ఇమెయిల్ అడ్రస్",
+    "password": "పాస్‌వర్డ్"
+  }
+}

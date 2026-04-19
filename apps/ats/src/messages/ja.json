@@ -1,0 +1,184 @@
+{
+  "common": {
+    "appName": "ATS",
+    "dashboard": "ダッシュボード",
+    "candidates": "候補者",
+    "jobs": "職務経歴",
+    "submissions": "提出",
+    "interviews": "インタビュー",
+    "placements": "配置",
+    "timesheets": "タイムシート",
+    "invoices": "請求書",
+    "search": "検索",
+    "filter": "フィルター",
+    "create": "作成",
+    "edit": "編集",
+    "delete": "削除",
+    "save": "保存",
+    "cancel": "キャンセル",
+    "loading": "読み込み中...",
+    "noResults": "結果が見つかりません",
+    "confirm": "確認",
+    "back": "戻る",
+    "next": "次へ",
+    "submit": "送信",
+    "close": "閉じる",
+    "actions": "アクション",
+    "status": "ステータス",
+    "date": "日付",
+    "name": "名前",
+    "email": "メール",
+    "phone": "電話",
+    "viewAll": "すべて表示",
+    "logout": "ログアウト",
+    "profile": "プロフィール",
+    "language": "言語"
+  },
+  "dashboard": {
+    "title": "ATSダッシュボード",
+    "activeCandidates": "アクティブな候補者",
+    "openJobs": "求人募集",
+    "pendingSubmissions": "保留中の提出",
+    "activePlacements": "アクティブな配置",
+    "upcomingInterviews": "今後のインタビュー",
+    "recentSubmissions": "最近の提出"
+  },
+  "candidates": {
+    "title": "候補者",
+    "addCandidate": "候補者を追加",
+    "parseResume": "履歴書を解析",
+    "firstName": "名",
+    "lastName": "姓",
+    "currentTitle": "現在の職務経歴",
+    "skills": "スキル",
+    "experience": "年数",
+    "expectedRate": "期待レート",
+    "location": "場所",
+    "visaStatus": "ビザステータス",
+    "visa": {
+      "usCitizen": "米国市民",
+      "greenCard": "グリーンカード",
+      "h1b": "H-1B",
+      "h4Ead": "H-4 EAD",
+      "l1": "L-1",
+      "opt": "OPT",
+      "cpt": "CPT",
+      "tn": "TN",
+      "other": "その他"
+    },
+    "statusLabels": {
+      "active": "アクティブ",
+      "passive": "パッシブ",
+      "placed": "配置済み",
+      "doNotContact": "連絡しないでください",
+      "archived": "アーカイブ済み"
+    }
+  },
+  "jobs": {
+    "title": "職務経歴",
+    "newJob": "新しい職務経歴",
+    "jobTitle": "職務経歴",
+    "client": "クライアント",
+    "description": "説明",
+    "requirements": "要件",
+    "location": "場所",
+    "rateRange": "レート範囲",
+    "openings": "空席数",
+    "filled": "埋まっている",
+    "priority": {
+      "low": "低",
+      "medium": "中",
+      "high": "高",
+      "urgent": "緊急"
+    },
+    "statusLabels": {
+      "open": "公開",
+      "onHold": "保留中",
+      "filled": "埋まっている",
+      "cancelled": "キャンセル",
+      "closed": "閉じる"
+    }
+  },
+  "submissions": {
+    "title": "提出",
+    "newSubmission": "新規提出",
+    "candidate": "候補者",
+    "jobOrder": "職務経歴",
+    "billRate": "請求レート",
+    "payRate": "給与レート",
+    "margin": "マージン",
+    "statusLabels": {
+      "submitted": "送信済み",
+      "clientReview": "クライアント確認",
+      "interviewScheduled": "インタビュー予定",
+      "accepted": "受け入れられた",
+      "rejected": "却下",
+      "withdrawn": "撤回"
+    }
+  },
+  "interviews": {
+    "title": "インタビュー",
+    "scheduleInterview": "インタビューをスケジュール",
+    "interviewDate": "インタビュー日",
+    "interviewType": "インタビューの種類",
+    "interviewer": "インタビュアー",
+    "feedback": "フィードバック",
+    "types": {
+      "phone": "電話スクリーン",
+      "video": "ビデオインタビュー",
+      "onsite": "オンサイトインタビュー",
+      "technical": "技術面接",
+      "panel": "パネルインタビュー"
+    }
+  },
+  "placements": {
+    "title": "配置",
+    "startDate": "開始日",
+    "endDate": "終了日",
+    "billRate": "請求レート",
+    "payRate": "給与レート",
+    "statusLabels": {
+      "active": "アクティブ",
+      "completed": "完了",
+      "terminated": "終了",
+      "onHold": "保留中"
+    }
+  },
+  "timesheets": {
+    "title": "タイムシート",
+    "weekEnding": "週の終了",
+    "regularHours": "通常時間",
+    "overtimeHours": "残業時間",
+    "totalHours": "合計時間",
+    "approve": "承認",
+    "reject": "却下",
+    "statusLabels": {
+      "draft": "下書き",
+      "submitted": "送信済み",
+      "approved": "承認済み",
+      "rejected": "却下"
+    }
+  },
+  "invoices": {
+    "title": "請求書",
+    "generateInvoice": "請求書を生成",
+    "invoiceNumber": "請求書#",
+    "amount": "金額",
+    "dueDate": "期限",
+    "paidDate": "支払日",
+    "statusLabels": {
+      "draft": "下書き",
+      "sent": "送信済み",
+      "paid": "支払済み",
+      "overdue": "期限切れ",
+      "void": "無効"
+    }
+  },
+  "auth": {
+    "signIn": "サインイン",
+    "signUp": "サインアップ",
+    "signOut": "サインアウト",
+    "email": "メールアドレス",
+    "password": "パスワード"
+  }
+}

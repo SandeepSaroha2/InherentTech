@@ -120,12 +120,14 @@ function SubmitModal({
   jobId,
   orgId,
   userId,
+  userEmail,
   onClose,
   onSuccess,
 }: {
   jobId: string;
   orgId: string;
   userId: string;
+  userEmail?: string;
   onClose: () => void;
   onSuccess: () => void;
 }) {
@@ -177,6 +179,7 @@ function SubmitModal({
           jobOrderId: jobId,
           candidateId: selected.id,
           submittedById: userId,
+          submittedByEmail: userEmail,
           billRate: parseFloat(billRate),
           payRate: parseFloat(payRate),
           internalNotes: notes,
@@ -360,6 +363,11 @@ export default function JobDetailPage() {
   const [distributeChannels, setDistributeChannels]       = useState<string[]>(['linkedin', 'twitter', 'facebook']);
   const [distributing, setDistributing]                   = useState(false);
   const [distributeResults, setDistributeResults]         = useState<any[] | null>(null);
+
+  // Find Matching Candidates modal
+  const [showMatchModal, setShowMatchModal]       = useState(false);
+  const [matchCandidates, setMatchCandidates]     = useState<any[]>([]);
+  const [matchLoading, setMatchLoading]           = useState(false);
 
   // Inline boolean search string editing
   const [editingBool, setEditingBool] = useState(false);
@@ -559,6 +567,42 @@ export default function JobDetailPage() {
     setTimeout(() => setAiDescCopied(false), 2000);
   };
 
+  const findMatchingCandidates = async () => {
+    if (!user?.orgId || !job) return;
+    setMatchLoading(true);
+    setMatchCandidates([]);
+    setShowMatchModal(true);
+    try {
+      // Extract skill keywords from job title + requirements for matching
+      const titleWords = job.title.split(/\s+/).filter((w: string) => w.length > 3);
+      const skillKeywords = [
+        ...titleWords,
+        'Azure', 'Data', 'SQL', 'Python', 'PySpark', 'Databricks', 'Synapse',
+      ].slice(0, 8);
+
+      // Try skills-based match first
+      const skillsParam = skillKeywords.join(',');
+      const res = await fetch(`/api/candidates?limit=10&skills=${encodeURIComponent(skillsParam)}`, {
+        headers: { 'x-org-id': user.orgId },
+      });
+      const data = await res.json();
+      const matched = data.data || [];
+
+      if (matched.length > 0) {
+        setMatchCandidates(matched);
+      } else {
+        // Fallback: all candidates
+        const res2 = await fetch('/api/candidates?limit=10', { headers: { 'x-org-id': user.orgId } });
+        const data2 = await res2.json();
+        setMatchCandidates(data2.data || []);
+      }
+    } catch {
+      setMatchCandidates([]);
+    } finally {
+      setMatchLoading(false);
+    }
+  };
+
   const distributeJobToSocial = async () => {
     if (!user?.orgId || !job) return;
     setDistributing(true);
@@ -610,9 +654,75 @@ export default function JobDetailPage() {
           jobId={job.id}
           orgId={user.orgId}
           userId={user.id}
+          userEmail={user.email}
           onClose={() => setShowSubmitModal(false)}
           onSuccess={() => { setShowSubmitModal(false); fetchJob(); }}
         />
+      )}
+
+      {/* Find Matching Candidates Modal */}
+      {showMatchModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[80vh] flex flex-col">
+            <div className="flex items-center justify-between p-6 border-b border-gray-100">
+              <div>
+                <h2 className="text-lg font-semibold text-gray-900">Matching Candidates</h2>
+                <p className="text-sm text-gray-500 mt-0.5">Candidates that match this job's requirements</p>
+              </div>
+              <button onClick={() => setShowMatchModal(false)} className="text-gray-400 hover:text-gray-600">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="overflow-y-auto flex-1 p-6">
+              {matchLoading ? (
+                <div className="flex items-center justify-center py-12">
+                  <Loader2 className="w-6 h-6 animate-spin text-blue-600 mr-2" />
+                  <span className="text-sm text-gray-500">Searching candidates...</span>
+                </div>
+              ) : matchCandidates.length === 0 ? (
+                <div className="text-center py-12 text-gray-500">
+                  <Users className="w-10 h-10 mx-auto mb-3 text-gray-300" />
+                  <p className="text-sm font-medium">No matching candidates found</p>
+                  <p className="text-xs mt-1">Try adding candidates or importing from Ceipal</p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {matchCandidates.map((c: any) => (
+                    <div key={c.id} className="border border-gray-200 rounded-xl p-4 flex items-start justify-between gap-4 hover:border-blue-300 hover:bg-blue-50/30 transition-colors">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="font-semibold text-gray-900 text-sm">{c.firstName} {c.lastName}</span>
+                          {c.visaStatus && (
+                            <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-medium">
+                              {c.visaStatus.replace('_', ' ')}
+                            </span>
+                          )}
+                        </div>
+                        {c.currentTitle && <p className="text-sm text-gray-600 mt-0.5">{c.currentTitle}</p>}
+                        {c.location && <p className="text-xs text-gray-400 mt-0.5 flex items-center gap-1"><MapPin className="w-3 h-3" />{c.location}</p>}
+                        {c.skills?.length > 0 && (
+                          <div className="flex flex-wrap gap-1 mt-2">
+                            {c.skills.slice(0, 5).map((s: string) => (
+                              <span key={s} className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">{s}</span>
+                            ))}
+                            {c.skills.length > 5 && <span className="text-xs text-gray-400">+{c.skills.length - 5} more</span>}
+                          </div>
+                        )}
+                      </div>
+                      <button
+                        onClick={() => { setShowMatchModal(false); setShowSubmitModal(true); }}
+                        className="shrink-0 text-xs bg-blue-600 text-white px-3 py-1.5 rounded-lg hover:bg-blue-700 transition-colors font-medium flex items-center gap-1"
+                      >
+                        <Send className="w-3 h-3" />
+                        Submit
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
       )}
 
       {/* Ceipal Review & Post Modal */}
@@ -1358,7 +1468,10 @@ export default function JobDetailPage() {
                 <Calendar className="w-4 h-4" />
                 Schedule Interview
               </button>
-              <button className="w-full flex items-center gap-2 px-4 py-2.5 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
+              <button
+                onClick={findMatchingCandidates}
+                className="w-full flex items-center gap-2 px-4 py-2.5 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+              >
                 <Users className="w-4 h-4" />
                 Find Matching Candidates
               </button>
