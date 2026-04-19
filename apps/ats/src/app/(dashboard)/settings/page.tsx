@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { useAuth } from '@inherenttech/ui';
 import {
   Loader2, Mail, Zap, CheckCircle2, AlertCircle, Clock,
@@ -203,9 +204,11 @@ function CopyButton({ text, onCopied }: { text: string; onCopied: () => void }) 
 
 // ── Main component ─────────────────────────────────────────────────────────────
 
-export default function SettingsPage() {
+function SettingsPage() {
   const { user } = useAuth();
-  const [activeTab, setActiveTab] = useState('recruiters');
+  const searchParams  = useSearchParams();
+  const router        = useRouter();
+  const [activeTab, setActiveTab] = useState(() => searchParams.get('tab') || 'recruiters');
   const [connectedPlatform, setConnectedPlatform] = useState<string | null>(null);
   const [disconnectingPlatform, setDisconnectingPlatform] = useState<string | null>(null);
   const [uploadingAvatar, setUploadingAvatar] = useState<string | null>(null);
@@ -251,23 +254,27 @@ export default function SettingsPage() {
     { id: '5', label: 'Placement Ending Soon',  enabled: true  },
   ]);
 
-  // ── Parse URL params on mount ─────────────────────────────────────────────
+  // ── React to URL params (works on mount AND after OAuth soft-navigation) ────
+  // useSearchParams() re-runs this effect whenever the URL changes,
+  // even when Next.js does a client-side soft navigation back to /settings
+  // after the OAuth callback redirect.
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const tab = params.get('tab');
-    if (tab) setActiveTab(tab);
-    const connected = params.get('connected');
+    const tab       = searchParams.get('tab');
+    const connected = searchParams.get('connected');
+    const recruiter = searchParams.get('recruiter');
+    const error     = searchParams.get('error');
+
+    if (tab)       setActiveTab(tab);
     if (connected) setConnectedPlatform(connected);
-    const recruiter = params.get('recruiter');
     if (recruiter) setConnectedRecruiter(decodeURIComponent(recruiter));
-    const error = params.get('error');
-    if (error) showToast(`Connection failed: ${decodeURIComponent(error)}`, 'error');
-    // Clean URL
-    if (tab || connected || error || recruiter) {
-      window.history.replaceState({}, '', window.location.pathname + (tab ? `?tab=${tab}` : ''));
+    if (error)     showToast(`Connection failed: ${decodeURIComponent(error)}`, 'error');
+
+    // Clean transient params from URL (keep tab, drop connected/recruiter/error)
+    if (connected || error || recruiter) {
+      router.replace(`/settings${tab ? `?tab=${tab}` : ''}`);
     }
-  }, []);
+  }, [searchParams]); // re-runs whenever URL search params change
 
   // ── Fetch org settings ────────────────────────────────────────────────────
 
@@ -412,7 +419,10 @@ export default function SettingsPage() {
 
   const TabButton = ({ id, label }: { id: string; label: string }) => (
     <button
-      onClick={() => setActiveTab(id)}
+      onClick={() => {
+        setActiveTab(id);
+        router.replace(`/settings?tab=${id}`);
+      }}
       className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap
         ${activeTab === id
           ? 'border-blue-500 text-blue-600'
@@ -1106,5 +1116,21 @@ export default function SettingsPage() {
       />
     )}
     </>
+  );
+}
+
+// ── Suspense wrapper (required by Next.js 14 for useSearchParams) ───────────
+
+import { Suspense } from 'react';
+
+export default function SettingsPageRoot() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
+      </div>
+    }>
+      <SettingsPage />
+    </Suspense>
   );
 }

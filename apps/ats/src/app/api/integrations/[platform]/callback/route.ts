@@ -105,7 +105,10 @@ export async function GET(
   let orgId          = '';
   let recruiterEmail = '';
 
+  console.log(`[callback] ${platform} hit — code=${!!code} state=${!!state} error=${error}`);
+
   if (!code || !state) {
+    console.log(`[callback] missing code or state → integrations`);
     return NextResponse.redirect(`${APP_URL}/settings?tab=integrations&error=missing_code`);
   }
 
@@ -113,7 +116,9 @@ export async function GET(
     const decoded = JSON.parse(Buffer.from(state, 'base64').toString());
     orgId          = decoded.orgId          || '';
     recruiterEmail = decoded.recruiterEmail || '';
+    console.log(`[callback] decoded state → orgId=${orgId} recruiterEmail=${recruiterEmail}`);
   } catch {
+    console.log(`[callback] state decode failed`);
     return NextResponse.redirect(`${APP_URL}/settings?tab=integrations&error=invalid_state`);
   }
 
@@ -128,6 +133,8 @@ export async function GET(
   const redirectTo = recruiterEmail
     ? `${APP_URL}/settings?tab=recruiters`
     : `${APP_URL}/settings?tab=integrations`;
+
+  console.log(`[callback] recruiterEmail="${recruiterEmail}" → redirectTo=${redirectTo}`);
 
   if (error) {
     return NextResponse.redirect(`${redirectTo}&error=${encodeURIComponent(error)}`);
