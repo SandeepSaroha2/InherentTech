@@ -113,7 +113,13 @@ export async function GET(
   }
 
   try {
-    const decoded = JSON.parse(Buffer.from(state, 'base64').toString());
+    // Try base64url first (new encoding), fall back to standard base64 (old tokens in the wild)
+    let decoded: any;
+    try {
+      decoded = JSON.parse(Buffer.from(state, 'base64url').toString());
+    } catch {
+      decoded = JSON.parse(Buffer.from(state, 'base64').toString());
+    }
     orgId          = decoded.orgId          || '';
     recruiterEmail = decoded.recruiterEmail || '';
     console.log(`[callback] decoded state → orgId=${orgId} recruiterEmail=${recruiterEmail}`);
@@ -122,11 +128,13 @@ export async function GET(
     return NextResponse.redirect(`${APP_URL}/settings?tab=integrations&error=invalid_state`);
   }
 
-  // Fallback: if no recruiterEmail in state, check if the connect URL had one as a query param
-  // (handles cases where state gets stripped or org-level URL was used accidentally)
+  // Primary fallback: cookie set by connect route (survives even if OAuth state is mangled)
   if (!recruiterEmail) {
-    const recruiterFromQuery = request.nextUrl.searchParams.get('recruiterEmail') || '';
-    if (recruiterFromQuery) recruiterEmail = recruiterFromQuery;
+    const cookieEmail = request.cookies.get('oauth_recruiter_email')?.value || '';
+    if (cookieEmail) {
+      recruiterEmail = cookieEmail;
+      console.log(`[callback] recruiterEmail from cookie: ${recruiterEmail}`);
+    }
   }
 
   // Redirect destination differs: recruiter flow → recruiters tab; org flow → integrations tab
@@ -319,9 +327,13 @@ export async function GET(
     const successParam = recruiterEmail
       ? `&connected=${platform}&recruiter=${encodeURIComponent(recruiterEmail)}`
       : `&connected=${platform}`;
-    return NextResponse.redirect(`${redirectTo}${successParam}`);
+    const successResponse = NextResponse.redirect(`${redirectTo}${successParam}`);
+    successResponse.cookies.delete('oauth_recruiter_email'); // clear one-time cookie
+    return successResponse;
   } catch (e: any) {
     console.error(`[integrations] ${platform} callback error:`, e.message);
-    return NextResponse.redirect(`${redirectTo}&error=${encodeURIComponent(e.message.slice(0, 100))}`);
+    const errResponse = NextResponse.redirect(`${redirectTo}&error=${encodeURIComponent(e.message.slice(0, 100))}`);
+    errResponse.cookies.delete('oauth_recruiter_email');
+    return errResponse;
   }
 }

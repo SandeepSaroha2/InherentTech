@@ -85,9 +85,26 @@ export async function GET(
     client_id:     config.clientId,
     redirect_uri:  redirectUri,
     scope:         config.scope,
-    state:         Buffer.from(JSON.stringify(statePayload)).toString('base64'),
+    state:         Buffer.from(JSON.stringify(statePayload)).toString('base64url'), // url-safe b64
     ...config.extras,
   });
 
-  return NextResponse.redirect(`${config.authUrl}?${authParams.toString()}`);
+  const response = NextResponse.redirect(`${config.authUrl}?${authParams.toString()}`);
+
+  // Belt-and-suspenders: also store recruiterEmail in a short-lived cookie so the
+  // callback can recover it even if the OAuth state parameter gets mangled.
+  if (recruiterEmail) {
+    response.cookies.set('oauth_recruiter_email', recruiterEmail, {
+      httpOnly: true,
+      path:     '/api/integrations',
+      maxAge:   600,          // 10 min — OAuth flow should complete well within this
+      sameSite: 'lax',        // 'lax' is sent on cross-site top-level GET (LinkedIn → us)
+      secure:   process.env.NODE_ENV === 'production',
+    });
+  } else {
+    // Clear any stale cookie so an old recruiter flow can't pollute an org-level connect
+    response.cookies.delete('oauth_recruiter_email');
+  }
+
+  return response;
 }
