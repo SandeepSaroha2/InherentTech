@@ -4,7 +4,7 @@
  * Initiates the OAuth flow for a given platform.
  * Redirects the browser to the platform's authorization page.
  *
- * Supported platforms: linkedin | twitter | facebook
+ * Supported platforms: linkedin | twitter | facebook | google
  *
  * Required env vars per platform:
  *   LinkedIn:  LINKEDIN_CLIENT_ID, LINKEDIN_REDIRECT_URI
@@ -62,6 +62,9 @@ export async function GET(
   const { platform } = params;
   const config = CONFIGS[platform];
 
+  // ── DEBUG: dump the full incoming URL so we can confirm query params ──────
+  console.log(`[connect] full URL: ${request.nextUrl.toString()}`);
+
   if (!config) {
     return NextResponse.json({ error: `Unknown platform: ${platform}` }, { status: 400 });
   }
@@ -78,32 +81,41 @@ export async function GET(
   const recruiterEmail = request.nextUrl.searchParams.get('recruiterEmail') || '';
   const redirectUri    = `${APP_URL}/api/integrations/${platform}/callback`;
 
+  console.log(`[connect] platform=${platform} orgId=${orgId} recruiterEmail="${recruiterEmail}"`);
+
   const statePayload: Record<string, string> = { orgId, platform };
   if (recruiterEmail) statePayload.recruiterEmail = recruiterEmail;
+
+  // Use hex encoding — only [0-9a-f] chars, completely URL-safe, no base64 edge cases
+  const stateHex = Buffer.from(JSON.stringify(statePayload)).toString('hex');
+  console.log(`[connect] state payload: ${JSON.stringify(statePayload)}`);
+  console.log(`[connect] state hex: ${stateHex}`);
 
   const authParams = new URLSearchParams({
     client_id:     config.clientId,
     redirect_uri:  redirectUri,
     scope:         config.scope,
-    state:         Buffer.from(JSON.stringify(statePayload)).toString('base64url'), // url-safe b64
+    state:         stateHex,
     ...config.extras,
   });
 
   const response = NextResponse.redirect(`${config.authUrl}?${authParams.toString()}`);
 
-  // Belt-and-suspenders: also store recruiterEmail in a short-lived cookie so the
-  // callback can recover it even if the OAuth state parameter gets mangled.
+  // Belt-and-suspenders: store recruiterEmail in a short-lived cookie.
+  // sameSite:'none' + secure:true is the most permissive option — always sent on
+  // cross-site requests including OAuth redirects back from LinkedIn.
   if (recruiterEmail) {
     response.cookies.set('oauth_recruiter_email', recruiterEmail, {
       httpOnly: true,
       path:     '/api/integrations',
-      maxAge:   600,          // 10 min — OAuth flow should complete well within this
-      sameSite: 'lax',        // 'lax' is sent on cross-site top-level GET (LinkedIn → us)
-      secure:   process.env.NODE_ENV === 'production',
+      maxAge:   600,
+      sameSite: 'none',
+      secure:   true,  // required for sameSite:none; HTTPS via Cloudflare tunnel
     });
+    console.log(`[connect] set cookie oauth_recruiter_email="${recruiterEmail}"`);
   } else {
-    // Clear any stale cookie so an old recruiter flow can't pollute an org-level connect
     response.cookies.delete('oauth_recruiter_email');
+    console.log(`[connect] cleared oauth_recruiter_email cookie (org-level connect)`);
   }
 
   return response;

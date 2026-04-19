@@ -105,7 +105,10 @@ export async function GET(
   let orgId          = '';
   let recruiterEmail = '';
 
-  console.log(`[callback] ${platform} hit — code=${!!code} state=${!!state} error=${error}`);
+  // ── DEBUG: full callback URL + all cookies ──────────────────────────────────
+  console.log(`[callback] full URL: ${request.nextUrl.toString()}`);
+  console.log(`[callback] all cookies: ${JSON.stringify([...request.cookies.getAll().map(c => `${c.name}=${c.value}`)])}`);
+  console.log(`[callback] ${platform} hit — code=${!!code} state=${state?.slice(0,40)}… error=${error}`);
 
   if (!code || !state) {
     console.log(`[callback] missing code or state → integrations`);
@@ -113,28 +116,31 @@ export async function GET(
   }
 
   try {
-    // Try base64url first (new encoding), fall back to standard base64 (old tokens in the wild)
+    // Try hex first (new encoding), then base64url, then standard base64
     let decoded: any;
     try {
-      decoded = JSON.parse(Buffer.from(state, 'base64url').toString());
+      decoded = JSON.parse(Buffer.from(state, 'hex').toString());
     } catch {
-      decoded = JSON.parse(Buffer.from(state, 'base64').toString());
+      try {
+        decoded = JSON.parse(Buffer.from(state, 'base64url').toString());
+      } catch {
+        decoded = JSON.parse(Buffer.from(state, 'base64').toString());
+      }
     }
     orgId          = decoded.orgId          || '';
     recruiterEmail = decoded.recruiterEmail || '';
-    console.log(`[callback] decoded state → orgId=${orgId} recruiterEmail=${recruiterEmail}`);
+    console.log(`[callback] decoded state → orgId=${orgId} recruiterEmail="${recruiterEmail}"`);
   } catch {
-    console.log(`[callback] state decode failed`);
+    console.log(`[callback] state decode failed — raw state: ${state}`);
     return NextResponse.redirect(`${APP_URL}/settings?tab=integrations&error=invalid_state`);
   }
 
-  // Primary fallback: cookie set by connect route (survives even if OAuth state is mangled)
-  if (!recruiterEmail) {
-    const cookieEmail = request.cookies.get('oauth_recruiter_email')?.value || '';
-    if (cookieEmail) {
-      recruiterEmail = cookieEmail;
-      console.log(`[callback] recruiterEmail from cookie: ${recruiterEmail}`);
-    }
+  // Primary fallback: cookie set by connect route
+  const cookieEmail = request.cookies.get('oauth_recruiter_email')?.value || '';
+  console.log(`[callback] cookie oauth_recruiter_email="${cookieEmail}"`);
+  if (!recruiterEmail && cookieEmail) {
+    recruiterEmail = cookieEmail;
+    console.log(`[callback] using cookie as recruiterEmail: "${recruiterEmail}"`);
   }
 
   // Redirect destination differs: recruiter flow → recruiters tab; org flow → integrations tab
