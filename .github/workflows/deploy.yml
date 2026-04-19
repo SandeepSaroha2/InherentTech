@@ -1,90 +1,24 @@
-name: Deploy to Vercel
+# Deployment workflow — currently running locally via Cloudflare Tunnel
+# Apps are served with: npx turbo dev --filter=<app>
+# No automated CI/CD deployment configured yet.
+# To set up automated deployment, update this file with your hosting provider.
+
+name: Deploy (manual/local)
 
 on:
-  push:
-    branches: [main]
-
-concurrency:
-  group: deployment-${{ github.ref }}
-  cancel-in-progress: false
+  workflow_dispatch:
+    inputs:
+      note:
+        description: 'Deployment note'
+        required: false
 
 jobs:
-  deploy-web:
-    name: Deploy Web App
+  no-op:
+    name: No automated deployment configured
     runs-on: ubuntu-latest
-    environment: production
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Deploy to Vercel (Web)
-        uses: amondnet/vercel-action@v25
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_WEB_PROJECT_ID }}
-          working-directory: ./apps/web
-          vercel-args: '--prod'
-
-  deploy-aiocrm:
-    name: Deploy AIOCRM App
-    runs-on: ubuntu-latest
-    environment: production
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Deploy to Vercel (AIOCRM)
-        uses: amondnet/vercel-action@v25
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_AIOCRM_PROJECT_ID }}
-          working-directory: ./apps/aiocrm
-          vercel-args: '--prod'
-
-  deploy-ats:
-    name: Deploy ATS App
-    runs-on: ubuntu-latest
-    environment: production
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Deploy to Vercel (ATS)
-        uses: amondnet/vercel-action@v25
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_ATS_PROJECT_ID }}
-          working-directory: ./apps/ats
-          vercel-args: '--prod'
-
-  deploy-jobplatform:
-    name: Deploy Job Platform App
-    runs-on: ubuntu-latest
-    environment: production
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Deploy to Vercel (Job Platform)
-        uses: amondnet/vercel-action@v25
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_JOBPLATFORM_PROJECT_ID }}
-          working-directory: ./apps/jobplatform
-          vercel-args: '--prod'
-
-  deploy-kudodoc:
-    name: Deploy KudoDoc App
-    runs-on: ubuntu-latest
-    environment: production
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Deploy to Vercel (KudoDoc)
-        uses: amondnet/vercel-action@v25
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_KUDODOC_PROJECT_ID }}
-          working-directory: ./apps/kudodoc
-          vercel-args: '--prod'
+      - name: Info
+        run: |
+          echo "Apps are currently running locally."
+          echo "To deploy, restart the local dev server after pulling latest changes."
+          echo "Run: git pull && npx turbo dev --filter=@inherenttech/ats"
