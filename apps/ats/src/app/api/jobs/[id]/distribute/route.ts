@@ -44,9 +44,10 @@ export async function POST(
 
   const mergedSettings = {
     ...settings,
-    // LinkedIn: prefer org-level company page; fall back to recruiter personal token + stored personId
+    // LinkedIn: prefer org-level company page; fall back to recruiter personal token + stored URN
     recruiterLinkedinToken:    recruiterSocial.linkedin?.accessToken || '',
-    recruiterLinkedinPersonId: recruiterSocial.linkedin?.personId    || '',
+    recruiterLinkedinPersonUrn: recruiterSocial.linkedin?.personUrn || '',   // full URN from introspect
+    recruiterLinkedinPersonId: recruiterSocial.linkedin?.personId   || '',   // legacy fallback
     // Twitter: recruiter OAuth 2.0 Bearer + refresh token (from our OAuth flow)
     recruiterTwitterToken:   recruiterSocial.twitter?.accessToken  || '',
     recruiterTwitterRefresh: recruiterSocial.twitter?.refreshToken  || '',

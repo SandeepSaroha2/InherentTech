@@ -154,32 +154,62 @@ export async function GET(
       case 'linkedin': {
         tokenData = await exchangeLinkedIn(code, redirectUri);
 
-        // Fetch the numeric member ID using /v2/userinfo (requires openid scope).
-        // Returns `sub` = numeric LinkedIn member ID, used as urn:li:member:{sub} in UGC Posts.
-        // Stored so job-distribution never makes an extra API call at post time.
-        let liPersonId  = '';
+        // Get the member URN via token introspection — works with w_member_social
+        // scope alone (no openid needed). Returns authorized_user = "urn:li:member:NUMERIC".
+        // Fallback: /v2/me returns alphanumeric id → "urn:li:person:ALPHANUMERIC".
+        let liPersonUrn = '';
         let liOrgUrn    = '';
 
-        const uiRes = await fetch('https://api.linkedin.com/v2/userinfo', {
-          headers: { 'Authorization': `Bearer ${tokenData.access_token}` },
-        });
-        if (uiRes.ok) {
-          const ui = await uiRes.json() as { sub?: string; id?: string };
-          liPersonId = ui.sub || ui.id || '';   // sub is numeric string from OIDC
+        // Step 1: introspect token (uses client credentials, not user scope)
+        try {
+          const introRes = await fetch('https://api.linkedin.com/v2/introspectToken', {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body:    new URLSearchParams({
+              token:         tokenData.access_token,
+              client_id:     process.env.LINKEDIN_CLIENT_ID     || '',
+              client_secret: process.env.LINKEDIN_CLIENT_SECRET || '',
+            }).toString(),
+          });
+          if (introRes.ok) {
+            const intro = await introRes.json() as { authorized_user?: string };
+            liPersonUrn = intro.authorized_user || ''; // "urn:li:member:123456789"
+            console.log(`[linkedin callback] introspect authorized_user: ${liPersonUrn}`);
+          } else {
+            console.log(`[linkedin callback] introspect failed: ${introRes.status}`);
+          }
+        } catch (e: any) {
+          console.log(`[linkedin callback] introspect error: ${e.message}`);
+        }
+
+        // Step 2: fallback → /v2/me gives alphanumeric id (urn:li:person:)
+        if (!liPersonUrn) {
+          try {
+            const meRes = await fetch('https://api.linkedin.com/v2/me', {
+              headers: { 'Authorization': `Bearer ${tokenData.access_token}` },
+            });
+            if (meRes.ok) {
+              const me = await meRes.json() as { id?: string };
+              if (me.id) liPersonUrn = `urn:li:person:${me.id}`;
+              console.log(`[linkedin callback] /v2/me fallback: ${liPersonUrn}`);
+            }
+          } catch { /* ignore */ }
         }
 
         if (!recruiterEmail) {
-          // Org-level: also try to fetch the LinkedIn company page org ID
-          const orgRes = await fetch('https://api.linkedin.com/v2/organizationAcls?q=roleAssignee&count=1', {
-            headers: { 'Authorization': `Bearer ${tokenData.access_token}` },
-          });
-          const orgData = orgRes.ok ? await orgRes.json() as any : null;
-          liOrgUrn = orgData?.elements?.[0]?.organization?.split(':').pop() || '';
+          // Org-level: try to fetch the LinkedIn company page org ID
+          try {
+            const orgRes = await fetch('https://api.linkedin.com/v2/organizationAcls?q=roleAssignee&count=1', {
+              headers: { 'Authorization': `Bearer ${tokenData.access_token}` },
+            });
+            const orgData = orgRes.ok ? await orgRes.json() as any : null;
+            liOrgUrn = orgData?.elements?.[0]?.organization?.split(':').pop() || '';
+          } catch { /* ignore */ }
         }
 
         settingsPatch = {
           linkedinAccessToken:    tokenData.access_token,
-          linkedinPersonId:       liPersonId,          // stored person URN ID — used in UGC Posts author
+          linkedinPersonUrn:      liPersonUrn,   // full URN — used directly as UGC Posts author
           linkedinOrganizationId: liOrgUrn,
           linkedinConnectedAt:    new Date().toISOString(),
         };
@@ -234,7 +264,7 @@ export async function GET(
         case 'linkedin':
           socialPatch = {
             accessToken:    settingsPatch.linkedinAccessToken,
-            personId:       settingsPatch.linkedinPersonId,       // ← stored person URN ID
+            personUrn:      settingsPatch.linkedinPersonUrn,      // full URN e.g. urn:li:member:123
             organizationId: settingsPatch.linkedinOrganizationId,
             connectedAt:    settingsPatch.linkedinConnectedAt,
           };

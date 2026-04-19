@@ -51,7 +51,8 @@ export interface OrgDistributionSettings {
   jobBoardUrl?:            string;
   // Per-recruiter overrides (injected by distribute route from recruiterSettings[email].social)
   recruiterLinkedinToken?:    string;   // personal w_member_social OAuth 2.0 token
-  recruiterLinkedinPersonId?: string;   // stored person ID from r_liteprofile at connect time
+  recruiterLinkedinPersonUrn?: string;  // full URN from introspect: "urn:li:member:123" or "urn:li:person:abc"
+  /** @deprecated use recruiterLinkedinPersonUrn */ recruiterLinkedinPersonId?: string;
   recruiterTwitterToken?:     string;   // personal OAuth 2.0 Bearer token (from our /connect flow)
   recruiterTwitterRefresh?:   string;   // OAuth 2.0 refresh token (offline.access scope)
 }
@@ -113,38 +114,52 @@ export async function postToLinkedIn(
 
   // Resolve author URN:
   //   - Org-level company page:  urn:li:organization:{numericId}
-  //   - Personal (recruiter):    urn:li:member:{numericSub}
-  //     numericSub comes from OIDC /v2/userinfo `sub` field (stored at connect time).
-  //     UGC Posts API rejects urn:li:person:*; only urn:li:member:\d+ is accepted.
+  //   - Personal (recruiter):    the personUrn stored at connect time via /v2/introspectToken
+  //     Stored as full URN: "urn:li:member:123456789" (from introspect) or
+  //     "urn:li:person:ALPHANUMERIC" (from /v2/me fallback).
   let author: string;
   if (!isPersonal && orgUrn) {
     author = `urn:li:organization:${orgUrn}`;
   } else {
-    // Use personId stored at connect time (from /v2/userinfo sub field — numeric string)
-    const storedPersonId = settings.recruiterLinkedinPersonId;
-    if (storedPersonId) {
-      author = `urn:li:member:${storedPersonId}`;
+    // Use the full personUrn stored at connect time (preferred) or legacy personId
+    const storedUrn = settings.recruiterLinkedinPersonUrn || '';
+    const legacyId  = settings.recruiterLinkedinPersonId  || '';
+
+    if (storedUrn) {
+      // Already a full URN (urn:li:member:… or urn:li:person:…)
+      author = storedUrn;
+    } else if (legacyId) {
+      // Older tokens — build urn:li:member if numeric, urn:li:person if alphanumeric
+      author = /^\d+$/.test(legacyId)
+        ? `urn:li:member:${legacyId}`
+        : `urn:li:person:${legacyId}`;
     } else {
-      // Fall back: live call to /v2/userinfo (requires openid scope on the token)
-      let resolvedId = '';
+      // No stored URN — try live introspect (client-credential call, no user scope needed)
+      let resolvedUrn = '';
       try {
-        const uiRes = await fetch('https://api.linkedin.com/v2/userinfo', {
-          headers: { 'Authorization': `Bearer ${token}` },
+        const introRes = await fetch('https://api.linkedin.com/v2/introspectToken', {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body:    new URLSearchParams({
+            token:         token,
+            client_id:     process.env.LINKEDIN_CLIENT_ID     || '',
+            client_secret: process.env.LINKEDIN_CLIENT_SECRET || '',
+          }).toString(),
         });
-        if (uiRes.ok) {
-          const ui = await uiRes.json() as { sub?: string };
-          resolvedId = ui.sub || '';
+        if (introRes.ok) {
+          const intro = await introRes.json() as { authorized_user?: string };
+          resolvedUrn = intro.authorized_user || '';
         }
       } catch { /* ignore */ }
 
-      if (!resolvedId) {
+      if (!resolvedUrn) {
         return {
           platform: 'linkedin',
           success:  false,
-          error:    'Could not resolve LinkedIn member ID — please reconnect LinkedIn in Settings → Recruiters (needs openid scope)',
+          error:    'Could not resolve LinkedIn member URN — reconnect LinkedIn in Settings → Recruiters',
         };
       }
-      author = `urn:li:member:${resolvedId}`;
+      author = resolvedUrn;
     }
   }
 
