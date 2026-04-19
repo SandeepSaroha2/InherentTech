@@ -154,44 +154,45 @@ export async function GET(
       case 'linkedin': {
         tokenData = await exchangeLinkedIn(code, redirectUri);
 
-        // Get the member URN via token introspection — works with w_member_social
-        // scope alone (no openid needed). Returns authorized_user = "urn:li:member:NUMERIC".
-        // Fallback: /v2/me returns alphanumeric id → "urn:li:person:ALPHANUMERIC".
+        // Get the member's numeric ID from /v2/userinfo (requires openid scope).
+        // Returns sub = numeric LinkedIn member ID → urn:li:member:{sub} for UGC Posts.
+        // Fallback: /v2/introspectToken (authorized_user field).
         let liPersonUrn = '';
         let liOrgUrn    = '';
 
-        // Step 1: introspect token (uses client credentials, not user scope)
+        // Step 1: /v2/userinfo (openid scope) → sub is numeric member ID
         try {
-          const introRes = await fetch('https://api.linkedin.com/v2/introspectToken', {
-            method:  'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body:    new URLSearchParams({
-              token:         tokenData.access_token,
-              client_id:     process.env.LINKEDIN_CLIENT_ID     || '',
-              client_secret: process.env.LINKEDIN_CLIENT_SECRET || '',
-            }).toString(),
+          const uiRes = await fetch('https://api.linkedin.com/v2/userinfo', {
+            headers: { 'Authorization': `Bearer ${tokenData.access_token}` },
           });
-          if (introRes.ok) {
-            const intro = await introRes.json() as { authorized_user?: string };
-            liPersonUrn = intro.authorized_user || ''; // "urn:li:member:123456789"
-            console.log(`[linkedin callback] introspect authorized_user: ${liPersonUrn}`);
+          if (uiRes.ok) {
+            const ui = await uiRes.json() as { sub?: string; id?: string };
+            const numericId = ui.sub || ui.id || '';
+            if (numericId) liPersonUrn = `urn:li:member:${numericId}`;
+            console.log(`[linkedin callback] userinfo sub=${numericId} → ${liPersonUrn}`);
           } else {
-            console.log(`[linkedin callback] introspect failed: ${introRes.status}`);
+            console.log(`[linkedin callback] userinfo failed: ${uiRes.status} (token may lack openid scope)`);
           }
         } catch (e: any) {
-          console.log(`[linkedin callback] introspect error: ${e.message}`);
+          console.log(`[linkedin callback] userinfo error: ${e.message}`);
         }
 
-        // Step 2: fallback → /v2/me gives alphanumeric id (urn:li:person:)
+        // Step 2: fallback → token introspection (authorized_user = full URN)
         if (!liPersonUrn) {
           try {
-            const meRes = await fetch('https://api.linkedin.com/v2/me', {
-              headers: { 'Authorization': `Bearer ${tokenData.access_token}` },
+            const introRes = await fetch('https://api.linkedin.com/v2/introspectToken', {
+              method:  'POST',
+              headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+              body:    new URLSearchParams({
+                token:         tokenData.access_token,
+                client_id:     process.env.LINKEDIN_CLIENT_ID     || '',
+                client_secret: process.env.LINKEDIN_CLIENT_SECRET || '',
+              }).toString(),
             });
-            if (meRes.ok) {
-              const me = await meRes.json() as { id?: string };
-              if (me.id) liPersonUrn = `urn:li:person:${me.id}`;
-              console.log(`[linkedin callback] /v2/me fallback: ${liPersonUrn}`);
+            if (introRes.ok) {
+              const intro = await introRes.json() as { authorized_user?: string };
+              liPersonUrn = intro.authorized_user || '';
+              console.log(`[linkedin callback] introspect fallback: ${liPersonUrn}`);
             }
           } catch { /* ignore */ }
         }

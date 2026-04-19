@@ -24,10 +24,10 @@ const CONFIGS: Record<string, {
   linkedin: {
     authUrl:  'https://www.linkedin.com/oauth/v2/authorization',
     clientId: process.env.LINKEDIN_CLIENT_ID || '',
-    // w_member_social — post to member's personal feed (Share on LinkedIn product)
-    // Note: openid scope requires "Sign In with LinkedIn via OIDC" product which
-    // is not enabled on this app.  We get the member URN via /v2/introspectToken instead.
-    scope:    'w_member_social',
+    // openid  — Sign In with LinkedIn via OIDC (already enabled on this app)
+    //           /v2/userinfo returns numeric `sub` → urn:li:member:{sub} for UGC Posts
+    // w_member_social — post to member's personal feed
+    scope:    'openid w_member_social',
     extras:   { response_type: 'code' },
   },
   twitter: {
