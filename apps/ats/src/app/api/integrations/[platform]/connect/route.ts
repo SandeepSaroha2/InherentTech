@@ -24,12 +24,10 @@ const CONFIGS: Record<string, {
   linkedin: {
     authUrl:  'https://www.linkedin.com/oauth/v2/authorization',
     clientId: process.env.LINKEDIN_CLIENT_ID || '',
-    // IMPORTANT: dropped `openid` because LinkedIn was rejecting our OAuth with
-    //   `unauthorized_scope_error — Scope "r_liteprofile" is not authorized`
-    // even though the OIDC product appears enabled. w_member_social alone is
-    // sufficient to POST as the member; we capture the member URN post-login
-    // via /v2/userinfo (best-effort — works IF the token has openid implicitly).
-    scope:    'w_member_social',
+    // Full OIDC scope set + Share on LinkedIn (both products confirmed enabled):
+    //   openid + profile + email → /v2/userinfo returns numeric `sub` (member ID)
+    //   w_member_social           → post to member's personal feed via UGC Posts
+    scope:    'openid profile email w_member_social',
     extras:   { response_type: 'code' },
   },
   twitter: {
