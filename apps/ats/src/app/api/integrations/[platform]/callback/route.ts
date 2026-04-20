@@ -174,16 +174,24 @@ export async function GET(
         let liPersonUrn = '';
         let liOrgUrn    = '';
 
-        // Step 1: /v2/userinfo (openid scope) → sub is numeric member ID
+        // Step 1: /v2/userinfo (openid scope) → sub is OIDC subject identifier
+        // LinkedIn returns a pseudonymous alphanumeric id (e.g. "-nIgmA7Lve"),
+        // NOT the legacy numeric member ID. UGC Posts accepts it as
+        // urn:li:person:{sub} (verified empirically — returned 201).
         try {
           const uiRes = await fetch('https://api.linkedin.com/v2/userinfo', {
             headers: { 'Authorization': `Bearer ${tokenData.access_token}` },
           });
           if (uiRes.ok) {
             const ui = await uiRes.json() as { sub?: string; id?: string };
-            const numericId = ui.sub || ui.id || '';
-            if (numericId) liPersonUrn = `urn:li:member:${numericId}`;
-            console.log(`[linkedin callback] userinfo sub=${numericId} → ${liPersonUrn}`);
+            const sub = ui.sub || ui.id || '';
+            if (sub) {
+              // Numeric sub → urn:li:member:{digits}; alphanumeric → urn:li:person:{sub}
+              liPersonUrn = /^\d+$/.test(sub)
+                ? `urn:li:member:${sub}`
+                : `urn:li:person:${sub}`;
+            }
+            console.log(`[linkedin callback] userinfo sub=${sub} → ${liPersonUrn}`);
           } else {
             console.log(`[linkedin callback] userinfo failed: ${uiRes.status} (token may lack openid scope)`);
           }
