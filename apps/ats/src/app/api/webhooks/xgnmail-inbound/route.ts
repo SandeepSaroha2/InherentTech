@@ -43,6 +43,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { pollAllInboxes, RECRUITER_ACCOUNTS } from '@inherenttech/db';
 
+// Module-level mutex — only ONE poll per recruiter mailbox at a time.
+// Stalwart/Sieve commonly fires the webhook multiple times for the same
+// delivery event (RCPT, DATA, post-deliver). Without this lock, concurrent
+// IMAP fetches see the same UIDs and Claude classifies them in parallel,
+// resulting in duplicate JobOrders being created (some even posted to Ceipal)
+// before the per-message dedupe check can catch up.
+const inflight = new Map<string, Promise<any>>();
+
 export async function POST(request: NextRequest) {
   // ── 1. Bearer auth ────────────────────────────────────────────────
   const secret = process.env.WEBHOOK_SECRET;
@@ -100,17 +108,39 @@ export async function POST(request: NextRequest) {
     (messageId ? ` messageId=${messageId}` : ''),
   );
 
-  // ── 5. Process just this recruiter's inbox ─────────────────────────
+  // ── 5. Concurrency guard — one poll per mailbox at a time ───────────
+  // If Stalwart fires the webhook again for the same mailbox while a poll
+  // is already in flight, return immediately and let the in-flight one do
+  // the work. This prevents duplicate JobOrders being created in parallel.
+  const lockKey = `${orgId}:${recruiter.email}`;
+  if (inflight.has(lockKey)) {
+    console.log(`[webhook:xgnmail-inbound] ${recruiter.email} already in flight — skipping duplicate fire`);
+    return NextResponse.json({
+      success:        true,
+      deferred:       true,
+      reason:         'already-processing',
+      recruiterEmail: recruiter.email,
+      orgId,
+    });
+  }
+
+  // ── 6. Process just this recruiter's inbox ─────────────────────────
   // ignoreSeenFlag: webhook-fired polls must not rely on \Seen because
   // Stalwart/Sieve delivery (or the user's own IMAP client) may have already
   // marked the message read. Dedup happens via DB messageId instead.
-  try {
+  const work = (async () => {
     const startedAt = Date.now();
     const summary   = await pollAllInboxes(orgId, [recruiter], {
       ignoreSeenFlag:  true,
       lookbackMinutes: 30,
     });
     const elapsedMs = Date.now() - startedAt;
+    return { startedAt, summary, elapsedMs };
+  })();
+  inflight.set(lockKey, work);
+
+  try {
+    const { summary, elapsedMs } = await work;
 
     console.log(
       `[webhook:xgnmail-inbound] ${recruiter.email} done in ${elapsedMs}ms — ` +
@@ -133,6 +163,8 @@ export async function POST(request: NextRequest) {
       { error: e.message, recruiterEmail: recruiter.email, orgId },
       { status: 500 },
     );
+  } finally {
+    inflight.delete(lockKey);
   }
 }
 
