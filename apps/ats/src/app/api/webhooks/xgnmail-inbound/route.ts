@@ -101,9 +101,15 @@ export async function POST(request: NextRequest) {
   );
 
   // ── 5. Process just this recruiter's inbox ─────────────────────────
+  // ignoreSeenFlag: webhook-fired polls must not rely on \Seen because
+  // Stalwart/Sieve delivery (or the user's own IMAP client) may have already
+  // marked the message read. Dedup happens via DB messageId instead.
   try {
     const startedAt = Date.now();
-    const summary   = await pollAllInboxes(orgId, [recruiter]);
+    const summary   = await pollAllInboxes(orgId, [recruiter], {
+      ignoreSeenFlag:  true,
+      lookbackMinutes: 30,
+    });
     const elapsedMs = Date.now() - startedAt;
 
     console.log(

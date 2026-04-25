@@ -17,7 +17,7 @@ export * from './integrations';
 
 // Email poller
 export { pollAllInboxes, RECRUITER_ACCOUNTS } from './email-poller-core';
-export type { PollResult, PollSummary } from './email-poller-core';
+export type { PollResult, PollSummary, PollRecruiterOptions } from './email-poller-core';
 
 // Retell AI voice calls
 export { createRetellCall, getRetellCall } from './retell';

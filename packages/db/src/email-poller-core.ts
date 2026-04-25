@@ -432,9 +432,28 @@ function extractEmailParts(rawSource: string): { body: string; attachments: Arra
   return { body, attachments };
 }
 
+/**
+ * Options for the per-recruiter polling pass.
+ *
+ * - `ignoreSeenFlag`: when `true`, fetch ALL recently-arrived messages (last
+ *   `lookbackMinutes` minutes) regardless of \Seen status, then dedupe via the
+ *   `messageId` field on `recruiter_inbox_items`. This is required for the
+ *   xgnmail-inbound webhook path because Stalwart/Sieve delivery + the user's
+ *   own IMAP client may have already marked messages \Seen by the time we
+ *   look. Default `false` keeps the original UI-polling behavior.
+ *
+ * - `lookbackMinutes`: when `ignoreSeenFlag` is true, how far back to scan.
+ *   Defaults to 30.
+ */
+export interface PollRecruiterOptions {
+  ignoreSeenFlag?: boolean;
+  lookbackMinutes?: number;
+}
+
 async function pollRecruiter(
   recruiter: typeof RECRUITER_ACCOUNTS[0],
-  orgId: string
+  orgId: string,
+  opts: PollRecruiterOptions = {}
 ): Promise<PollResult> {
   const result: PollResult = {
     recruiter: recruiter.email,
@@ -472,7 +491,17 @@ async function pollRecruiter(
     await client.connect();
     await client.mailboxOpen('INBOX');
 
-    const uids = await client.search({ seen: false });
+    // Search strategy depends on caller mode.
+    //   UI poll:    seen:false (efficient, but misses any pre-\Seen messages)
+    //   Webhook:    since:<lookback>  (catches \Seen messages, dedupes via DB)
+    const lookbackMinutes = opts.lookbackMinutes ?? 30;
+    const searchCriteria  = opts.ignoreSeenFlag
+      ? { since: new Date(Date.now() - lookbackMinutes * 60 * 1000) }
+      : { seen: false };
+    const uids = await client.search(searchCriteria);
+    if (opts.ignoreSeenFlag) {
+      console.log(`  🔍 Webhook mode — searching last ${lookbackMinutes}min, found ${Array.isArray(uids)?uids.length:0} candidates`);
+    }
     if (!Array.isArray(uids) || !uids.length) {
       await client.logout();
       return result;
@@ -482,6 +511,18 @@ async function pollRecruiter(
     const messages: RawMsg[] = [];
     const skipUids: number[] = [];
 
+    // When ignoring \Seen, dedupe via DB: pull all messageIds we've already seen
+    // for this recruiter so we don't reprocess them.
+    let alreadyProcessed = new Set<string>();
+    if (opts.ignoreSeenFlag) {
+      const seen = await prisma.recruiterInboxItem.findMany({
+        where: { orgId, recruiterEmail: recruiter.email, messageId: { not: null } },
+        select: { messageId: true },
+      });
+      alreadyProcessed = new Set(seen.map(s => s.messageId!).filter(Boolean));
+      console.log(`  🗂️  ${alreadyProcessed.size} messageIds already in DB — will skip those`);
+    }
+
     for await (const msg of client.fetch(uids as any, { envelope: true, source: true, uid: true })) {
       const env = msg.envelope;
       if (!env) continue;
@@ -489,6 +530,7 @@ async function pollRecruiter(
       const fromAddr = from?.address || 'unknown';
       const fromName = from?.name || fromAddr;
       const subject = env.subject || '(no subject)';
+      const messageId = env.messageId || '';
 
       if (SKIP_DOMAINS.some(d => fromAddr.endsWith(d))) {
         console.log(`  ⏭️  Skipping internal: ${fromAddr}`);
@@ -496,9 +538,15 @@ async function pollRecruiter(
         continue;
       }
 
+      // Webhook-mode dedupe: skip messages we've already turned into inbox items
+      if (messageId && alreadyProcessed.has(messageId)) {
+        console.log(`  ⏭️  Already processed messageId=${messageId} ("${subject.slice(0,50)}")`);
+        continue;
+      }
+
       const raw = msg.source?.toString() || '';
       const { body, attachments } = extractEmailParts(raw);
-      messages.push({ uid: msg.uid, messageId: env.messageId || '', fromAddr, fromName, subject, body, attachments });
+      messages.push({ uid: msg.uid, messageId, fromAddr, fromName, subject, body, attachments });
     }
 
     for (const uid of skipUids) {
@@ -846,11 +894,12 @@ async function pollRecruiter(
 
 export async function pollAllInboxes(
   orgId: string,
-  recruiters = RECRUITER_ACCOUNTS
+  recruiters = RECRUITER_ACCOUNTS,
+  opts: PollRecruiterOptions = {}
 ): Promise<PollSummary> {
   const results: PollResult[] = [];
   for (const recruiter of recruiters) {
-    const r = await pollRecruiter(recruiter, orgId);
+    const r = await pollRecruiter(recruiter, orgId, opts);
     results.push(r);
   }
   return {
