@@ -645,7 +645,26 @@ async function pollRecruiter(
               title: d.title || msg.subject,
               description: fullDescription,
               booleanSearchString: d.booleanSearchString || null,
-              requirements: Array.isArray(d.requirements) ? d.requirements : [],
+              // Normalize: Claude sometimes returns objects like {name, description}
+              // instead of plain strings. Coerce everything to strings since the
+              // Prisma schema is `requirements: String[]` and an object array would
+              // throw a silent validation error and roll back the create.
+              requirements: Array.isArray(d.requirements)
+                ? d.requirements
+                    .map((r: any) => {
+                      if (typeof r === 'string') return r;
+                      if (r && typeof r === 'object') {
+                        if (r.name && r.description) return `${r.name}: ${r.description}`;
+                        if (r.skill && r.level)      return `${r.skill} (${r.level})`;
+                        if (r.name)                  return String(r.name);
+                        if (r.skill)                 return String(r.skill);
+                        if (r.text)                  return String(r.text);
+                        return JSON.stringify(r);
+                      }
+                      return String(r ?? '');
+                    })
+                    .filter((s: string) => s && s.trim().length > 0)
+                : [],
               location: d.location || '',
               rateRange: rateRange ?? Prisma.JsonNull,
               priority: d.priority || 'MEDIUM',
