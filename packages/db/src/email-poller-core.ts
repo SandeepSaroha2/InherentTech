@@ -5,11 +5,28 @@
  * LLM strategy: Anthropic Claude first, falls back to Ollama (llama3.2) automatically.
  * Actions saved as RecruiterInboxItem rows for Preeti to review in the dashboard.
  */
+import { createHash } from 'crypto';
 import { ImapFlow } from 'imapflow';
 import { PrismaClient, Prisma } from '@prisma/client';
 import { getSmtpTransporter } from './smtp';
 import { createRetellCall } from './retell';
 import { postJobToCeipal } from './ceipal';
+
+// Fix #3 — content fingerprint for catching the same job sent twice with
+// different SMTP envelopes (e.g. forwarded by two different recipients).
+// Normalize whitespace + lowercase before hashing so trivial reformatting
+// of the body (added > quote markers, signature changes) doesn't defeat us.
+function computeContentHash(subject: string, body: string): string {
+  const normalized = (subject + '\n' + body.slice(0, 2048))
+    .toLowerCase()
+    .replace(/\s+/g, ' ')
+    .trim();
+  return createHash('sha256').update(normalized).digest('hex');
+}
+
+// 24-hour window — same job can legitimately recur after a day; same job
+// arriving twice within minutes/hours is almost always a real duplicate.
+const CONTENT_DEDUP_WINDOW_MS = 24 * 60 * 60 * 1000;
 
 // Instantiate prisma directly to avoid circular import issues when running as CLI
 const prisma = new PrismaClient();
@@ -507,7 +524,7 @@ async function pollRecruiter(
       return result;
     }
 
-    type RawMsg = { uid: number; messageId: string; fromAddr: string; fromName: string; subject: string; body: string; attachments: Array<{ filename: string; content: string }> };
+    type RawMsg = { uid: number; messageId: string; contentHash: string; fromAddr: string; fromName: string; subject: string; body: string; attachments: Array<{ filename: string; content: string }> };
     const messages: RawMsg[] = [];
     const skipUids: number[] = [];
 
@@ -546,7 +563,8 @@ async function pollRecruiter(
 
       const raw = msg.source?.toString() || '';
       const { body, attachments } = extractEmailParts(raw);
-      messages.push({ uid: msg.uid, messageId, fromAddr, fromName, subject, body, attachments });
+      const contentHash = computeContentHash(subject, body);
+      messages.push({ uid: msg.uid, messageId, contentHash, fromAddr, fromName, subject, body, attachments });
     }
 
     for (const uid of skipUids) {
@@ -561,6 +579,25 @@ async function pollRecruiter(
 
       try {
         console.log(`  📧 "${msg.subject}" from ${msg.fromAddr} (${msg.attachments.length} attachments)`);
+
+        // Fix #3 — content-hash dedup (24h window). Catches the case where
+        // the same job is forwarded twice with different Message-IDs (e.g.
+        // rohit forwards to preeti and CC's the team alias which also fwds).
+        // Done BEFORE Claude classification so we save the expensive call.
+        const recentDup = await prisma.recruiterInboxItem.findFirst({
+          where: {
+            orgId,
+            recruiterEmail: recruiter.email,
+            contentHash:    msg.contentHash,
+            createdAt:      { gte: new Date(Date.now() - CONTENT_DEDUP_WINDOW_MS) },
+          },
+          select: { id: true, subject: true, createdAt: true },
+        });
+        if (recentDup) {
+          console.log(`  ⏭️  Content dup (24h): "${msg.subject.slice(0,50)}" matches ${recentDup.id} from ${recentDup.createdAt.toISOString()}`);
+          continue;
+        }
+
         const hasAttachment = msg.attachments.length > 0;
         const classified = await classifyEmail(msg.fromAddr, msg.fromName, msg.subject, msg.body, recruiter.name, hasAttachment);
         console.log(`  🤖 → ${classified.type} (${Math.round((classified.confidence || 0) * 100)}%) — ${classified.suggestedAction}`);
@@ -868,31 +905,52 @@ async function pollRecruiter(
         }
 
         // Save inbox item for dashboard visibility
-        const inboxItem = await prisma.recruiterInboxItem.create({
-          data: {
-            orgId,
-            recruiterEmail: recruiter.email,
-            fromEmail: msg.fromAddr,
-            fromName: msg.fromName,
-            subject: msg.subject,
-            bodySnippet: msg.body,  // full body stored — @db.Text has no size limit
-            messageId: msg.messageId || null,
-            classification: classified.type as any,
-            confidence: classified.confidence || 0,
-            extractedData: classified.data || {},
-            suggestedReply: classified.suggestedReply || null,
-            suggestedAction: classified.suggestedAction || null,
-            status: autoExecute ? 'AUTO_DONE' : 'PENDING',
-            replySent,
-            replySentAt: replySent ? new Date() : null,
-            jobOrderId: jobOrderId || null,
-            candidateId: candidateId || null,
-            callId: callId || null,
-            resumeParsed,
-            actionsLog,
-          },
-        });
-        result.inboxItemsCreated.push(inboxItem.id);
+        // Fix #2 — wrap in try/catch for P2002 unique-constraint violation.
+        // If a concurrent handler beat us (e.g. mutex bypassed in multi-process
+        // deployment), we silently skip and roll back the JobOrder we just
+        // created so we don't leave an orphan in DB. Note: a Ceipal post may
+        // have already happened — that's an unfortunate edge case but in
+        // practice the global mutex makes this race extremely rare.
+        try {
+          const inboxItem = await prisma.recruiterInboxItem.create({
+            data: {
+              orgId,
+              recruiterEmail: recruiter.email,
+              fromEmail: msg.fromAddr,
+              fromName: msg.fromName,
+              subject: msg.subject,
+              bodySnippet: msg.body,  // full body stored — @db.Text has no size limit
+              messageId: msg.messageId || null,
+              contentHash: msg.contentHash,
+              classification: classified.type as any,
+              confidence: classified.confidence || 0,
+              extractedData: classified.data || {},
+              suggestedReply: classified.suggestedReply || null,
+              suggestedAction: classified.suggestedAction || null,
+              status: autoExecute ? 'AUTO_DONE' : 'PENDING',
+              replySent,
+              replySentAt: replySent ? new Date() : null,
+              jobOrderId: jobOrderId || null,
+              candidateId: candidateId || null,
+              callId: callId || null,
+              resumeParsed,
+              actionsLog,
+            },
+          });
+          result.inboxItemsCreated.push(inboxItem.id);
+        } catch (e: any) {
+          if (e?.code === 'P2002') {
+            console.log(`  ⏭️  Race detected — inbox item with messageId=${msg.messageId} already exists (another handler won)`);
+            // Roll back the orphan JobOrder we just created so it doesn't pollute the dashboard
+            if (jobOrderId) {
+              await prisma.jobOrder.delete({ where: { id: jobOrderId } }).catch(() => {});
+              console.log(`  🗑️  Rolled back orphan JobOrder ${jobOrderId}`);
+            }
+            await client.messageFlagsAdd(msg.uid as any, ['\\Seen']);
+            continue; // skip the messagesProcessed increment
+          }
+          throw e;
+        }
 
         await client.messageFlagsAdd(msg.uid as any, ['\\Seen']);
         result.messagesProcessed++;

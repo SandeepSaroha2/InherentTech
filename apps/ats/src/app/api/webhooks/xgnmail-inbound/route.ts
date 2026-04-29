@@ -49,7 +49,12 @@ import { pollAllInboxes, RECRUITER_ACCOUNTS } from '@inherenttech/db';
 // IMAP fetches see the same UIDs and Claude classifies them in parallel,
 // resulting in duplicate JobOrders being created (some even posted to Ceipal)
 // before the per-message dedupe check can catch up.
-const inflight = new Map<string, Promise<any>>();
+//
+// Stored on globalThis so it survives Next.js dev HMR module reloads —
+// without this, every code edit would silently reset the lock and let
+// concurrent fires race for ~30 seconds until the page recompiled.
+const inflight: Map<string, Promise<any>> =
+  ((globalThis as any).__xgnInboxInflight ??= new Map<string, Promise<any>>());
 
 export async function POST(request: NextRequest) {
   // ── 1. Bearer auth ────────────────────────────────────────────────

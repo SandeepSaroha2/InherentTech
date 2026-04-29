@@ -1330,6 +1330,11 @@ model RecruiterInboxItem {
   subject        String
   bodySnippet    String  @db.Text
   messageId      String?
+  // Fix #3 — content fingerprint for catching the same job sent with different
+  // SMTP envelopes (e.g. forwarded twice from different accounts). SHA-256 of
+  // normalized subject + first 2KB of body. Indexed (not unique) so the app
+  // layer can dedupe within a configurable time window (24h by default).
+  contentHash    String?
 
   // AI classification
   classification  InboxClassification
@@ -1363,6 +1368,13 @@ model RecruiterInboxItem {
   @@index([recruiterEmail])
   @@index([status])
   @@index([classification])
+  // Fix #2 — DB-enforced uniqueness on (org, messageId) so racing handlers
+  // can't both insert the same email. Second writer hits P2002 and we skip.
+  // NULL messageId is allowed (legacy rows / messages with no Message-ID
+  // header) — Postgres treats NULLs as distinct so no false collisions.
+  @@unique([orgId, messageId], map: "ux_inbox_org_msgid")
+  // Fix #3 — fast lookup for content-hash dedup (app-layer 24h window)
+  @@index([orgId, contentHash], map: "ix_inbox_org_contenthash")
   @@map("recruiter_inbox_items")
 }
 
