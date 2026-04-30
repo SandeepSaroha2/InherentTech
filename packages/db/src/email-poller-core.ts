@@ -64,13 +64,39 @@ function cleanJobTitle(subject: string, extractedTitle?: string | null): string 
 function sanitizeJobDescription(rawBody: string, opts: { redactVisa?: boolean } = {}): string {
   let text = rawBody || '';
 
+  // 0. MIME envelope cleanup (defensive — for cases where we accidentally
+  //    stored a multipart body with boundary markers and part headers)
+  text = text.replace(/^--[\w=+/-]{20,}(?:--)?\s*$/gim, '');                 // boundary lines
+  text = text.replace(/^Content-(?:Type|Transfer-Encoding|Disposition|ID|Description):\s*.*$/gim, '');  // MIME part headers
+  text = text.replace(/^MIME-Version:\s*.*$/gim, '');
+  text = text.replace(/^charset\s*=\s*"[\w-]+"\s*$/gim, '');
+  // Decode quoted-printable soft breaks ("=\n") and =3D etc — common in fwd'd emails
+  text = text.replace(/=\r?\n/g, '');                                         // soft line breaks
+  text = text.replace(/=([0-9A-Fa-f]{2})/g, (_m, hex) => {
+    const code = parseInt(hex, 16);
+    return code >= 32 && code <= 126 ? String.fromCharCode(code) : ' ';
+  });
+  // Strip stray HTML tags (when text/html part bled through but mostly text)
+  text = text.replace(/<\/?(?:[a-zA-Z][\w:-]*)(?:\s+[^>]*)?\/?>/g, '');
+  // HTML entities
+  text = text.replace(/&nbsp;/gi, ' ').replace(/&amp;/gi, '&').replace(/&lt;/gi, '<').replace(/&gt;/gi, '>').replace(/&quot;/gi, '"').replace(/&#39;/gi, "'");
+
+  // 0a. Long base64-looking lines (embedded image data leaking from MIME parts)
+  text = text.replace(/^[A-Za-z0-9+/]{60,}=*$/gm, '');
+
+  // 0b. Bare hyperlinks wrapped in <…> (the markdown -> text converter leaves these)
+  text = text.replace(/<https?:\/\/[^>]+>/g, '');
+
+  // 0c. Markdown bold/italic markers around standalone words on their own line
+  text = text.replace(/^\s*\*+\s*\*+\s*$/gm, '');
+
   // 1. Forwarded-message dividers
   text = text.replace(/^-{2,}\s*Forwarded message\s*-{2,}.*$/gim, '');
   text = text.replace(/^-{5,}\s*Original Message\s*-{5,}.*$/gim, '');
 
-  // 2. Email header lines (only at line starts; single-line values)
-  //    From: / To: / Cc: / Bcc: / Date: / Sent: / Subject: / Reply-To: / Return-Path:
-  const headerRe = /^(?:From|To|Cc|Bcc|Date|Sent|Reply-To|Return-Path|Subject|Message-ID|X-[A-Za-z-]+):\s*.*$/gim;
+  // 2. Email header lines — both plain ("From: ...") and markdown-wrapped ("*From:* ..." / "**Sent:** ...")
+  //    Optional leading whitespace + bullets, optional bold/italic markers around the field name.
+  const headerRe = /^[ \t>]*(?:[*_]+\s*)?(?:From|To|Cc|Bcc|Date|Sent|Reply-To|Return-Path|Subject|Message-ID|X-[A-Za-z-]+)(?:\s*[*_]+)?\s*:\s*.*$/gim;
   text = text.replace(headerRe, '');
 
   // 3. Visa-status lines (issue #5: never expose visa info on job posting)
@@ -100,8 +126,21 @@ function sanitizeJobDescription(rawBody: string, opts: { redactVisa?: boolean } 
   // 6. Trailing standalone email/phone signature lines (e.g. "rohini@nityo.com" alone on a line)
   text = text.replace(/^[ \t]*[\w.+-]+@[\w-]+\.[\w.-]+[ \t]*$/gim, '');
   text = text.replace(/^[ \t]*https?:\/\/(?:www\.)?linkedin\.com\/in\/[\w-]+\/?[ \t]*$/gim, '');
+  // Phone numbers alone on a line (US format, with or without parens)
+  text = text.replace(/^[ \t]*\+?\d?[\s.-]?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}[ \t]*$/gm, '');
 
-  // 7. Collapse whitespace / 3+ blank lines → 2
+  // 7. Legal/disclaimer boilerplate (typical "Disclaimer: ... unlawful." block at footer)
+  text = text.replace(/(?:^|\n)\s*[*_]?Disclaimer\s*[*_]?\s*:[\s\S]*$/i, '\n');
+  text = text.replace(/(?:^|\n)\s*Confidentiality (?:Notice|Statement)\s*:[\s\S]*$/i, '\n');
+
+  // 8. InherentTech corporate footer that gets attached on Outlook signatures
+  text = text.replace(/^The harder you work, the luckier you get\s*$/gim, '');
+  text = text.replace(/^Certifications & Awards:[\s\S]{0,400}?(?=\n\n|$)/gim, '');
+
+  // 9. Bullet/divider lines (---/***/=== alone)
+  text = text.replace(/^[*_=\-]{3,}\s*$/gm, '');
+
+  // 10. Final whitespace collapse
   text = text.replace(/[ \t]+\n/g, '\n').replace(/\n{3,}/g, '\n\n').trim();
 
   return text;
