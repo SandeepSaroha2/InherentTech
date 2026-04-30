@@ -1,0 +1,30 @@
+# Cloudflare tunnel config for beta.neurago.ai box.
+# Place at /etc/cloudflared/config.yml on the box.
+#
+# Setup:
+#   1. cloudflared tunnel login
+#   2. cloudflared tunnel create beta-inhrnt
+#   3. Replace <TUNNEL_ID> below with the printed UUID
+#   4. cloudflared tunnel route dns beta-inhrnt ats.beta.neurago.ai
+#      (repeat for crm/docs/jobs/app)
+#   5. sudo cloudflared service install
+
+tunnel: <TUNNEL_ID>
+credentials-file: /etc/cloudflared/<TUNNEL_ID>.json
+
+originRequest:
+  connectTimeout: 30s
+  noTLSVerify: false
+
+ingress:
+  - hostname: ats.beta.neurago.ai
+    service: http://localhost:4001
+  - hostname: crm.beta.neurago.ai
+    service: http://localhost:4000
+  - hostname: docs.beta.neurago.ai
+    service: http://localhost:4002
+  - hostname: jobs.beta.neurago.ai
+    service: http://localhost:4003
+  - hostname: app.beta.neurago.ai
+    service: http://localhost:4004
+  - service: http_status:404

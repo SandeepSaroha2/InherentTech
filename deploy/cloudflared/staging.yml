@@ -1,0 +1,32 @@
+# Cloudflare tunnel config for staging.neurago.ai box.
+# Place at /etc/cloudflared/config.yml on the box.
+#
+# Setup:
+#   1. cloudflared tunnel login                     # browser auth
+#   2. cloudflared tunnel create staging-inhrnt     # creates tunnel + creds
+#   3. Replace <TUNNEL_ID> below with the printed UUID
+#   4. cloudflared tunnel route dns staging-inhrnt ats.staging.neurago.ai
+#      (repeat for crm/docs/jobs/app subdomains)
+#   5. sudo cloudflared service install
+#   6. sudo systemctl status cloudflared
+
+tunnel: <TUNNEL_ID>
+credentials-file: /etc/cloudflared/<TUNNEL_ID>.json
+
+# Loadbalance/timeout defaults
+originRequest:
+  connectTimeout: 30s
+  noTLSVerify: false
+
+ingress:
+  - hostname: ats.staging.neurago.ai
+    service: http://localhost:4001
+  - hostname: crm.staging.neurago.ai
+    service: http://localhost:4000
+  - hostname: docs.staging.neurago.ai
+    service: http://localhost:4002
+  - hostname: jobs.staging.neurago.ai
+    service: http://localhost:4003
+  - hostname: app.staging.neurago.ai
+    service: http://localhost:4004
+  - service: http_status:404

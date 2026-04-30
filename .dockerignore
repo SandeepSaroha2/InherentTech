@@ -18,6 +18,9 @@
 
 # ── Local dev / OS ──────────────────────────────────────────────────────────
 **/.DS_Store
+**/._*                  # macOS AppleDouble files (block xattr issues on external volumes)
+**/.AppleDouble/
+**/.Trashes/
 **/Thumbs.db
 **/*.log
 **/.vscode/

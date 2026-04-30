@@ -45,9 +45,21 @@ COPY . .
 # Generate Prisma client (every app uses @inherenttech/db)
 RUN npx prisma generate --schema=packages/db/prisma/schema.prisma
 
-# Build only the requested app (Turbo handles the dependency graph)
-RUN --mount=type=cache,target=/repo/.turbo \
-    npx turbo build --filter=@inherenttech/${APP}
+# Build only the requested app (Turbo handles the dependency graph).
+# Pre-create .turbo log dirs in every workspace package so turbo doesn't
+# bail with "failed to create directory" errors during build (alpine's
+# umask + Docker BuildKit interaction was causing EINTR on mkdir).
+# TURBO_TELEMETRY_DISABLED keeps logs cleaner; TURBO_LOG_ORDER=stream
+# avoids the cache-replay path that triggered the original failure.
+ENV TURBO_TELEMETRY_DISABLED=1 \
+    TURBO_LOG_ORDER=stream
+RUN mkdir -p \
+        packages/db/.turbo \
+        packages/shared/.turbo \
+        packages/ui/.turbo \
+        packages/config/.turbo \
+        apps/${APP}/.turbo \
+    && npx turbo build --filter=@inherenttech/${APP}
 
 # ─── Stage 3: runner ────────────────────────────────────────────────────────
 # Minimal image: only the standalone server bundle + static + public.

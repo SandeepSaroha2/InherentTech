@@ -35,6 +35,16 @@ echo "→ Platform:  ${PLATFORM}"
 echo "→ Push:      ${PUSH}"
 echo ""
 
+# macOS-on-external-volume housekeeping: AppleDouble files (._*) cause
+# Docker BuildKit to fail with "failed to xattr ... operation not permitted"
+# during context loading. Strip them before EVERY build — they're metadata
+# only and regenerate as the system needs them. .DS_Store files too.
+if [[ "$(uname)" == "Darwin" ]]; then
+  echo "→ macOS: cleaning AppleDouble metadata files..."
+  find . -name "._*" -type f -delete 2>/dev/null || true
+  find . -name ".DS_Store" -type f -delete 2>/dev/null || true
+fi
+
 # Use buildx for caching + multi-arch support
 docker buildx inspect inhrnt-builder >/dev/null 2>&1 || \
   docker buildx create --name inhrnt-builder --use

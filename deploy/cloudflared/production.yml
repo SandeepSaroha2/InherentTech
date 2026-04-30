@@ -1,0 +1,30 @@
+# Cloudflare tunnel config for prod.neurago.ai box.
+# Place at /etc/cloudflared/config.yml on the box.
+#
+# Setup:
+#   1. cloudflared tunnel login
+#   2. cloudflared tunnel create prod-inhrnt
+#   3. Replace <TUNNEL_ID> below with the printed UUID
+#   4. cloudflared tunnel route dns prod-inhrnt ats.aiocrm.com
+#      (repeat for crm/docs/jobs/app at aiocrm.com)
+#   5. sudo cloudflared service install
+
+tunnel: <TUNNEL_ID>
+credentials-file: /etc/cloudflared/<TUNNEL_ID>.json
+
+originRequest:
+  connectTimeout: 30s
+  noTLSVerify: false
+
+ingress:
+  - hostname: ats.aiocrm.com
+    service: http://localhost:4001
+  - hostname: crm.aiocrm.com
+    service: http://localhost:4000
+  - hostname: docs.aiocrm.com
+    service: http://localhost:4002
+  - hostname: jobs.aiocrm.com
+    service: http://localhost:4003
+  - hostname: app.aiocrm.com
+    service: http://localhost:4004
+  - service: http_status:404
