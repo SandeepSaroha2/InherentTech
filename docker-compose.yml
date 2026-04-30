@@ -1,0 +1,92 @@
+# Base compose file — shared across all environments.
+# Use with an env-specific override:
+#   docker compose -f docker-compose.yml -f docker-compose.staging.yml up -d
+#   docker compose -f docker-compose.yml -f docker-compose.beta.yml up -d
+#   docker compose -f docker-compose.yml -f docker-compose.production.yml up -d
+#
+# Image tag is parameterized via ${IMAGE_TAG} (defaults to "latest").
+# Set ${REGISTRY} (e.g. ghcr.io/sandeepsaroha2/inherenttech) to use pushed images,
+# or leave unset to build locally on the box.
+
+x-app-defaults: &app-defaults
+  restart: unless-stopped
+  env_file:
+    - .env.local       # secrets pulled from Vaultwarden — gitignored, per-box
+  networks:
+    - inhrnt
+  logging:
+    driver: json-file
+    options:
+      max-size: "10m"
+      max-file: "5"
+
+services:
+  ats:
+    <<: *app-defaults
+    image: ${REGISTRY:-inherenttech}/ats:${IMAGE_TAG:-latest}
+    container_name: inhrnt-ats
+    ports: ["4001:3000"]
+    environment:
+      APP_NAME: ats
+      NEXT_PUBLIC_APP_URL: ${ATS_PUBLIC_URL:-http://localhost:4001}
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args: { APP: ats }
+
+  aiocrm:
+    <<: *app-defaults
+    image: ${REGISTRY:-inherenttech}/aiocrm:${IMAGE_TAG:-latest}
+    container_name: inhrnt-aiocrm
+    ports: ["4000:3000"]
+    environment:
+      APP_NAME: aiocrm
+      NEXT_PUBLIC_APP_URL: ${AIOCRM_PUBLIC_URL:-http://localhost:4000}
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args: { APP: aiocrm }
+
+  kudodoc:
+    <<: *app-defaults
+    image: ${REGISTRY:-inherenttech}/kudodoc:${IMAGE_TAG:-latest}
+    container_name: inhrnt-kudodoc
+    ports: ["4002:3000"]
+    environment:
+      APP_NAME: kudodoc
+      NEXT_PUBLIC_APP_URL: ${KUDODOC_PUBLIC_URL:-http://localhost:4002}
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args: { APP: kudodoc }
+
+  jobplatform:
+    <<: *app-defaults
+    image: ${REGISTRY:-inherenttech}/jobplatform:${IMAGE_TAG:-latest}
+    container_name: inhrnt-jobplatform
+    ports: ["4003:3000"]
+    environment:
+      APP_NAME: jobplatform
+      NEXT_PUBLIC_APP_URL: ${JOBPLATFORM_PUBLIC_URL:-http://localhost:4003}
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args: { APP: jobplatform }
+
+  web:
+    <<: *app-defaults
+    image: ${REGISTRY:-inherenttech}/web:${IMAGE_TAG:-latest}
+    container_name: inhrnt-web
+    ports: ["4004:3000"]
+    environment:
+      APP_NAME: web
+      NEXT_PUBLIC_APP_URL: ${WEB_PUBLIC_URL:-http://localhost:4004}
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args: { APP: web }
+
+networks:
+  inhrnt:
+    name: inhrnt-net
+    driver: bridge

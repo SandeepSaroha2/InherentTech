@@ -1,0 +1,34 @@
+# Beta environment override — runs on beta.neurago.ai box.
+# Pulls images tagged 'beta' (release-candidate, manually promoted from staging).
+#
+# Public URLs:
+#   ats.beta.neurago.ai     → :4001
+#   crm.beta.neurago.ai     → :4000
+#   docs.beta.neurago.ai    → :4002
+#   jobs.beta.neurago.ai    → :4003
+#   app.beta.neurago.ai     → :4004
+#
+# Usage on the box:
+#   IMAGE_TAG=beta docker compose -f docker-compose.yml -f docker-compose.beta.yml up -d
+
+services:
+  ats:
+    environment:
+      NEXT_PUBLIC_APP_URL: https://ats.beta.neurago.ai
+      DEPLOY_ENV: beta
+  aiocrm:
+    environment:
+      NEXT_PUBLIC_APP_URL: https://crm.beta.neurago.ai
+      DEPLOY_ENV: beta
+  kudodoc:
+    environment:
+      NEXT_PUBLIC_APP_URL: https://docs.beta.neurago.ai
+      DEPLOY_ENV: beta
+  jobplatform:
+    environment:
+      NEXT_PUBLIC_APP_URL: https://jobs.beta.neurago.ai
+      DEPLOY_ENV: beta
+  web:
+    environment:
+      NEXT_PUBLIC_APP_URL: https://app.beta.neurago.ai
+      DEPLOY_ENV: beta

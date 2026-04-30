@@ -1,0 +1,54 @@
+# Production environment override — runs on prod.neurago.ai box.
+# Pulls images tagged 'production' (semver-locked release).
+#
+# Public URLs (your existing customer-facing hostnames):
+#   ats.aiocrm.com     → :4001
+#   crm.aiocrm.com     → :4000
+#   docs.aiocrm.com    → :4002
+#   jobs.aiocrm.com    → :4003
+#   app.aiocrm.com     → :4004
+#
+# Usage on the box:
+#   IMAGE_TAG=production docker compose -f docker-compose.yml -f docker-compose.production.yml up -d
+#
+# Production is more conservative on logs + adds explicit memory limits.
+
+x-prod-defaults: &prod-defaults
+  deploy:
+    resources:
+      limits:
+        memory: 1G
+      reservations:
+        memory: 256M
+  logging:
+    driver: json-file
+    options:
+      max-size: "50m"   # production keeps more log history
+      max-file: "10"
+
+services:
+  ats:
+    <<: *prod-defaults
+    environment:
+      NEXT_PUBLIC_APP_URL: https://ats.aiocrm.com
+      DEPLOY_ENV: production
+  aiocrm:
+    <<: *prod-defaults
+    environment:
+      NEXT_PUBLIC_APP_URL: https://crm.aiocrm.com
+      DEPLOY_ENV: production
+  kudodoc:
+    <<: *prod-defaults
+    environment:
+      NEXT_PUBLIC_APP_URL: https://docs.aiocrm.com
+      DEPLOY_ENV: production
+  jobplatform:
+    <<: *prod-defaults
+    environment:
+      NEXT_PUBLIC_APP_URL: https://jobs.aiocrm.com
+      DEPLOY_ENV: production
+  web:
+    <<: *prod-defaults
+    environment:
+      NEXT_PUBLIC_APP_URL: https://app.aiocrm.com
+      DEPLOY_ENV: production

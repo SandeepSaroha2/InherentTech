@@ -1,0 +1,59 @@
+# ── Build artifacts (will be regenerated inside the image) ──────────────────
+**/.next/
+**/.turbo/
+**/dist/
+**/build/
+**/out/
+**/coverage/
+**/.cache/
+
+# ── Dependencies (installed fresh per stage) ────────────────────────────────
+**/node_modules/
+
+# ── Source control ───────────────────────────────────────────────────────────
+.git/
+.github/
+.gitignore
+.gitattributes
+
+# ── Local dev / OS ──────────────────────────────────────────────────────────
+**/.DS_Store
+**/Thumbs.db
+**/*.log
+**/.vscode/
+**/.idea/
+**/*.swp
+
+# ── Environment / secrets (NEVER bake into images) ──────────────────────────
+.env
+.env.*
+!.env.example
+**/.env
+**/.env.*
+!**/.env.example
+.claude/
+
+# ── Docker-related (avoid recursion) ────────────────────────────────────────
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# ── Editor / project metadata ───────────────────────────────────────────────
+*.md
+!README.md
+LICENSE
+.editorconfig
+.prettier*
+.eslintcache
+
+# ── Tests / fixtures (typically not needed in production runner) ────────────
+**/__tests__/
+**/__mocks__/
+**/*.test.ts
+**/*.test.tsx
+**/*.spec.ts
+**/*.spec.tsx
+
+# ── Claude Code / scratch ───────────────────────────────────────────────────
+CLAUDE.md
+.claude/

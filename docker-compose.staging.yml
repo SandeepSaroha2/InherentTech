@@ -1,0 +1,34 @@
+# Staging environment override — runs on staging.neurago.ai box.
+# Pulls images tagged 'staging' (auto-built from main branch).
+#
+# Public URLs are routed via Cloudflare tunnel:
+#   ats.staging.neurago.ai     → :4001
+#   crm.staging.neurago.ai     → :4000
+#   docs.staging.neurago.ai    → :4002
+#   jobs.staging.neurago.ai    → :4003
+#   app.staging.neurago.ai     → :4004
+#
+# Usage on the box:
+#   IMAGE_TAG=staging docker compose -f docker-compose.yml -f docker-compose.staging.yml up -d
+
+services:
+  ats:
+    environment:
+      NEXT_PUBLIC_APP_URL: https://ats.staging.neurago.ai
+      DEPLOY_ENV: staging
+  aiocrm:
+    environment:
+      NEXT_PUBLIC_APP_URL: https://crm.staging.neurago.ai
+      DEPLOY_ENV: staging
+  kudodoc:
+    environment:
+      NEXT_PUBLIC_APP_URL: https://docs.staging.neurago.ai
+      DEPLOY_ENV: staging
+  jobplatform:
+    environment:
+      NEXT_PUBLIC_APP_URL: https://jobs.staging.neurago.ai
+      DEPLOY_ENV: staging
+  web:
+    environment:
+      NEXT_PUBLIC_APP_URL: https://app.staging.neurago.ai
+      DEPLOY_ENV: staging
