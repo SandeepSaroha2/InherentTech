@@ -91,8 +91,16 @@ const IMAP_HOST = 'box.xgnmail.com';
 const IMAP_PORT = 993;
 const SKIP_DOMAINS = ['supabase.io', 'supabase.com', 'xgnmail.com'];
 
-// Auto-execute without review when confidence >= this threshold
-const AUTO_EXECUTE_THRESHOLD = 0.85;
+// Auto-execute without review when confidence >= this threshold.
+// Tuned to 0.95 — jobs below this go to PENDING in the inbox for Preeti to
+// review manually, preventing borderline classifications from triggering
+// Ceipal auto-post / Retell calls / auto-reply on uncertain matches.
+// Override per-deployment with AUTO_EXECUTE_THRESHOLD=0.90 (etc.) in .env
+// without a code change.
+const AUTO_EXECUTE_THRESHOLD = (() => {
+  const env = parseFloat(process.env.AUTO_EXECUTE_THRESHOLD || '');
+  return Number.isFinite(env) && env > 0 && env <= 1 ? env : 0.95;
+})();
 
 export interface PollResult {
   recruiter: string;
@@ -600,9 +608,10 @@ async function pollRecruiter(
 
         const hasAttachment = msg.attachments.length > 0;
         const classified = await classifyEmail(msg.fromAddr, msg.fromName, msg.subject, msg.body, recruiter.name, hasAttachment);
-        console.log(`  🤖 → ${classified.type} (${Math.round((classified.confidence || 0) * 100)}%) — ${classified.suggestedAction}`);
-
+        const confPct = Math.round((classified.confidence || 0) * 100);
         const autoExecute = (classified.confidence || 0) >= AUTO_EXECUTE_THRESHOLD;
+        const gate = autoExecute ? '✓ auto' : `⏸ pending (need ≥${Math.round(AUTO_EXECUTE_THRESHOLD*100)}%)`;
+        console.log(`  🤖 → ${classified.type} (${confPct}%) ${gate} — ${classified.suggestedAction}`);
         let jobOrderId: string | undefined;
         let candidateId: string | undefined;
         let callId: string | undefined;
