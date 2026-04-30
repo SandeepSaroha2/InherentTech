@@ -28,6 +28,85 @@ function computeContentHash(subject: string, body: string): string {
 // arriving twice within minutes/hours is almost always a real duplicate.
 const CONTENT_DEDUP_WINDOW_MS = 24 * 60 * 60 * 1000;
 
+// ── Job-posting hygiene helpers ────────────────────────────────────────────
+
+/**
+ * Clean up a recruiter-forwarded subject into a usable Job Title.
+ * Strips Fwd/RE prefixes, status markers, parenthetical contract-type tags,
+ * markdown asterisks, and trailing whitespace. Prefers the LLM-extracted title
+ * when it looks reasonable; otherwise falls back to the cleaned subject.
+ */
+function cleanJobTitle(subject: string, extractedTitle?: string | null): string {
+  const cleaned = (subject || '')
+    .replace(/^(?:Fwd|FW|RE|Re|FWD):\s*/gi, '')
+    .replace(/^(?:NEW REQ|UPDATE|UPDATED|CLOSED|FRESH|HOT|URGENT|TOP)\s*[:|-]?\s*/gi, '')
+    .replace(/^(?:NEW REQ|UPDATE|UPDATED|CLOSED|FRESH|HOT|URGENT|TOP)\s*[:|-]?\s*/gi, '') // nested
+    .replace(/^\([^)]+\)\s*[:|-]?\s*/g, '')         // leading "(C-C):", "(W2 Only):"
+    .replace(/^\([^)]+\)\s*[:|-]?\s*/g, '')         // again, may be doubled
+    .replace(/\s*\(\d+\)\s*/g, ' ')                 // "(10)" openings count
+    .replace(/\*+/g, '')                            // markdown bold
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  const fromTitle = (extractedTitle || '').trim();
+  if (fromTitle && fromTitle.length > 5 && fromTitle.length < 200 && !/^(re|fwd?|fw):/i.test(fromTitle)) {
+    return fromTitle;
+  }
+  return cleaned || subject;
+}
+
+/**
+ * Strip sender info, mail headers, signatures, unsubscribe footers, and
+ * (optionally) visa-status lines from the raw email body before storing it
+ * as the job description. Conservative — leaves the actual job content
+ * (responsibilities, requirements, rate, location) intact.
+ */
+function sanitizeJobDescription(rawBody: string, opts: { redactVisa?: boolean } = {}): string {
+  let text = rawBody || '';
+
+  // 1. Forwarded-message dividers
+  text = text.replace(/^-{2,}\s*Forwarded message\s*-{2,}.*$/gim, '');
+  text = text.replace(/^-{5,}\s*Original Message\s*-{5,}.*$/gim, '');
+
+  // 2. Email header lines (only at line starts; single-line values)
+  //    From: / To: / Cc: / Bcc: / Date: / Sent: / Subject: / Reply-To: / Return-Path:
+  const headerRe = /^(?:From|To|Cc|Bcc|Date|Sent|Reply-To|Return-Path|Subject|Message-ID|X-[A-Za-z-]+):\s*.*$/gim;
+  text = text.replace(headerRe, '');
+
+  // 3. Visa-status lines (issue #5: never expose visa info on job posting)
+  if (opts.redactVisa !== false) {
+    // Match lines that are PRIMARILY about visa / work auth (kill the whole line).
+    // Examples we want to nuke:
+    //   "*Visa: USC/GC only*"
+    //   "Visa Status: H1B"
+    //   "Work Authorization: USC/GC/H1B"
+    //   "USC and GC only"
+    //   "No third party / corp-to-corp"
+    //   "W2 candidates only"
+    const visaLine = /^[ \t*•·\-]*(?:[*_]*(?:visa(?:\s*status|\s*requirement)?|work\s*auth(?:orization)?)\s*[:\-]\s*.*|usc\s*(?:\/|\s*(?:and|or|&)\s*)\s*gc(?:\s*(?:only|holders?))?.*|gc\s*(?:holders?\s*)?only.*|no\s*(?:third\s*party|opt|h-?1b?|c2c|w2).*|(?:w2|c2c)\s*(?:only|candidates?\s*only).*|(?:h-?1b?|opt|cpt|ead|tn|stem)\s*(?:status|holders?|candidates?\s*only).*|preferred\s*work\s*auth.*)[*_]*$/gim;
+    text = text.replace(visaLine, '');
+  }
+
+  // 4. Common signature/sign-off blocks — kill from the marker onward
+  //    Be careful: only strip if the marker is on its own line or preceded by punctuation.
+  const sigPatterns = [
+    /\n+(?:Thanks(?:\s*(?:&|and)\s*Regards)?|Best Regards|Kind Regards|Sincerely|Regards|Best,?|Looking Forward To Work With You|Cheers)[\s\S]*$/i,
+  ];
+  for (const re of sigPatterns) text = text.replace(re, '\n');
+
+  // 5. Unsubscribe footers
+  text = text.replace(/(?:^|\n)(?:To unsubscribe|If you (?:wish|want|would like) to unsubscribe|click here to unsubscribe|If you feel you received)[\s\S]*$/i, '\n');
+
+  // 6. Trailing standalone email/phone signature lines (e.g. "rohini@nityo.com" alone on a line)
+  text = text.replace(/^[ \t]*[\w.+-]+@[\w-]+\.[\w.-]+[ \t]*$/gim, '');
+  text = text.replace(/^[ \t]*https?:\/\/(?:www\.)?linkedin\.com\/in\/[\w-]+\/?[ \t]*$/gim, '');
+
+  // 7. Collapse whitespace / 3+ blank lines → 2
+  text = text.replace(/[ \t]+\n/g, '\n').replace(/\n{3,}/g, '\n\n').trim();
+
+  return text;
+}
+
 // Instantiate prisma directly to avoid circular import issues when running as CLI
 const prisma = new PrismaClient();
 
@@ -61,22 +140,34 @@ async function callOllama(prompt: string, maxTokens = 800, mode: 'json' | 'text'
 
 /** Prompt to turn a raw recruiter email into a clean, professional job description */
 function buildPolishPrompt(rawEmail: string, jobTitle: string): string {
-  return `You are a professional technical recruiter copywriter. Transform the raw email below into a clean, professional job description suitable for a staffing ATS (Ceipal).
+  return `You are a professional technical recruiter copywriter. Transform the raw email below into a clean, professional job description suitable for a staffing ATS and a public job board.
 
-RULES:
-- Preserve ALL technical requirements, skills, years of experience, and qualifications verbatim.
-- Keep the pay rate, contract type, duration, location, and visa requirements exactly as stated.
-- Restructure into clearly labeled sections: Overview, Responsibilities, Required Skills, Nice to Have, Compensation & Terms.
-- Write in a professional, direct tone. No fluff, no buzzwords.
-- Do NOT invent or add any requirements not mentioned in the email.
-- Output plain text only — no markdown, no HTML.
+INCLUDE (preserve verbatim where stated):
+- Technical requirements, skills, years of experience, qualifications
+- Pay rate, contract type, duration, location, work mode (Remote/Hybrid/Onsite)
+- Responsibilities and nice-to-haves
+
+DO NOT INCLUDE in the output (these are sensitive or non-public):
+- Sender / forwarder / client contact information: names, email addresses, phone numbers, LinkedIn URLs, signatures
+- "From:", "To:", "Date:", "Subject:" or any other email-header lines
+- Forwarded-message dividers
+- The originating client/agency company name (if it appears as the sender's company in a signature)
+- Visa-status or work-authorization specifics (USC, GC, H1B, OPT, EAD, W2 only, C2C only, "no third party", etc.).
+  If work authorization is mentioned, you may say "Preferred work authorization: [open / unspecified]" — never list specific status types.
+- Unsubscribe footers, "Looking forward" sign-offs, "Thanks & Regards" blocks
+
+STRUCTURE the output as clearly-labeled plain-text sections:
+  Overview / Responsibilities / Required Skills / Nice to Have / Compensation & Terms
+
+Tone: professional, direct, no fluff or buzzwords. No markdown, no HTML — plain text only.
+Do NOT invent details not in the source email.
 
 Job Title: ${jobTitle}
 
 Raw Email:
 ${rawEmail.slice(0, 10000)}
 
-Write the professional job description now:`;
+Write the polished job description now:`;
 }
 
 export const RECRUITER_ACCOUNTS: Array<{ email: string; imapUser: string; pass: string; name: string }> = [
@@ -203,22 +294,32 @@ Return JSON only — no markdown, no explanation:
 }`;
 }
 
-/** Step 3 — Boolean string generation from job title + requirements */
+/** Step 3 — Boolean string generation focused STRICTLY on candidate skills */
 function buildBooleanPrompt(title: string, requirements: string[]): string {
-  return `Generate a LinkedIn/Indeed boolean search string for sourcing candidates for this role.
+  return `Generate a LinkedIn/Indeed boolean search string for sourcing CANDIDATES for this role.
+Focus only on the technical/professional skills, role keywords, and seniority of the candidate.
 
 Job Title: ${title}
 Key Requirements: ${requirements.slice(0, 10).join(', ')}
 
-Rules:
-- Use AND, OR, NOT operators with parentheses
+OPERATOR RULES:
+- Use AND, OR, NOT with parentheses
 - Group synonyms with OR: ("Java" OR "Java Developer" OR "Java Engineer")
-- AND together distinct required skills
-- NOT to exclude junior/entry-level if it's a senior role
-- Keep it practical and effective for LinkedIn Recruiter
+- AND together distinct required technical skills
+- NOT to exclude junior/entry-level if it's clearly a senior role
+- Keep it practical for LinkedIn Recruiter or Indeed
+
+DO NOT INCLUDE in the boolean string (these are filtered separately):
+- Visa types or work authorization (no H1B, USC, GC, OPT, EAD, W2, C2C, Citizens, etc.)
+- Pay rate, salary, hourly rate, or any compensation terms
+- Contract type (Full-Time, Contract, Contract-to-Hire, W2, C2C, 1099)
+- Geographic location, city, state, or remote/hybrid/onsite
+- Client or company names
+- Duration, start date, end date
+- Industry-vertical-only filters unless they are skills (e.g. "AML" is fine, "Mayfair Capital" is not)
 
 Respond with JSON only:
-{ "booleanSearchString": "(...) AND (...) NOT (...)" }`;
+{ "booleanSearchString": "(skill1 OR alias) AND (skill2 OR alias2) NOT (junior OR \\"entry level\\")" }`;
 }
 
 function parseJsonFromText(text: string): any {
@@ -643,16 +744,28 @@ async function pollRecruiter(
 
           const recruiterUser = await prisma.user.findFirst({ where: { orgId, email: recruiter.email } });
 
-          // ── Rate extraction ────────────────────────────────────────────────
+          // ── Rate extraction (issue #6: be careful, don't fabricate rates) ──
           // Use the LLM-extracted rate string first, then fall back to direct
-          // body scan so we never lose rate info even if Ollama returns null.
+          // body scan. Strict patterns: require either a leading `$` OR a
+          // trailing `/hr|per hour|hourly` so we don't capture stray numbers
+          // like "20 years experience" as "$20/hr". Plausible bounds: $25–$500.
           const rateStr = (d.rateRange || '').toString().trim();
 
-          // Parse all plausible hourly-rate numbers (2–3 digits, $15–$999 range)
-          let rateNums = [...rateStr.matchAll(/\$?\s*(\d{2,3})(?:\.\d+)?/g)]
-            .map(m => Math.round(parseFloat(m[1])))
-            .filter(n => n >= 15 && n <= 999);
+          // Parse hourly-rate numbers — require $ prefix OR /hr suffix
+          // (avoids capturing "20 years", "10 openings" etc. as rates)
+          let rateNums = [
+            ...rateStr.matchAll(
+              /(?:\$\s*(\d{2,3})(?:\.\d+)?|(\d{2,3})(?:\.\d+)?\s*(?:\/\s*hr|\/\s*hour|per\s*hour|hourly))/gi,
+            ),
+          ]
+            .map(m => Math.round(parseFloat(m[1] || m[2])))
+            .filter(n => n >= 25 && n <= 500);
           let rawRateContext = rateStr;
+
+          // Sanity check: if max < min (extraction error), swap them
+          if (rateNums.length >= 2 && rateNums[0] > rateNums[1]) {
+            [rateNums[0], rateNums[1]] = [rateNums[1], rateNums[0]];
+          }
 
           // Fallback: scan the raw email body for $NN-$NN/hr patterns
           if (!rateNums.length) {
@@ -676,10 +789,20 @@ async function pollRecruiter(
               }
             : null;
 
-          // ── Description: always the exact raw email body — no AI modification ──
-          // All rate details, submission tables, visa requirements, start dates,
-          // interview process — everything is preserved verbatim.
-          const fullDescription = msg.body;
+          // ── Description: sanitized body — strip mail headers, sender signatures,
+          //    visa-status lines, unsubscribe footers. Job content (responsibilities,
+          //    requirements, rate, location, duration) is preserved verbatim.
+          const fullDescription = sanitizeJobDescription(msg.body, { redactVisa: true });
+
+          // ── Job title: clean the subject line (strip Fwd/RE/(C-C):/etc.) and
+          //    prefer the LLM-extracted title when it's reasonable.
+          const jobTitle = cleanJobTitle(msg.subject, d.title);
+
+          // ── Location: never store an empty string — fall back to remote flag,
+          //    then to 'Not specified' so downstream UIs always have something.
+          const remoteFlag = typeof d.remote === 'boolean' ? d.remote : true;
+          const jobLocation = (d.location && String(d.location).trim())
+            || (remoteFlag ? 'Remote' : 'Not specified');
 
           // ── Number of openings: from extraction, fallback to 1 ────────────
           const openings = (typeof d.openings === 'number' && d.openings > 0) ? d.openings : 1;
@@ -688,7 +811,7 @@ async function pollRecruiter(
             data: {
               orgId,
               clientId: company.id,
-              title: d.title || msg.subject,
+              title: jobTitle,
               description: fullDescription,
               booleanSearchString: d.booleanSearchString || null,
               // Normalize: Claude sometimes returns objects like {name, description}
@@ -710,8 +833,11 @@ async function pollRecruiter(
                       return String(r ?? '');
                     })
                     .filter((s: string) => s && s.trim().length > 0)
+                    // Issue #5 — drop requirement lines that are primarily about
+                    // visa/work-auth status (those don't belong on a job posting)
+                    .filter((s: string) => !/^(?:[*_]*\s*)?(?:visa|work\s*auth|usc(?:\s*\/\s*|\s+(?:and|or)\s+)?gc|us\s*citizen|green\s*card|h-?1b|opt|cpt|ead|tn\s*visa|w2\s*only|c2c\s*only|no\s*(?:third\s*party|h1b|opt))\b/i.test(s))
                 : [],
-              location: d.location || '',
+              location: jobLocation,
               rateRange: rateRange ?? Prisma.JsonNull,
               priority: d.priority || 'MEDIUM',
               status: 'DRAFT',
