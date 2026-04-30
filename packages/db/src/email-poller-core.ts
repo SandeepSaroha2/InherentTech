@@ -219,7 +219,31 @@ export const RECRUITER_ACCOUNTS: Array<{ email: string; imapUser: string; pass: 
 
 const IMAP_HOST = 'box.xgnmail.com';
 const IMAP_PORT = 993;
-const SKIP_DOMAINS = ['supabase.io', 'supabase.com', 'xgnmail.com'];
+
+// Domains whose mail we never process at all (provider-driven notifications).
+// Note: removed 'xgnmail.com' — that was over-skipping legitimate internal
+// forwards from sandeep@xgnmail.com, parul@xgnmail.com, etc. We now skip
+// only the SPECIFIC recruiter's own address (self-loops) further below.
+const SKIP_DOMAINS = ['supabase.io', 'supabase.com'];
+
+// Domains we don't auto-reply TO. These are internal team/relay accounts —
+// the reply-to address would either bounce (550 mailbox not found) or simply
+// not need an automated response. Auto-reply still runs for genuine external
+// contacts (recruiters at vendors, candidates).
+const NO_REPLY_DOMAINS = [
+  'inherenttech.com',   // internal team
+  'xgnmail.com',        // internal mail relay
+  'noreply',            // generic
+  'no-reply',
+  'donotreply',
+  'do-not-reply',
+  'mailer-daemon',
+];
+
+// Subjects that look like daily/weekly digest reports rather than a single
+// new req. These get classified as GENERAL — they list multiple jobs at once
+// and shouldn't become a single misnamed JobOrder.
+const DIGEST_SUBJECT_RE = /\b(?:daily\s+(?:requirements?|reqs|jobs?|leads?)|weekly\s+(?:requirements?|reqs|jobs?|leads?|report)|hot\s+(?:list|jobs?|reqs?)|requirements?\s+(?:list|report)|closed\s+(?:job|leads?|reqs?)\s+report|closed\s+(?:list|reqs?)|all\s+(?:open|active)\s+(?:reqs?|jobs?|positions?)|today'?s\s+(?:reqs?|requirements?|hot\s+jobs?))\b/i;
 
 // Auto-execute without review when confidence >= this threshold.
 // Tuned to 0.95 — jobs below this go to PENDING in the inbox for Preeti to
@@ -697,8 +721,16 @@ async function pollRecruiter(
       const subject = env.subject || '(no subject)';
       const messageId = env.messageId || '';
 
+      // Skip provider-driven mail (Supabase notifications etc.)
       if (SKIP_DOMAINS.some(d => fromAddr.endsWith(d))) {
-        console.log(`  ⏭️  Skipping internal: ${fromAddr}`);
+        console.log(`  ⏭️  Skipping provider mail: ${fromAddr}`);
+        skipUids.push(msg.uid);
+        continue;
+      }
+      // Skip self-loops — the recruiter's own address forwarding to itself
+      // (would create infinite cycles, never useful as inbound work)
+      if (fromAddr.toLowerCase() === recruiter.email.toLowerCase()) {
+        console.log(`  ⏭️  Skipping self-loop from ${fromAddr}`);
         skipUids.push(msg.uid);
         continue;
       }
@@ -747,7 +779,25 @@ async function pollRecruiter(
         }
 
         const hasAttachment = msg.attachments.length > 0;
-        const classified = await classifyEmail(msg.fromAddr, msg.fromName, msg.subject, msg.body, recruiter.name, hasAttachment);
+
+        // Pre-classification heuristic: digest/report emails (e.g. "FW: TOP
+        // DAILY REQUIREMENTS & CLOSED JOB REPORT") list multiple jobs at once.
+        // Treat them as GENERAL so they don't become a single misnamed
+        // JobOrder. Skips the expensive Ollama classification entirely.
+        let classified: any;
+        if (DIGEST_SUBJECT_RE.test(msg.subject)) {
+          console.log(`  📰 Digest/report email — classifying as GENERAL (subject: "${msg.subject.slice(0,60)}")`);
+          classified = {
+            type: 'GENERAL',
+            confidence: 0.99,
+            data: { summary: 'Digest/report email — multiple jobs listed' },
+            suggestedAction: 'Skim for any req of interest; no single JobOrder created',
+            shouldAutoCall: false,
+            suggestedReply: '',
+          };
+        } else {
+          classified = await classifyEmail(msg.fromAddr, msg.fromName, msg.subject, msg.body, recruiter.name, hasAttachment);
+        }
         const confPct = Math.round((classified.confidence || 0) * 100);
         const autoExecute = (classified.confidence || 0) >= AUTO_EXECUTE_THRESHOLD;
         const gate = autoExecute ? '✓ auto' : `⏸ pending (need ≥${Math.round(AUTO_EXECUTE_THRESHOLD*100)}%)`;
@@ -1048,11 +1098,24 @@ async function pollRecruiter(
           }
         }
 
-        // Send auto-reply
+        // Send auto-reply — but skip when the original sender is in our
+        // NO_REPLY domain list (internal teammates, mailer-daemons, generic
+        // noreply addresses). Stalwart was returning 550 when we tried to
+        // reply to sandeep@inherenttech.com because that mailbox doesn't
+        // exist on our SMTP relay; in any case, replying to a teammate who
+        // forwarded a job lead is unnecessary noise.
         const replyText = typeof classified.suggestedReply === 'string'
           ? classified.suggestedReply : JSON.stringify(classified.suggestedReply);
         let replySent = false;
-        if (replyText && (autoExecute || classified.type !== 'GENERAL')) {
+        const fromAddrLower = (msg.fromAddr || '').toLowerCase();
+        const fromIsNoReply = NO_REPLY_DOMAINS.some(d =>
+          d.includes('@') ? fromAddrLower === d
+                          : fromAddrLower.endsWith('@' + d) || fromAddrLower.includes(d + '@'),
+        );
+        if (replyText && fromIsNoReply) {
+          logAction('send_reply', 'done', `Skipped (no-reply domain): ${msg.fromAddr}`);
+          console.log(`  🤐  Auto-reply suppressed — ${msg.fromAddr} is in NO_REPLY list`);
+        } else if (replyText && (autoExecute || classified.type !== 'GENERAL')) {
           try {
             const mailer = getSmtpTransporter();
             const smtpFrom = process.env.SMTP_FROM || 'noreply@xgnmail.com';
