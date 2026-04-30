@@ -149,29 +149,82 @@ function sanitizeJobDescription(rawBody: string, opts: { redactVisa?: boolean } 
 // Instantiate prisma directly to avoid circular import issues when running as CLI
 const prisma = new PrismaClient();
 
-const OLLAMA_URL = process.env.OLLAMA_URL || 'http://localhost:11434';
-const OLLAMA_MODEL = process.env.OLLAMA_MODEL || 'llama3.2';
+// ── LLM provider config ────────────────────────────────────────────────────
+// We support two backends, auto-selected based on env:
+//   1. LiteLLM gateway (OpenAI-compatible)   — preferred, set LITELLM_API_KEY
+//      e.g. https://llm.neurago.ai with a configured model alias
+//   2. Local Ollama (legacy)                 — fallback when LiteLLM isn't set
+//
+// Required env to use LiteLLM:
+//   LITELLM_API_KEY=<bearer token>
+//   LITELLM_URL=https://llm.neurago.ai          (default)
+//   LITELLM_MODEL=<model alias>                  (e.g. claude-sonnet-4, gpt-4o-mini)
+//
+// Required env to use Ollama (or auto-fallback):
+//   OLLAMA_URL=http://localhost:11434           (default)
+//   OLLAMA_MODEL=llama3.2                       (default)
+const LITELLM_URL    = (process.env.LITELLM_URL || 'https://llm.neurago.ai').replace(/\/$/, '');
+const LITELLM_KEY    = process.env.LITELLM_API_KEY || '';
+const LITELLM_MODEL  = process.env.LITELLM_MODEL || '';
+const OLLAMA_URL     = (process.env.OLLAMA_URL || 'http://localhost:11434').replace(/\/$/, '');
+const OLLAMA_MODEL   = process.env.OLLAMA_MODEL || 'llama3.2';
 
+const USE_LITELLM    = !!(LITELLM_KEY && LITELLM_MODEL);
+const ACTIVE_MODEL   = USE_LITELLM ? LITELLM_MODEL : OLLAMA_MODEL;
+const ACTIVE_BACKEND = USE_LITELLM ? `LiteLLM (${LITELLM_URL})` : `Ollama (${OLLAMA_URL})`;
+
+console.log(`[llm] backend=${ACTIVE_BACKEND}  model=${ACTIVE_MODEL}`);
+
+/**
+ * Single entry point for all LLM calls in the poller. Switches between LiteLLM
+ * (OpenAI-compatible) and Ollama (legacy) based on env. Returns assistant text.
+ */
 async function callOllama(prompt: string, maxTokens = 800, mode: 'json' | 'text' = 'json'): Promise<string> {
   const controller = new AbortController();
   const timeoutMs = maxTokens > 1000 ? 180_000 : 90_000;
   const timeout = setTimeout(() => controller.abort(), timeoutMs);
   try {
-    const res = await fetch(`${OLLAMA_URL}/api/chat`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      signal: controller.signal,
-      body: JSON.stringify({
-        model: OLLAMA_MODEL,
-        messages: [{ role: 'user', content: prompt }],
-        stream: false,
-        ...(mode === 'json' && { format: 'json' }),
-        options: { temperature: mode === 'json' ? 0 : 0.3, num_predict: maxTokens },
-      }),
-    });
-    if (!res.ok) throw new Error(`Ollama error: ${res.status} ${await res.text()}`);
-    const json = await res.json() as { message: { content: string } };
-    return json.message.content;
+    if (USE_LITELLM) {
+      // OpenAI-compatible /v1/chat/completions
+      const res = await fetch(`${LITELLM_URL}/v1/chat/completions`, {
+        method: 'POST',
+        headers: {
+          'Content-Type':  'application/json',
+          'Authorization': `Bearer ${LITELLM_KEY}`,
+        },
+        signal: controller.signal,
+        body: JSON.stringify({
+          model:       LITELLM_MODEL,
+          messages:    [{ role: 'user', content: prompt }],
+          stream:      false,
+          temperature: mode === 'json' ? 0 : 0.3,
+          max_tokens:  maxTokens,
+          ...(mode === 'json' && { response_format: { type: 'json_object' } }),
+        }),
+      });
+      if (!res.ok) throw new Error(`LiteLLM error: ${res.status} ${await res.text()}`);
+      const json = await res.json() as { choices?: Array<{ message?: { content?: string } }> };
+      const content = json.choices?.[0]?.message?.content;
+      if (!content) throw new Error(`LiteLLM returned empty content: ${JSON.stringify(json).slice(0, 300)}`);
+      return content;
+    } else {
+      // Ollama /api/chat
+      const res = await fetch(`${OLLAMA_URL}/api/chat`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        signal: controller.signal,
+        body: JSON.stringify({
+          model:    OLLAMA_MODEL,
+          messages: [{ role: 'user', content: prompt }],
+          stream:   false,
+          ...(mode === 'json' && { format: 'json' }),
+          options:  { temperature: mode === 'json' ? 0 : 0.3, num_predict: maxTokens },
+        }),
+      });
+      if (!res.ok) throw new Error(`Ollama error: ${res.status} ${await res.text()}`);
+      const json = await res.json() as { message: { content: string } };
+      return json.message.content;
+    }
   } finally {
     clearTimeout(timeout);
   }
@@ -400,7 +453,7 @@ async function classifyEmail(
 ): Promise<{ type: string; confidence: number; data: Record<string, any>; suggestedReply: string; suggestedAction: string; shouldAutoCall: boolean }> {
 
   // Step 1: Classify + extract basic fields
-  console.log(`    🦙 Step 1/3 — Classifying via Ollama (${OLLAMA_MODEL})...`);
+  console.log(`    🦙 Step 1/3 — Classifying via ${USE_LITELLM ? 'LiteLLM' : 'Ollama'} (${ACTIVE_MODEL})...`);
   const classifyText = await callOllama(buildClassifyPrompt(from, fromName, subject, body, recruiterName, hasAttachment));
   const classified = parseJsonFromText(classifyText);
 
