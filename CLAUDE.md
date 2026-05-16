@@ -85,3 +85,23 @@ Vercel-hosted. GitHub Actions CI/CD in `.github/workflows/`:
 - `ci.yml` — lint + type-check + test on PRs
 - `deploy.yml` — auto-deploy to Vercel on push to main
 - `db-migrate.yml` — manual DB migration trigger
+
+## MCP-first development
+
+This project follows the **MCP-first** rule from `~/.claude/CLAUDE.md`: when an MCP connector exists for a task, prefer it over scripts or manual instructions. Universal MCPs to use: Bash, Chrome (`Claude_in_Chrome`), claude-mem, context7, mcp-registry, gemini. Project-specific MCPs are listed in the global rule.
+
+When picking how to do something, the order is: (1) MCP connector → (2) scripted automation → (3) manual instructions to the user.
+
+## Security-first
+
+This project enforces the **Security-first** rule from `~/.claude/CLAUDE.md`: no secret value ever passes through an MCP tool call, source code, env files, screenshots, or chat. Vault is the source of truth. When a secret must reach a UI, use the clipboard-isolation pattern (see global rule). Static audit in CI scans for inline secrets.
+
+This rule outranks every other rule including the MCP-first rule below — if a faster workflow violates it, take the slower workflow.
+
+## Vault integration pattern
+
+This project uses the **Vault integration pattern** from `~/.claude/CLAUDE.md`. Every new third-party integration that needs credentials follows the same 5-component structure: local mode-600 env file → per-service script → bw create/update item → length-only verification → optional file shred.
+
+Reference implementation: `scripts/vault-add-oracle.sh`. Template: `scripts/vault-add-template.sh.example`. Naming convention: `NeuralTrade <Service>` items with lowercase snake_case fields, all credential fields type=Hidden.
+
+Adding a new integration (Vultr, Postgres, SSH key, future providers) → copy the template, customize, run. Same security guarantees, same UX as Oracle.
